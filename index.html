@@ -46,9 +46,6 @@
   <section class="panel form-panel" aria-labelledby="form-heading">
     <div class="form-header-row">
       <h2 id="form-heading" class="panel-heading">Survey Information</h2>
-      <button type="button" class="btn-demo-sample" id="demo-sample-btn" title="Populate realistic sample values for fast demonstration">
-        <span class="btn-demo-icon">⚡</span> Load Benchmark Sample
-      </button>
     </div>
 
     <form id="predict-form" novalidate>
@@ -59,7 +56,7 @@
         <div class="grid grid-3">
           <div class="field">
             <label for="age">Age</label>
-            <input type="number" id="age" name="age" min="10" max="100" step="1" required placeholder="e.g. 21" />
+            <input type="number" id="age" name="age" min="10" max="100" step="1" required placeholder="e.g. 20" />
             <span class="hint">10 to 100 years</span>
             <span class="error-msg" data-for="age"></span>
           </div>
@@ -115,7 +112,7 @@
           <div class="field">
             <label for="avg_daily_usage_hours">Average Daily Screen Time</label>
             <div class="unit-input">
-              <input type="number" id="avg_daily_usage_hours" name="avg_daily_usage_hours" min="0" max="24" step="0.1" required placeholder="4.5" />
+              <input type="number" id="avg_daily_usage_hours" name="avg_daily_usage_hours" min="0" max="24" step="0.1" required placeholder="0.0" />
               <span class="unit">hrs/day</span>
             </div>
             <span class="hint">0.0 to 24.0 hours</span>
@@ -144,7 +141,7 @@
 
           <div class="field">
             <label for="daily_unlocks">Daily Smartphone Unlocks</label>
-            <input type="number" id="daily_unlocks" name="daily_unlocks" min="0" max="1000" step="1" required placeholder="e.g. 140" />
+            <input type="number" id="daily_unlocks" name="daily_unlocks" min="0" max="1000" step="1" required placeholder="e.g. 80" />
             <span class="hint">0 to 1000 unlocks</span>
             <span class="error-msg" data-for="daily_unlocks"></span>
           </div>
@@ -170,7 +167,7 @@
           <div class="field">
             <label for="study_hours">Daily Study Hours</label>
             <div class="unit-input">
-              <input type="number" id="study_hours" name="study_hours" min="0" max="24" step="0.1" required placeholder="3.0" />
+              <input type="number" id="study_hours" name="study_hours" min="0" max="24" step="0.1" required placeholder="0.0" />
               <span class="unit">hrs/day</span>
             </div>
             <span class="hint">0.0 to 24.0 hours</span>
@@ -180,7 +177,7 @@
           <div class="field">
             <label for="physical_activity_hours">Daily Physical Activity</label>
             <div class="unit-input">
-              <input type="number" id="physical_activity_hours" name="physical_activity_hours" min="0" max="24" step="0.1" required placeholder="1.5" />
+              <input type="number" id="physical_activity_hours" name="physical_activity_hours" min="0" max="24" step="0.1" required placeholder="0.0" />
               <span class="unit">hrs/day</span>
             </div>
             <span class="hint">Exercise, sports, or walking</span>
@@ -190,10 +187,10 @@
           <div class="field">
             <label for="sleep_hours_per_night">Nightly Sleep Duration</label>
             <div class="unit-input">
-              <input type="number" id="sleep_hours_per_night" name="sleep_hours_per_night" min="0" max="24" step="0.1" required placeholder="7.0" />
+              <input type="number" id="sleep_hours_per_night" name="sleep_hours_per_night" min="0" max="24" step="0.1" required placeholder="0.0" />
               <span class="unit">hrs/night</span>
             </div>
-            <span class="hint">Recommended: 7 to 9 hours</span>
+            <span class="hint">0.0 to 24.0 hours</span>
             <span class="error-msg" data-for="sleep_hours_per_night"></span>
           </div>
 
@@ -222,7 +219,7 @@
         </div>
         <div class="api-meta-indicator">
           <span>Endpoint: <code>POST /predict</code></span>
-          <span>Coverage: <strong>90% Conformal</strong></span>
+          <span>Target: <strong>Wellbeing Score &amp; Interval</strong></span>
         </div>
       </div>
     </form>
@@ -241,7 +238,7 @@
         </div>
         <h3 class="idle-label">Awaiting Survey Submission</h3>
         <p class="idle-copy">
-          Complete the survey fields on the left or click <strong>Load Benchmark Sample</strong> to generate an immediate point prediction with calibrated 90% conformal uncertainty intervals.
+          Complete the survey fields on the left and submit to generate a model-estimated wellbeing score with calibrated conformal prediction intervals.
         </p>
       </div>
 
@@ -249,7 +246,7 @@
       <div class="state state-loading" id="state-loading" hidden>
         <div class="pulse-ring" aria-hidden="true"></div>
         <h3 class="loading-label">Evaluating Model Inference…</h3>
-        <p class="loading-copy">Traversing Extra Trees ensemble and computing OOF conformal residual bounds.</p>
+        <p class="loading-copy">Running request through production model service.</p>
       </div>
 
       <!-- STATE: RESULT SUCCESS -->
@@ -259,20 +256,19 @@
         <div class="result-card" id="main-result-card">
           <div class="card-eyebrow">Estimated Wellbeing Score</div>
           <div class="score-readout">
-            <span class="score-number" id="score-number">0.00</span>
+            <span class="score-number" id="score-number">—</span>
             <span class="score-scale">/ 10</span>
           </div>
-          <div class="score-status-badge" id="score-status-badge">Moderate Score</div>
           <p class="score-subtext" id="score-subtext">
-            Model-estimated wellbeing score based on reported survey attributes.
+            Model-estimated score based on the submitted survey inputs.
           </p>
         </div>
 
         <!-- UNCERTAINTY VISUALIZATION & INTERVAL CARD -->
         <div class="uncertainty-card" id="uncertainty-card">
           <div class="uncertainty-header">
-            <span class="uncertainty-title">90% Prediction Interval</span>
-            <span class="uncertainty-coverage-tag">90% Coverage</span>
+            <span class="uncertainty-title">Prediction Interval</span>
+            <span class="uncertainty-coverage-tag" id="uncertainty-coverage-tag">—</span>
           </div>
 
           <!-- VISUAL RANGE TRACK -->
@@ -282,9 +278,9 @@
               <div class="interval-marker-point" id="interval-point-marker" title="Point Estimate"></div>
             </div>
             <div class="interval-track-labels">
-              <span class="bound-label" id="bound-label-lower">LB: 0.00</span>
-              <span class="bound-label point-estimate-label" id="bound-label-estimate">Est: 0.00</span>
-              <span class="bound-label" id="bound-label-upper">UB: 0.00</span>
+              <span class="bound-label" id="bound-label-lower">LB: —</span>
+              <span class="bound-label point-estimate-label" id="bound-label-estimate">Est: —</span>
+              <span class="bound-label" id="bound-label-upper">UB: —</span>
             </div>
           </div>
 
@@ -300,24 +296,24 @@
             </div>
             <div class="metric-cell">
               <span class="metric-key">Production Model</span>
-              <span class="metric-val" id="metric-model-name">Phase 5 Extra Trees</span>
+              <span class="metric-val" id="metric-model-name">—</span>
             </div>
             <div class="metric-cell">
               <span class="metric-key">Uncertainty Engine</span>
-              <span class="metric-val" id="metric-uncertainty-method">5-Fold Cross-Conformal</span>
+              <span class="metric-val" id="metric-uncertainty-method">—</span>
             </div>
           </div>
 
-          <p class="uncertainty-disclaimer">
+          <p class="uncertainty-disclaimer" id="uncertainty-disclaimer-text">
             Prediction intervals reflect mathematical conformal bounds, not clinical confidence scores.
           </p>
         </div>
 
-        <!-- SCORE INTERPRETATION SECTION -->
+        <!-- SCORE INTERPRETATION / DISCLAIMER SECTION -->
         <div class="interpretation-card" id="interpretation-card">
-          <div class="interpretation-title">Score Interpretation</div>
+          <div class="interpretation-title">Model Output Notice</div>
           <p class="interpretation-text" id="interpretation-text">
-            <!-- Populated dynamically via JS -->
+            Model-estimated score based on the submitted survey inputs.
           </p>
         </div>
 
@@ -337,6 +333,7 @@
 
           <!-- CONTRIBUTIONS LIST CONTAINER -->
           <div class="factors-wrapper" id="factors-wrapper" style="display:none;">
+            <div class="shap-summary-meta" id="shap-summary-meta" style="font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-soft); margin-bottom: 10px;"></div>
             <div class="attribution-columns">
               <div class="attribution-col pos-col">
                 <div class="col-head">Positive Contributors (+)</div>

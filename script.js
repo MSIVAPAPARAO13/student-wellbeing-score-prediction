@@ -3,8 +3,7 @@
 
   // ---------------------------------------------------------
   // 1. DYNAMIC API BASE RESOLUTION
-  // Strictly resolves locally or via current origin.
-  // NEVER references deprecated third-party deployments.
+  // Resolves locally or via current origin.
   // ---------------------------------------------------------
   const API_BASE = window.__API_BASE__ || (
     (window.location.protocol === "file:")
@@ -16,7 +15,6 @@
   const form = document.getElementById("predict-form");
   const submitBtn = document.getElementById("submit-btn");
   const formResetBtn = document.getElementById("form-reset-btn");
-  const demoSampleBtn = document.getElementById("demo-sample-btn");
   const resetResultBtn = document.getElementById("reset-result-btn");
   const errorRetryBtn = document.getElementById("error-retry-btn");
 
@@ -29,9 +27,9 @@
   const apiStatusText = document.getElementById("api-status-text");
 
   const scoreNumberEl = document.getElementById("score-number");
-  const scoreStatusBadgeEl = document.getElementById("score-status-badge");
   const interpretationTextEl = document.getElementById("interpretation-text");
 
+  const uncertaintyCoverageTagEl = document.getElementById("uncertainty-coverage-tag");
   const intervalHighlightEl = document.getElementById("interval-highlight");
   const intervalPointMarkerEl = document.getElementById("interval-point-marker");
   const boundLabelLowerEl = document.getElementById("bound-label-lower");
@@ -47,6 +45,7 @@
   const explainBtnLabel = document.getElementById("explain-btn-label");
   const explainSpinner = document.getElementById("explain-spinner");
   const factorsWrapper = document.getElementById("factors-wrapper");
+  const shapSummaryMetaEl = document.getElementById("shap-summary-meta");
   const positiveFactorsList = document.getElementById("positive-factors-list");
   const negativeFactorsList = document.getElementById("negative-factors-list");
 
@@ -59,23 +58,26 @@
   let lastSubmittedPayload = null;
 
   // ---------------------------------------------------------
-  // 2. HEALTH CHECK ON INITIALIZATION
+  // 2. VERIFIED HEALTH CHECK ON INITIALIZATION
+  // Derives status strictly from actual /health response.
   // ---------------------------------------------------------
   async function checkApiHealth() {
     try {
       const res = await fetch(`${API_BASE}/health`, { method: "GET" });
-      if (res.ok) {
-        const data = await res.json();
-        apiStatusPill.classList.remove("offline");
-        apiStatusPill.classList.add("online");
-        apiStatusText.textContent = `Model Ready (${data.model_version || "Phase 5"})`;
+      if (!res.ok) {
+        throw new Error(`Health check returned HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      if (data.status === "ok" && data.model_loaded && data.uncertainty_loaded) {
+        apiStatusPill.className = "status-pill online";
+        apiStatusText.textContent = `Connected: ${data.model_version || "Model"} (Ready)`;
       } else {
-        throw new Error(`HTTP ${res.status}`);
+        apiStatusPill.className = "status-pill offline";
+        apiStatusText.textContent = "Service Degradation (Model unready)";
       }
     } catch (err) {
-      apiStatusPill.classList.remove("online");
-      apiStatusPill.classList.add("offline");
-      apiStatusText.textContent = "API Offline (Run uvicorn)";
+      apiStatusPill.className = "status-pill offline";
+      apiStatusText.textContent = "API Disconnected (Run uvicorn)";
     }
   }
   checkApiHealth();
@@ -106,30 +108,7 @@
   }
 
   // ---------------------------------------------------------
-  // 4. LOAD BENCHMARK DEMO SAMPLE
-  // ---------------------------------------------------------
-  demoSampleBtn.addEventListener("click", () => {
-    clearAllErrors();
-    document.getElementById("age").value = "21";
-    document.getElementById("gender").value = "Female";
-    document.getElementById("academic_level").value = "Undergraduate";
-    document.getElementById("country").value = "India";
-    document.getElementById("avg_daily_usage_hours").value = "4.5";
-    document.getElementById("most_used_platform").value = "Instagram";
-    document.getElementById("daily_unlocks").value = "140";
-    document.getElementById("purpose_of_use").value = "Education";
-    document.getElementById("study_hours").value = "3.0";
-    document.getElementById("physical_activity_hours").value = "1.5";
-    document.getElementById("sleep_hours_per_night").value = "7.0";
-    setStressValue("Medium");
-
-    // Flash button feedback
-    demoSampleBtn.style.transform = "scale(0.96)";
-    setTimeout(() => { demoSampleBtn.style.transform = ""; }, 150);
-  });
-
-  // ---------------------------------------------------------
-  // 5. FIELD ERROR HELPERS
+  // 4. FIELD ERROR HELPERS
   // ---------------------------------------------------------
   function fieldWrapper(input) {
     return input ? input.closest(".field") : null;
@@ -156,14 +135,13 @@
     form.querySelectorAll(".error-msg").forEach((m) => (m.textContent = ""));
   }
 
-  // Clear error on input/change
   form.querySelectorAll("input, select").forEach((el) => {
     el.addEventListener("input", () => clearFieldError(el));
     el.addEventListener("change", () => clearFieldError(el));
   });
 
   // ---------------------------------------------------------
-  // 6. CLIENT-SIDE VALIDATION
+  // 5. CLIENT-SIDE VALIDATION
   // ---------------------------------------------------------
   function validate(payload) {
     const errors = [];
@@ -202,7 +180,8 @@
   }
 
   // ---------------------------------------------------------
-  // 7. PAYLOAD COLLECTION
+  // 6. COLLECT SURVEY PAYLOAD
+  // Collects strictly what user entered into the form.
   // ---------------------------------------------------------
   function collectPayload() {
     const fd = new FormData(form);
@@ -224,7 +203,7 @@
   }
 
   // ---------------------------------------------------------
-  // 8. UI STATE SWITCHING
+  // 7. UI STATE SWITCHING
   // ---------------------------------------------------------
   function showState(name) {
     [stateIdle, stateLoading, stateResult, stateError].forEach((el) => {
@@ -244,45 +223,50 @@
     submitBtn.classList.toggle("loading", isSubmitting);
   }
 
+  function clearResultDisplay() {
+    scoreNumberEl.textContent = "—";
+    boundLabelLowerEl.textContent = "LB: —";
+    boundLabelEstimateEl.textContent = "Est: —";
+    boundLabelUpperEl.textContent = "UB: —";
+    metricIntervalRangeEl.textContent = "—";
+    metricIntervalWidthEl.textContent = "—";
+    metricModelNameEl.textContent = "—";
+    metricUncertaintyMethodEl.textContent = "—";
+    uncertaintyCoverageTagEl.textContent = "—";
+    interpretationTextEl.textContent = "Model-estimated score based on the submitted survey inputs.";
+    factorsWrapper.style.display = "none";
+    positiveFactorsList.innerHTML = "";
+    negativeFactorsList.innerHTML = "";
+  }
+
   // ---------------------------------------------------------
-  // 9. RESULT RENDERING & VISUAL UNCERTAINTY
+  // 8. RENDER PREDICTION FROM ACTUAL API RESPONSE
+  // Uses strictly model-provided values with zero hardcoded numbers
+  // or client-side categorization.
   // ---------------------------------------------------------
   function renderResult(data) {
-    const score = (typeof data.estimated_wellbeing_score === "number")
-      ? data.estimated_wellbeing_score
-      : data.predicted_mental_health_score;
-
+    // 1. Continuous point estimate from API
+    const score = Number(data.estimated_wellbeing_score);
     scoreNumberEl.textContent = score.toFixed(2);
 
-    // Score status badge & non-clinical interpretation
-    if (score < 4.0) {
-      scoreStatusBadgeEl.textContent = "Lower Score (Elevated Daily Strain)";
-      scoreStatusBadgeEl.style.background = "rgba(200, 75, 70, 0.25)";
-      scoreStatusBadgeEl.style.borderColor = "rgba(200, 75, 70, 0.45)";
-      interpretationTextEl.textContent = `Model-estimated score of ${score.toFixed(2)} / 10. In this dataset, responses reflecting elevated perceived stress, shorter sleep durations, or high daily screen time associate with lower overall wellbeing scores. Note: This interpretation reflects statistical training patterns and is not a clinical assessment.`;
-    } else if (score < 7.0) {
-      scoreStatusBadgeEl.textContent = "Moderate Score (Balanced Baseline)";
-      scoreStatusBadgeEl.style.background = "rgba(255, 255, 255, 0.18)";
-      scoreStatusBadgeEl.style.borderColor = "rgba(255, 255, 255, 0.3)";
-      interpretationTextEl.textContent = `Model-estimated score of ${score.toFixed(2)} / 10. The reported inputs indicate a moderate equilibrium between academic commitments and daily restorative habits. Note: This interpretation reflects statistical training patterns and is not a clinical assessment.`;
-    } else {
-      scoreStatusBadgeEl.textContent = "Higher Score (Resilient Habits)";
-      scoreStatusBadgeEl.style.background = "rgba(46, 125, 99, 0.3)";
-      scoreStatusBadgeEl.style.borderColor = "rgba(46, 125, 99, 0.5)";
-      interpretationTextEl.textContent = `Model-estimated score of ${score.toFixed(2)} / 10. The reported habits reflect supportive sleep duration, regular physical activity, and moderate digital media consumption. Note: This interpretation reflects statistical training patterns and is not a clinical assessment.`;
-    }
-
-    // Uncertainty interval visualization
+    // 2. Prediction interval from API
     if (data.prediction_interval) {
       const pi = data.prediction_interval;
-      const lower = Math.max(0.0, pi.lower);
-      const upper = Math.min(10.0, pi.upper);
-      const width = pi.width;
+      const lower = Number(pi.lower);
+      const upper = Number(pi.upper);
+      const width = Number(pi.width);
+      const nominalCoverage = Number(pi.nominal_coverage);
 
       metricIntervalRangeEl.textContent = `${lower.toFixed(2)} – ${upper.toFixed(2)}`;
       metricIntervalWidthEl.textContent = width.toFixed(4);
 
-      // Track positioning on 0..10 domain
+      if (!Number.isNaN(nominalCoverage)) {
+        uncertaintyCoverageTagEl.textContent = `${Math.round(nominalCoverage * 100)}% Nominal Coverage`;
+      } else {
+        uncertaintyCoverageTagEl.textContent = "Calibrated Coverage";
+      }
+
+      // Interval track positioning within domain [0.0, 10.0]
       const leftPercent = Math.max(0, Math.min(100, (lower / 10.0) * 100));
       const rightPercent = Math.max(0, Math.min(100, (upper / 10.0) * 100));
       const estimatePercent = Math.max(0, Math.min(100, (score / 10.0) * 100));
@@ -294,12 +278,20 @@
       boundLabelLowerEl.textContent = `LB: ${lower.toFixed(2)}`;
       boundLabelEstimateEl.textContent = `Est: ${score.toFixed(2)}`;
       boundLabelUpperEl.textContent = `UB: ${upper.toFixed(2)}`;
+    } else {
+      metricIntervalRangeEl.textContent = "Unavailable";
+      metricIntervalWidthEl.textContent = "Unavailable";
+      uncertaintyCoverageTagEl.textContent = "Unavailable";
     }
 
-    metricModelNameEl.textContent = data.model_version ? "Phase 5 Extra Trees" : "Phase 5 Extra Trees";
-    metricUncertaintyMethodEl.textContent = "5-Fold Cross-Conformal";
+    // 3. Model metadata from API
+    metricModelNameEl.textContent = data.model_version || "Model metadata unavailable";
+    metricUncertaintyMethodEl.textContent = data.uncertainty_method || "Uncertainty metadata unavailable";
 
-    // Reset explain section
+    // 4. Non-clinical neutral disclaimer from API
+    interpretationTextEl.textContent = data.disclaimer || "Model-estimated score based on the submitted survey inputs.";
+
+    // 5. Reset explanation factors view
     factorsWrapper.style.display = "none";
     explainBtn.disabled = false;
     explainBtnLabel.textContent = "Explain this prediction";
@@ -309,7 +301,8 @@
   }
 
   // ---------------------------------------------------------
-  // 10. TREESHAP EXPLANATION HANDLER
+  // 9. DYNAMIC TREESHAP EXPLANATION FROM ACTUAL /explain RESPONSE
+  // Displays real feature values, SHAP values, base value, and directions.
   // ---------------------------------------------------------
   explainBtn.addEventListener("click", async () => {
     if (!lastSubmittedPayload) return;
@@ -326,7 +319,7 @@
       });
 
       if (!res.ok) {
-        throw new Error(`Explanation failed with status ${res.status}`);
+        throw new Error(`Explanation request failed with HTTP ${res.status}`);
       }
 
       const expData = await res.json();
@@ -334,19 +327,28 @@
       positiveFactorsList.innerHTML = "";
       negativeFactorsList.innerHTML = "";
 
-      const pos = expData.positive_contributors || [];
-      const neg = expData.negative_contributors || [];
+      const baseVal = Number(expData.base_value);
+      const predScore = Number(expData.estimated_wellbeing_score);
+
+      if (shapSummaryMetaEl) {
+        shapSummaryMetaEl.textContent = `Model Estimate: ${predScore.toFixed(2)} | Expected Base Value E[Y]: ${baseVal.toFixed(2)}`;
+      }
+
+      const pos = Array.isArray(expData.positive_contributors) ? expData.positive_contributors : [];
+      const neg = Array.isArray(expData.negative_contributors) ? expData.negative_contributors : [];
 
       if (pos.length === 0) {
         positiveFactorsList.innerHTML = `<div class="factor-item"><span class="factor-name">None observed</span></div>`;
       } else {
-        pos.slice(0, 5).forEach((item) => {
+        pos.forEach((item) => {
           const el = document.createElement("div");
           el.className = "factor-item";
           const featureName = item.feature.replace(/_/g, " ");
+          const valDisplay = item.value !== undefined ? ` (${item.value})` : "";
+          const shapVal = Number(item.shap_value);
           el.innerHTML = `
-            <span class="factor-name" title="${featureName}">${featureName}</span>
-            <span class="factor-val">+${item.shap_value.toFixed(2)}</span>
+            <span class="factor-name" title="${featureName}${valDisplay}">${featureName}${valDisplay}</span>
+            <span class="factor-val">+${shapVal.toFixed(3)}</span>
           `;
           positiveFactorsList.appendChild(el);
         });
@@ -355,13 +357,15 @@
       if (neg.length === 0) {
         negativeFactorsList.innerHTML = `<div class="factor-item"><span class="factor-name">None observed</span></div>`;
       } else {
-        neg.slice(0, 5).forEach((item) => {
+        neg.forEach((item) => {
           const el = document.createElement("div");
           el.className = "factor-item";
           const featureName = item.feature.replace(/_/g, " ");
+          const valDisplay = item.value !== undefined ? ` (${item.value})` : "";
+          const shapVal = Number(item.shap_value);
           el.innerHTML = `
-            <span class="factor-name" title="${featureName}">${featureName}</span>
-            <span class="factor-val">${item.shap_value.toFixed(2)}</span>
+            <span class="factor-name" title="${featureName}${valDisplay}">${featureName}${valDisplay}</span>
+            <span class="factor-val">${shapVal.toFixed(3)}</span>
           `;
           negativeFactorsList.appendChild(el);
         });
@@ -372,7 +376,7 @@
     } catch (err) {
       explainBtnLabel.textContent = "Explanation Failed (Retry)";
       factorsWrapper.style.display = "block";
-      positiveFactorsList.innerHTML = `<div class="factor-item" style="color:var(--accent-neg);">Failed to load TreeSHAP values.</div>`;
+      positiveFactorsList.innerHTML = `<div class="factor-item" style="color:var(--accent-neg);">${err.message || "Failed to load TreeSHAP values."}</div>`;
       negativeFactorsList.innerHTML = "";
     } finally {
       explainSpinner.style.display = "none";
@@ -381,7 +385,7 @@
   });
 
   // ---------------------------------------------------------
-  // 11. FORM SUBMIT & SERVER INTEGRATION
+  // 10. SUBMIT HANDLER & API INTEGRATION
   // ---------------------------------------------------------
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -408,6 +412,7 @@
       });
 
       if (res.status === 422) {
+        clearResultDisplay();
         const body = await res.json().catch(() => null);
         let detailMsg = "The server rejected one or more fields. Please review highlighted inputs.";
         if (body && Array.isArray(body.detail)) {
@@ -424,6 +429,7 @@
       }
 
       if (!res.ok) {
+        clearResultDisplay();
         let msg = `The server responded with HTTP ${res.status}.`;
         const body = await res.json().catch(() => null);
         if (body && body.detail) msg = body.detail;
@@ -434,14 +440,16 @@
       }
 
       const data = await res.json();
-      if (typeof data.estimated_wellbeing_score !== "number" && typeof data.predicted_mental_health_score !== "number") {
-        throw new Error("Malformed prediction response from API.");
+      if (typeof data.estimated_wellbeing_score !== "number") {
+        clearResultDisplay();
+        throw new Error("API response is missing estimated_wellbeing_score.");
       }
 
       renderResult(data);
     } catch (err) {
+      clearResultDisplay();
       errorHeadingEl.textContent = "Cannot Connect to Model API";
-      errorDetailEl.textContent = `Could not reach ${API_BASE}. Ensure the FastAPI server is running locally (e.g. 'python main.py' or 'uvicorn main:app --port 8000') and try again.`;
+      errorDetailEl.textContent = `Could not reach ${API_BASE}. Ensure the FastAPI server is running locally (e.g. 'python main.py') and try again.`;
       showState("error");
     } finally {
       setSubmitting(false);
@@ -449,16 +457,18 @@
   });
 
   // ---------------------------------------------------------
-  // 12. RESET HANDLERS
+  // 11. RESET HANDLERS
   // ---------------------------------------------------------
   formResetBtn.addEventListener("click", () => {
     form.reset();
     clearAllErrors();
     setStressValue("");
+    clearResultDisplay();
     showState("idle");
   });
 
   resetResultBtn.addEventListener("click", () => {
+    clearResultDisplay();
     showState("idle");
     window.scrollTo({ top: 0, behavior: "smooth" });
   });

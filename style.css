@@ -232,28 +232,6 @@ body {
   color: var(--pine-deep);
 }
 
-.btn-demo-sample {
-  font-family: var(--font-body);
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--pine);
-  background: var(--pine-tint);
-  border: 1px solid rgba(32, 88, 73, 0.2);
-  border-radius: var(--radius-sm);
-  padding: 7px 14px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.15s ease;
-}
-
-.btn-demo-sample:hover {
-  background: #D7E7DC;
-  border-color: var(--pine);
-  transform: translateY(-1px);
-}
-
 /* FIELDSETS & INPUTS */
 fieldset.group {
   border: none;
@@ -638,7 +616,7 @@ input:focus, select:focus {
 .result-card {
   background: linear-gradient(135deg, #174236 0%, #225C4D 100%);
   border-radius: var(--radius-md);
-  padding: 22px 20px;
+  padding: 24px 20px;
   color: #FFFFFF;
   text-align: center;
   box-shadow: 0 4px 14px rgba(18, 54, 44, 0.2);
@@ -646,11 +624,11 @@ input:focus, select:focus {
 
 .card-eyebrow {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 11.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .score-readout {
@@ -662,7 +640,7 @@ input:focus, select:focus {
 
 .score-number {
   font-family: var(--font-mono);
-  font-size: 3.4rem;
+  font-size: 3.5rem;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -671,26 +649,14 @@ input:focus, select:focus {
 
 .score-scale {
   font-family: var(--font-mono);
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.6);
 }
 
-.score-status-badge {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(4px);
-  padding: 4px 14px;
-  border-radius: 100px;
-  font-size: 12.5px;
-  font-weight: 600;
-  margin: 10px 0 8px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
 .score-subtext {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.75);
-  margin: 0;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 12px 0 0;
   line-height: 1.4;
 }
 
@@ -723,7 +689,7 @@ input:focus, select:focus {
   font-weight: 700;
   background: var(--pine-tint);
   color: var(--pine);
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: 4px;
   border: 1px solid rgba(32, 88, 73, 0.15);
 }
@@ -805,6 +771,9 @@ input:focus, select:focus {
   font-size: 12.5px;
   font-weight: 600;
   color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .uncertainty-disclaimer {
@@ -945,7 +914,7 @@ input:focus, select:focus {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 110px;
+  max-width: 130px;
 }
 
 .factor-val {
