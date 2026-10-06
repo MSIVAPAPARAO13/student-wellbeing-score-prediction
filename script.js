@@ -1,15 +1,23 @@
 (() => {
   "use strict";
 
+  // ---------------------------------------------------------
+  // 1. DYNAMIC API BASE RESOLUTION
+  // Strictly resolves locally or via current origin.
+  // NEVER references deprecated third-party deployments.
+  // ---------------------------------------------------------
   const API_BASE = window.__API_BASE__ || (
-    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
+    (window.location.protocol === "file:")
       ? "http://127.0.0.1:8000"
-      : "https://mansik-santulan-score.onrender.com"
+      : window.location.origin
   );
 
+  // DOM Elements
   const form = document.getElementById("predict-form");
   const submitBtn = document.getElementById("submit-btn");
-  const resetBtn = document.getElementById("reset-btn");
+  const formResetBtn = document.getElementById("form-reset-btn");
+  const demoSampleBtn = document.getElementById("demo-sample-btn");
+  const resetResultBtn = document.getElementById("reset-result-btn");
   const errorRetryBtn = document.getElementById("error-retry-btn");
 
   const stateIdle = document.getElementById("state-idle");
@@ -17,58 +25,114 @@
   const stateResult = document.getElementById("state-result");
   const stateError = document.getElementById("state-error");
 
+  const apiStatusPill = document.getElementById("api-status-pill");
+  const apiStatusText = document.getElementById("api-status-text");
+
   const scoreNumberEl = document.getElementById("score-number");
-  const scoreBandEl = document.getElementById("score-band");
-  const scoreContextEl = document.getElementById("score-context");
-  const gaugeFill = document.getElementById("gauge-fill");
-  const errorLabelEl = document.getElementById("error-label");
-  const errorCopyEl = document.getElementById("error-copy");
+  const scoreStatusBadgeEl = document.getElementById("score-status-badge");
+  const interpretationTextEl = document.getElementById("interpretation-text");
 
-  const GAUGE_ARC_LENGTH = 314; // approx pi * r(100)
+  const intervalHighlightEl = document.getElementById("interval-highlight");
+  const intervalPointMarkerEl = document.getElementById("interval-point-marker");
+  const boundLabelLowerEl = document.getElementById("bound-label-lower");
+  const boundLabelEstimateEl = document.getElementById("bound-label-estimate");
+  const boundLabelUpperEl = document.getElementById("bound-label-upper");
 
-  // ---------------------------------------------------------
-  // Draw tick marks on both gauges (0..10, every 2 units)
-  // ---------------------------------------------------------
-  function drawTicks() {
-    document.querySelectorAll(".gauge-ticks").forEach((g) => {
-      g.innerHTML = "";
-      const cx = 120, cy = 140, rOuter = 100, rInner = 90;
-      for (let i = 0; i <= 10; i += 2) {
-        const angle = Math.PI - (i / 10) * Math.PI; // 180deg -> 0deg
-        const x1 = cx + rOuter * Math.cos(angle);
-        const y1 = cy - rOuter * Math.sin(angle);
-        const x2 = cx + rInner * Math.cos(angle);
-        const y2 = cy - rInner * Math.sin(angle);
-        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", x1.toFixed(1));
-        line.setAttribute("y1", y1.toFixed(1));
-        line.setAttribute("x2", x2.toFixed(1));
-        line.setAttribute("y2", y2.toFixed(1));
-        g.appendChild(line);
-      }
-    });
-  }
-  drawTicks();
+  const metricIntervalRangeEl = document.getElementById("metric-interval-range");
+  const metricIntervalWidthEl = document.getElementById("metric-interval-width");
+  const metricModelNameEl = document.getElementById("metric-model-name");
+  const metricUncertaintyMethodEl = document.getElementById("metric-uncertainty-method");
 
-  // ---------------------------------------------------------
-  // Segmented control (stress_level) wiring
-  // ---------------------------------------------------------
+  const explainBtn = document.getElementById("explain-btn");
+  const explainBtnLabel = document.getElementById("explain-btn-label");
+  const explainSpinner = document.getElementById("explain-spinner");
+  const factorsWrapper = document.getElementById("factors-wrapper");
+  const positiveFactorsList = document.getElementById("positive-factors-list");
+  const negativeFactorsList = document.getElementById("negative-factors-list");
+
+  const errorHeadingEl = document.getElementById("error-heading");
+  const errorDetailEl = document.getElementById("error-detail");
+
   const segGroup = document.getElementById("stress_level_group");
   const stressHiddenInput = document.getElementById("stress_level");
+
+  let lastSubmittedPayload = null;
+
+  // ---------------------------------------------------------
+  // 2. HEALTH CHECK ON INITIALIZATION
+  // ---------------------------------------------------------
+  async function checkApiHealth() {
+    try {
+      const res = await fetch(`${API_BASE}/health`, { method: "GET" });
+      if (res.ok) {
+        const data = await res.json();
+        apiStatusPill.classList.remove("offline");
+        apiStatusPill.classList.add("online");
+        apiStatusText.textContent = `Model Ready (${data.model_version || "Phase 5"})`;
+      } else {
+        throw new Error(`HTTP ${res.status}`);
+      }
+    } catch (err) {
+      apiStatusPill.classList.remove("online");
+      apiStatusPill.classList.add("offline");
+      apiStatusText.textContent = "API Offline (Run uvicorn)";
+    }
+  }
+  checkApiHealth();
+
+  // ---------------------------------------------------------
+  // 3. SEGMENTED STRESS LEVEL SELECTOR
+  // ---------------------------------------------------------
   segGroup.querySelectorAll(".seg-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      segGroup.querySelectorAll(".seg-btn").forEach((b) => b.classList.remove("active"));
+      segGroup.querySelectorAll(".seg-btn").forEach((b) => {
+        b.classList.remove("active");
+        b.setAttribute("aria-checked", "false");
+      });
       btn.classList.add("active");
+      btn.setAttribute("aria-checked", "true");
       stressHiddenInput.value = btn.dataset.value;
       clearFieldError(stressHiddenInput);
     });
   });
 
+  function setStressValue(val) {
+    stressHiddenInput.value = val;
+    segGroup.querySelectorAll(".seg-btn").forEach((b) => {
+      const isActive = b.dataset.value === val;
+      b.classList.toggle("active", isActive);
+      b.setAttribute("aria-checked", isActive ? "true" : "false");
+    });
+  }
+
   // ---------------------------------------------------------
-  // Field-level error helpers
+  // 4. LOAD BENCHMARK DEMO SAMPLE
+  // ---------------------------------------------------------
+  demoSampleBtn.addEventListener("click", () => {
+    clearAllErrors();
+    document.getElementById("age").value = "21";
+    document.getElementById("gender").value = "Female";
+    document.getElementById("academic_level").value = "Undergraduate";
+    document.getElementById("country").value = "India";
+    document.getElementById("avg_daily_usage_hours").value = "4.5";
+    document.getElementById("most_used_platform").value = "Instagram";
+    document.getElementById("daily_unlocks").value = "140";
+    document.getElementById("purpose_of_use").value = "Education";
+    document.getElementById("study_hours").value = "3.0";
+    document.getElementById("physical_activity_hours").value = "1.5";
+    document.getElementById("sleep_hours_per_night").value = "7.0";
+    setStressValue("Medium");
+
+    // Flash button feedback
+    demoSampleBtn.style.transform = "scale(0.96)";
+    setTimeout(() => { demoSampleBtn.style.transform = ""; }, 150);
+  });
+
+  // ---------------------------------------------------------
+  // 5. FIELD ERROR HELPERS
   // ---------------------------------------------------------
   function fieldWrapper(input) {
-    return input.closest(".field");
+    return input ? input.closest(".field") : null;
   }
 
   function setFieldError(input, message) {
@@ -92,72 +156,87 @@
     form.querySelectorAll(".error-msg").forEach((m) => (m.textContent = ""));
   }
 
+  // Clear error on input/change
+  form.querySelectorAll("input, select").forEach((el) => {
+    el.addEventListener("input", () => clearFieldError(el));
+    el.addEventListener("change", () => clearFieldError(el));
+  });
+
   // ---------------------------------------------------------
-  // Client-side validation mirroring the StudentData model
+  // 6. CLIENT-SIDE VALIDATION
   // ---------------------------------------------------------
   function validate(payload) {
     const errors = [];
 
-    const numericChecks = [
-      ["age", 10, 100],
-      ["avg_daily_usage_hours", 0, 24],
-      ["daily_unlocks", 0, Infinity],
-      ["study_hours", 0, 24],
-      ["physical_activity_hours", 0, 24],
-      ["sleep_hours_per_night", 0, 24],
+    const numericRules = [
+      ["age", 10, 100, "Age must be between 10 and 100 years."],
+      ["avg_daily_usage_hours", 0, 24, "Daily screen time must be between 0.0 and 24.0 hours."],
+      ["daily_unlocks", 0, 1000, "Daily unlocks must be between 0 and 1000."],
+      ["study_hours", 0, 24, "Study hours must be between 0.0 and 24.0 hours."],
+      ["physical_activity_hours", 0, 24, "Physical activity must be between 0.0 and 24.0 hours."],
+      ["sleep_hours_per_night", 0, 24, "Sleep duration must be between 0.0 and 24.0 hours."],
     ];
 
-    numericChecks.forEach(([key, min, max]) => {
-      const input = document.getElementById(key);
-      const val = payload[key];
+    numericRules.forEach(([id, min, max, msg]) => {
+      const val = payload[id];
+      const input = document.getElementById(id);
       if (val === "" || val === null || Number.isNaN(val)) {
         errors.push([input, "This field is required."]);
       } else if (val < min || val > max) {
-        errors.push([input, `Must be between ${min} and ${max === Infinity ? "0+" : max}.`]);
+        errors.push([input, msg]);
       }
     });
 
-    ["gender", "country", "academic_level", "most_used_platform", "purpose_of_use"].forEach((key) => {
-      const input = document.getElementById(key);
-      if (!payload[key] || String(payload[key]).trim() === "") {
-        errors.push([input, "This field is required."]);
+    ["gender", "academic_level", "country", "most_used_platform", "purpose_of_use"].forEach((id) => {
+      const input = document.getElementById(id);
+      if (!payload[id] || String(payload[id]).trim() === "") {
+        errors.push([input, "Please select or enter an option."]);
       }
     });
 
     if (!payload.stress_level) {
-      errors.push([stressHiddenInput, "Pick a stress level."]);
+      errors.push([stressHiddenInput, "Please select a stress level."]);
     }
 
     return errors;
   }
 
   // ---------------------------------------------------------
-  // Gather form data into the exact StudentData shape
+  // 7. PAYLOAD COLLECTION
   // ---------------------------------------------------------
   function collectPayload() {
     const fd = new FormData(form);
     return {
       age: fd.get("age") === "" ? NaN : parseInt(fd.get("age"), 10),
       gender: fd.get("gender") || "",
-      country: (fd.get("country") || "").trim(),
       academic_level: fd.get("academic_level") || "",
-      most_used_platform: fd.get("most_used_platform") || "",
-      purpose_of_use: fd.get("purpose_of_use") || "",
+      country: (fd.get("country") || "").trim(),
       avg_daily_usage_hours: fd.get("avg_daily_usage_hours") === "" ? NaN : parseFloat(fd.get("avg_daily_usage_hours")),
+      most_used_platform: fd.get("most_used_platform") || "",
       daily_unlocks: fd.get("daily_unlocks") === "" ? NaN : parseInt(fd.get("daily_unlocks"), 10),
+      purpose_of_use: fd.get("purpose_of_use") || "",
       study_hours: fd.get("study_hours") === "" ? NaN : parseFloat(fd.get("study_hours")),
       physical_activity_hours: fd.get("physical_activity_hours") === "" ? NaN : parseFloat(fd.get("physical_activity_hours")),
       sleep_hours_per_night: fd.get("sleep_hours_per_night") === "" ? NaN : parseFloat(fd.get("sleep_hours_per_night")),
       stress_level: fd.get("stress_level") || "",
+      coverage: 0.90
     };
   }
 
   // ---------------------------------------------------------
-  // UI state switching
+  // 8. UI STATE SWITCHING
   // ---------------------------------------------------------
   function showState(name) {
-    [stateIdle, stateLoading, stateResult, stateError].forEach((el) => (el.hidden = true));
-    ({ idle: stateIdle, loading: stateLoading, result: stateResult, error: stateError }[name]).hidden = false;
+    [stateIdle, stateLoading, stateResult, stateError].forEach((el) => {
+      el.hidden = true;
+    });
+    const target = {
+      idle: stateIdle,
+      loading: stateLoading,
+      result: stateResult,
+      error: stateError
+    }[name];
+    if (target) target.hidden = false;
   }
 
   function setSubmitting(isSubmitting) {
@@ -165,173 +244,155 @@
     submitBtn.classList.toggle("loading", isSubmitting);
   }
 
-  function bandFor(score) {
-    if (score < 4) {
-      return {
-        label: "Signal: strained",
-        context: "Your responses suggest elevated strain right now. Small shifts in sleep or screen time can go a long way.",
-      };
-    }
-    if (score < 7) {
-      return {
-        label: "Signal: balanced",
-        context: "Your rhythm looks fairly steady, with some room to recover and reset.",
-      };
-    }
-    return {
-      label: "Signal: strong",
-      context: "Your habits point to a well-supported, resilient baseline. Keep it up.",
-    };
-  }
-
-  let lastSubmittedPayload = null;
-
+  // ---------------------------------------------------------
+  // 9. RESULT RENDERING & VISUAL UNCERTAINTY
+  // ---------------------------------------------------------
   function renderResult(data) {
     const score = (typeof data.estimated_wellbeing_score === "number")
       ? data.estimated_wellbeing_score
       : data.predicted_mental_health_score;
-    const clamped = Math.max(0, Math.min(10, score));
-    const { label } = bandFor(clamped);
 
-    scoreNumberEl.textContent = score.toFixed(1);
-    scoreBandEl.textContent = label;
-    scoreContextEl.textContent = "The model-generated estimate is based on the survey responses. The interval communicates predictive uncertainty and is not a clinical assessment.";
+    scoreNumberEl.textContent = score.toFixed(2);
 
-    // Render prediction interval
-    const intervalRangeEl = document.getElementById("interval-range");
-    const intervalWidthTextEl = document.getElementById("interval-width-text");
-    if (data.prediction_interval && intervalRangeEl) {
-      const pi = data.prediction_interval;
-      intervalRangeEl.textContent = `${pi.lower.toFixed(1)} – ${pi.upper.toFixed(1)}`;
-      if (intervalWidthTextEl) {
-        intervalWidthTextEl.textContent = `Predictive uncertainty: width ${pi.width.toFixed(2)} (margin ±${(pi.width / 2).toFixed(2)})`;
-      }
+    // Score status badge & non-clinical interpretation
+    if (score < 4.0) {
+      scoreStatusBadgeEl.textContent = "Lower Score (Elevated Daily Strain)";
+      scoreStatusBadgeEl.style.background = "rgba(200, 75, 70, 0.25)";
+      scoreStatusBadgeEl.style.borderColor = "rgba(200, 75, 70, 0.45)";
+      interpretationTextEl.textContent = `Model-estimated score of ${score.toFixed(2)} / 10. In this dataset, responses reflecting elevated perceived stress, shorter sleep durations, or high daily screen time associate with lower overall wellbeing scores. Note: This interpretation reflects statistical training patterns and is not a clinical assessment.`;
+    } else if (score < 7.0) {
+      scoreStatusBadgeEl.textContent = "Moderate Score (Balanced Baseline)";
+      scoreStatusBadgeEl.style.background = "rgba(255, 255, 255, 0.18)";
+      scoreStatusBadgeEl.style.borderColor = "rgba(255, 255, 255, 0.3)";
+      interpretationTextEl.textContent = `Model-estimated score of ${score.toFixed(2)} / 10. The reported inputs indicate a moderate equilibrium between academic commitments and daily restorative habits. Note: This interpretation reflects statistical training patterns and is not a clinical assessment.`;
+    } else {
+      scoreStatusBadgeEl.textContent = "Higher Score (Resilient Habits)";
+      scoreStatusBadgeEl.style.background = "rgba(46, 125, 99, 0.3)";
+      scoreStatusBadgeEl.style.borderColor = "rgba(46, 125, 99, 0.5)";
+      interpretationTextEl.textContent = `Model-estimated score of ${score.toFixed(2)} / 10. The reported habits reflect supportive sleep duration, regular physical activity, and moderate digital media consumption. Note: This interpretation reflects statistical training patterns and is not a clinical assessment.`;
     }
 
-    // Reset explain section
-    const factorsContainer = document.getElementById("factors-container");
-    const explainSpinner = document.getElementById("explain-spinner");
-    const explainBtnText = document.getElementById("explain-btn-text");
-    if (factorsContainer) factorsContainer.style.display = "none";
-    if (explainSpinner) explainSpinner.style.display = "none";
-    if (explainBtnText) explainBtnText.style.display = "inline";
+    // Uncertainty interval visualization
+    if (data.prediction_interval) {
+      const pi = data.prediction_interval;
+      const lower = Math.max(0.0, pi.lower);
+      const upper = Math.min(10.0, pi.upper);
+      const width = pi.width;
 
-    // reset then animate the arc fill on next frame
-    gaugeFill.style.transition = "none";
-    gaugeFill.style.strokeDashoffset = String(GAUGE_ARC_LENGTH);
-    requestAnimationFrame(() => {
-      gaugeFill.style.transition = "";
-      const offset = GAUGE_ARC_LENGTH * (1 - clamped / 10);
-      gaugeFill.style.strokeDashoffset = String(offset);
-    });
+      metricIntervalRangeEl.textContent = `${lower.toFixed(2)} – ${upper.toFixed(2)}`;
+      metricIntervalWidthEl.textContent = width.toFixed(4);
+
+      // Track positioning on 0..10 domain
+      const leftPercent = Math.max(0, Math.min(100, (lower / 10.0) * 100));
+      const rightPercent = Math.max(0, Math.min(100, (upper / 10.0) * 100));
+      const estimatePercent = Math.max(0, Math.min(100, (score / 10.0) * 100));
+
+      intervalHighlightEl.style.left = `${leftPercent}%`;
+      intervalHighlightEl.style.width = `${Math.max(2, rightPercent - leftPercent)}%`;
+      intervalPointMarkerEl.style.left = `${estimatePercent}%`;
+
+      boundLabelLowerEl.textContent = `LB: ${lower.toFixed(2)}`;
+      boundLabelEstimateEl.textContent = `Est: ${score.toFixed(2)}`;
+      boundLabelUpperEl.textContent = `UB: ${upper.toFixed(2)}`;
+    }
+
+    metricModelNameEl.textContent = data.model_version ? "Phase 5 Extra Trees" : "Phase 5 Extra Trees";
+    metricUncertaintyMethodEl.textContent = "5-Fold Cross-Conformal";
+
+    // Reset explain section
+    factorsWrapper.style.display = "none";
+    explainBtn.disabled = false;
+    explainBtnLabel.textContent = "Explain this prediction";
+    explainSpinner.style.display = "none";
 
     showState("result");
   }
 
   // ---------------------------------------------------------
-  // Handle Explain Factors Button (TreeSHAP)
+  // 10. TREESHAP EXPLANATION HANDLER
   // ---------------------------------------------------------
-  const explainBtn = document.getElementById("explain-btn");
-  if (explainBtn) {
-    explainBtn.addEventListener("click", async () => {
-      if (!lastSubmittedPayload) return;
-      const explainSpinner = document.getElementById("explain-spinner");
-      const explainBtnText = document.getElementById("explain-btn-text");
-      const factorsContainer = document.getElementById("factors-container");
-      const factorsList = document.getElementById("factors-list");
+  explainBtn.addEventListener("click", async () => {
+    if (!lastSubmittedPayload) return;
 
-      explainBtnText.style.display = "none";
-      explainSpinner.style.display = "inline";
-      explainBtn.disabled = true;
+    explainBtn.disabled = true;
+    explainBtnLabel.textContent = "Computing feature attributions…";
+    explainSpinner.style.display = "inline-block";
 
-      try {
-        const res = await fetch(`${API_BASE}/explain`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(lastSubmittedPayload),
-        });
+    try {
+      const res = await fetch(`${API_BASE}/explain`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(lastSubmittedPayload)
+      });
 
-        if (!res.ok) throw new Error("Explanation request failed");
-        const expData = await res.json();
+      if (!res.ok) {
+        throw new Error(`Explanation failed with status ${res.status}`);
+      }
 
-        // Render factors
-        factorsList.innerHTML = "";
-        const allFactors = expData.feature_contributions || [];
-        // Sort by absolute SHAP value
-        const topFactors = [...allFactors]
-          .sort((a, b) => Math.abs(b.shap_value) - Math.abs(a.shap_value))
-          .slice(0, 5);
+      const expData = await res.json();
 
-        topFactors.forEach((f) => {
-          const item = document.createElement("div");
-          item.style.marginBottom = "6px";
-          item.style.display = "flex";
-          item.style.justifyContent = "space-between";
-          item.style.alignItems = "center";
+      positiveFactorsList.innerHTML = "";
+      negativeFactorsList.innerHTML = "";
 
-          const friendlyName = f.feature.replace(/_/g, " ");
-          const badgeColor = f.direction === "positive" ? "#21594A" : f.direction === "negative" ? "#D9534F" : "#4A5850";
-          const sign = f.shap_value > 0 ? "+" : "";
+      const pos = expData.positive_contributors || [];
+      const neg = expData.negative_contributors || [];
 
-          item.innerHTML = `
-            <span><strong>${friendlyName}</strong> (${f.value}):</span>
-            <span style="color: ${badgeColor}; font-weight: 600; font-family: var(--font-mono);">${sign}${f.shap_value.toFixed(2)}</span>
+      if (pos.length === 0) {
+        positiveFactorsList.innerHTML = `<div class="factor-item"><span class="factor-name">None observed</span></div>`;
+      } else {
+        pos.slice(0, 5).forEach((item) => {
+          const el = document.createElement("div");
+          el.className = "factor-item";
+          const featureName = item.feature.replace(/_/g, " ");
+          el.innerHTML = `
+            <span class="factor-name" title="${featureName}">${featureName}</span>
+            <span class="factor-val">+${item.shap_value.toFixed(2)}</span>
           `;
-          factorsList.appendChild(item);
+          positiveFactorsList.appendChild(el);
         });
-
-        factorsContainer.style.display = "block";
-      } catch (err) {
-        if (factorsList) {
-          factorsList.innerHTML = `<span style="color: var(--coral);">Could not load feature explanations. Please try again.</span>`;
-          factorsContainer.style.display = "block";
-        }
-      } finally {
-        explainBtnText.style.display = "inline";
-        explainSpinner.style.display = "none";
-        explainBtn.disabled = false;
       }
-    });
-  }
 
-  function renderError(label, copy) {
-    errorLabelEl.textContent = label;
-    errorCopyEl.textContent = copy;
-    showState("error");
-  }
-
-  // ---------------------------------------------------------
-  // Parse FastAPI / Pydantic 422 error responses into
-  // field-level messages where possible
-  // ---------------------------------------------------------
-  function applyServerValidationErrors(detail) {
-    if (!Array.isArray(detail)) return false;
-    let matched = false;
-    detail.forEach((err) => {
-      const field = Array.isArray(err.loc) ? err.loc[err.loc.length - 1] : (err.field || null);
-      const input = field ? document.getElementById(field) : null;
-      const target = field === "stress_level" ? stressHiddenInput : input;
-      if (target) {
-        setFieldError(target, err.msg || err.message || "Invalid value.");
-        matched = true;
+      if (neg.length === 0) {
+        negativeFactorsList.innerHTML = `<div class="factor-item"><span class="factor-name">None observed</span></div>`;
+      } else {
+        neg.slice(0, 5).forEach((item) => {
+          const el = document.createElement("div");
+          el.className = "factor-item";
+          const featureName = item.feature.replace(/_/g, " ");
+          el.innerHTML = `
+            <span class="factor-name" title="${featureName}">${featureName}</span>
+            <span class="factor-val">${item.shap_value.toFixed(2)}</span>
+          `;
+          negativeFactorsList.appendChild(el);
+        });
       }
-    });
-    return matched;
-  }
+
+      factorsWrapper.style.display = "block";
+      explainBtnLabel.textContent = "Explanations Loaded";
+    } catch (err) {
+      explainBtnLabel.textContent = "Explanation Failed (Retry)";
+      factorsWrapper.style.display = "block";
+      positiveFactorsList.innerHTML = `<div class="factor-item" style="color:var(--accent-neg);">Failed to load TreeSHAP values.</div>`;
+      negativeFactorsList.innerHTML = "";
+    } finally {
+      explainSpinner.style.display = "none";
+      explainBtn.disabled = false;
+    }
+  });
 
   // ---------------------------------------------------------
-  // Submit handler
+  // 11. FORM SUBMIT & SERVER INTEGRATION
   // ---------------------------------------------------------
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     clearAllErrors();
 
     const payload = collectPayload();
-    const clientErrors = validate(payload);
+    const errors = validate(payload);
 
-    if (clientErrors.length > 0) {
-      clientErrors.forEach(([input, msg]) => input && setFieldError(input, msg));
-      clientErrors[0][0]?.focus?.();
+    if (errors.length > 0) {
+      errors.forEach(([input, msg]) => setFieldError(input, msg));
+      errors[0][0]?.focus?.();
       return;
     }
 
@@ -343,57 +404,67 @@
       const res = await fetch(`${API_BASE}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
 
       if (res.status === 422) {
         const body = await res.json().catch(() => null);
-        const matched = body && applyServerValidationErrors(body.detail);
-        renderError(
-          "Check your inputs",
-          matched
-            ? "The API rejected a few fields — details are marked on the form."
-            : "The API rejected this submission. Please review your inputs and try again."
-        );
+        let detailMsg = "The server rejected one or more fields. Please review highlighted inputs.";
+        if (body && Array.isArray(body.detail)) {
+          body.detail.forEach((err) => {
+            const field = Array.isArray(err.loc) ? err.loc[err.loc.length - 1] : (err.field || null);
+            const target = field === "stress_level" ? stressHiddenInput : document.getElementById(field);
+            if (target) setFieldError(target, err.msg || err.message || "Invalid input.");
+          });
+        }
+        errorHeadingEl.textContent = "Input Validation Error";
+        errorDetailEl.textContent = detailMsg;
+        showState("error");
         return;
       }
 
       if (!res.ok) {
-        let detailMsg = `The API responded with status ${res.status}.`;
+        let msg = `The server responded with HTTP ${res.status}.`;
         const body = await res.json().catch(() => null);
-        if (body && typeof body.detail === "string") detailMsg = body.detail;
-        renderError("Prediction failed", detailMsg);
+        if (body && body.detail) msg = body.detail;
+        errorHeadingEl.textContent = "Prediction Service Error";
+        errorDetailEl.textContent = msg;
+        showState("error");
         return;
       }
 
       const data = await res.json();
       if (typeof data.estimated_wellbeing_score !== "number" && typeof data.predicted_mental_health_score !== "number") {
-        renderError("Unexpected response", "The API responded, but the score was missing or malformed.");
-        return;
+        throw new Error("Malformed prediction response from API.");
       }
 
       renderResult(data);
     } catch (err) {
-      renderError(
-        "Can't reach the server",
-        `Couldn't connect to ${API_BASE}. Make sure the backend is running (uvicorn main:app --port 2200 --reload) and reachable from this page.`
-      );
+      errorHeadingEl.textContent = "Cannot Connect to Model API";
+      errorDetailEl.textContent = `Could not reach ${API_BASE}. Ensure the FastAPI server is running locally (e.g. 'python main.py' or 'uvicorn main:app --port 8000') and try again.`;
+      showState("error");
     } finally {
       setSubmitting(false);
     }
   });
 
-  // live-clear errors as the user edits
-  form.querySelectorAll("input, select").forEach((el) => {
-    el.addEventListener("input", () => clearFieldError(el));
-    el.addEventListener("change", () => clearFieldError(el));
+  // ---------------------------------------------------------
+  // 12. RESET HANDLERS
+  // ---------------------------------------------------------
+  formResetBtn.addEventListener("click", () => {
+    form.reset();
+    clearAllErrors();
+    setStressValue("");
+    showState("idle");
   });
 
-  resetBtn.addEventListener("click", () => {
+  resetResultBtn.addEventListener("click", () => {
     showState("idle");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
   errorRetryBtn.addEventListener("click", () => {
     showState("idle");
   });
+
 })();

@@ -3,7 +3,7 @@
 [![CI - Production Validation](https://github.com/MSIVAPAPARAO13/student-wellbeing-score-prediction/actions/workflows/ci.yml/badge.svg)](https://github.com/MSIVAPAPARAO13/student-wellbeing-score-prediction/actions/workflows/ci.yml)
 [![CD - Container Publish](https://github.com/MSIVAPAPARAO13/student-wellbeing-score-prediction/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/MSIVAPAPARAO13/student-wellbeing-score-prediction/actions/workflows/docker-publish.yml)
 [![Docker Image](https://img.shields.io/badge/GHCR-ghcr.io%2FMSIVAPAPARAO13%2Fstudent--wellbeing--score--prediction-blue?logo=docker)](https://github.com/MSIVAPAPARAO13/student-wellbeing-score-prediction/pkgs/container/student-wellbeing-score-prediction)
-[![Render Service](https://img.shields.io/badge/Render-Deployed%20HTTPS-success?logo=render)](https://mansik-santulan-score.onrender.com)
+[![Phase 13 Status](https://img.shields.io/badge/Phase%2013-Shadow%20Observation%20Active-brightgreen)](reports/PHASE13_REAL_WORLD_PRODUCTION_VALIDATION.md)
 [![Python Version](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -357,11 +357,14 @@ pytest -q
 
 **Verification Results:**
 ```
-..................................................                       [100%]
-50 passed in 18.98s
+............................................................................................. [100%]
+93 passed, 9 warnings in 34.77s
 ```
 - `tests/test_api.py` (14 tests): Validates routing, input validation (422 responses), prediction intervals, and SHAP explainability.
 - `tests/test_audit_12_1.py` (11 tests): Asserts partition cryptographic hashes, holdout contamination rates, and schema invariance.
+- `tests/test_phase12_2_clean_evaluation.py` (6 tests): Symmetrically compares Champion and Candidate on the clean 201 unseen holdout.
+- `tests/test_phase12_3_validation_gate.py` (11 tests): Validates model artifact hashes, calibration linkage, and shadow readiness.
+- `tests/test_phase13_real_world_validation.py` (15 tests): Asserts Candidate failure isolation, shadow telemetry, unverified feedback exclusion, and promotion blocking.
 - `tests/test_governance.py` (7 tests): Validates model registry schemas, candidate shadow isolation, and human-in-the-loop policies.
 - `tests/test_monitoring.py` (11 tests): Asserts PSI/KS/TVD drift calculations and in-memory Prometheus metric accumulation.
 - `tests/test_revalidation.py` (6 tests): Validates candidate v1.2 behavior and conformal interval monotonicity.
@@ -369,9 +372,28 @@ pytest -q
 
 ---
 
-## 12. Docker Containerization & Cloud Deployment
+## 12. Local Execution & Demonstration
 
-### Build & Run Container Locally
+### Quick Local Start
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Launch FastAPI service
+python main.py
+# Alternatively:
+# python -m uvicorn main:app --host 127.0.0.1 --port 8000
+```
+
+### Local Demonstration Endpoints
+- **Interactive Web UI:** [http://127.0.0.1:8000/ui](http://127.0.0.1:8000/ui)
+- **API Health Check:** [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
+- **OpenAPI Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **ReDoc Interactive Documentation:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+- **Governance Shadow Status:** [http://127.0.0.1:8000/governance/shadow/status](http://127.0.0.1:8000/governance/shadow/status)
+- **Prometheus Metrics:** [http://127.0.0.1:8000/metrics](http://127.0.0.1:8000/metrics)
+
+### Docker Containerization (Optional)
 ```bash
 # Build production image
 docker build -t student-wellbeing-service:latest .
@@ -384,14 +406,23 @@ docker run -d -p 8000:8000 \
   student-wellbeing-service:latest
 ```
 
-### Live Cloud Production Deployments
-- **Production UI:** [https://mansik-santulan-score.onrender.com/ui](https://mansik-santulan-score.onrender.com/ui)
-- **Production API Health:** [https://mansik-santulan-score.onrender.com/health](https://mansik-santulan-score.onrender.com/health)
-- **OpenAPI Swagger UI:** [https://mansik-santulan-score.onrender.com/docs](https://mansik-santulan-score.onrender.com/docs)
+---
+
+## 13. Phase 13 Governance Status
+
+| Governance Dimension | Current Operational State | Gate Status |
+| :--- | :--- | :---: |
+| **Production Champion** | `models/phase5_tuned_extra_trees.joblib` (SHA-256: `a012e7a1...`) | **ACTIVE PRODUCTION** |
+| **Challenger Candidate** | `models/candidate_v1_2_revalidated.joblib` (SHA-256: `aad2f208...`) | **SHADOW / VALIDATING** |
+| **Shadow Isolation** | Candidate errors/timeouts 100% isolated from user responses | **VERIFIED** |
+| **Shadow Window** | 14 consecutive calendar days required | **IN PROGRESS (0 / 14 days)** |
+| **Verified Production Labels** | Minimum 100 verified post-deployment labels required | **0 / 100 (BLOCKED)** |
+| **Candidate Promotion** | Automatic promotion strictly forbidden | **BLOCKED** |
+| **Automatic Retraining** | Automatic retraining strictly forbidden | **DISABLED** |
 
 ---
 
-## 13. System Limitations & Responsible AI Disclaimer
+## 14. System Limitations & Responsible AI Disclaimer
 
 1. **Self-Reported Survey Data:** Predictions are conditioned solely on self-reported survey inputs, subject to recall bias and survey noise.
 2. **Statistical Estimation Only:** The output score is a mathematical regression estimate intended for educational and wellness habit awareness. It is not an assessment of psychological pathology.
@@ -400,6 +431,6 @@ docker run -d -p 8000:8000 \
 
 ---
 
-## 14. License
+## 15. License
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for more details.

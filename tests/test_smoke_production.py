@@ -1,7 +1,7 @@
 """Production Smoke and Regression Verification Script.
 
-Can be run locally or against deployed cloud URL:
-    python tests/test_smoke_production.py --url https://mansik-santulan-score.onrender.com
+Can be run locally or against target URL:
+    python tests/test_smoke_production.py --url http://127.0.0.1:8000
 """
 
 import sys

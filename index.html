@@ -1,52 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Mental Health Signal — Student Wellness Analytics</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css" />
-</head>S
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Wellbeing Score Prediction — Production Machine Learning Demo</title>
+  <meta name="description" content="Estimate student wellbeing score from self-reported lifestyle, academic, digital-use, sleep, and stress factors using a calibrated Extra Trees model." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
 <body>
 
 <div class="noise-overlay" aria-hidden="true"></div>
 
+<!-- SITE HEADER -->
 <header class="site-header">
   <div class="header-inner">
-    <span class="eyebrow">Student Wellness Analytics</span>
-    <h1 class="title">Mental Health <em>Signal</em></h1>
-    <p class="subtitle">A quick read on how habits, screen time, and stress are trending — modeled from your daily rhythm, not a diagnosis.</p>
+    <div class="header-badge-row">
+      <span class="eyebrow">Student Wellbeing Score Prediction</span>
+      <span class="status-pill" id="api-status-pill" title="Checking API status...">
+        <span class="status-dot"></span>
+        <span class="status-text" id="api-status-text">Connecting to Model API...</span>
+      </span>
+    </div>
+    <h1 class="title">Student Wellbeing <em>Score</em></h1>
+    <p class="subtitle">
+      Estimate a student's wellbeing score from self-reported lifestyle, academic, digital-use, sleep, exercise and stress factors.
+    </p>
+
+    <!-- MANDATORY RESPONSIBLE AI DISCLAIMER -->
+    <div class="disclaimer-banner" role="note" aria-label="Responsible AI Disclaimer">
+      <div class="disclaimer-icon" aria-hidden="true">ℹ</div>
+      <div class="disclaimer-content">
+        <strong>Responsible AI Notice:</strong> This is a survey-based wellbeing score estimate, not a medical or psychological diagnosis. All inferences are statistical machine learning approximations.
+      </div>
+    </div>
   </div>
 </header>
 
+<!-- MAIN TWO-COLUMN LAYOUT -->
 <main class="layout">
 
-  <!-- FORM PANEL -->
+  <!-- LEFT: INPUT FORM PANEL -->
   <section class="panel form-panel" aria-labelledby="form-heading">
+    <div class="form-header-row">
+      <h2 id="form-heading" class="panel-heading">Survey Information</h2>
+      <button type="button" class="btn-demo-sample" id="demo-sample-btn" title="Populate realistic sample values for fast demonstration">
+        <span class="btn-demo-icon">⚡</span> Load Benchmark Sample
+      </button>
+    </div>
+
     <form id="predict-form" novalidate>
 
+      <!-- SECTION 1: PERSONAL INFORMATION -->
       <fieldset class="group">
-        <legend><span class="legend-index">01</span> Profile</legend>
+        <legend><span class="legend-index">01</span> Personal Information</legend>
         <div class="grid grid-3">
           <div class="field">
             <label for="age">Age</label>
             <input type="number" id="age" name="age" min="10" max="100" step="1" required placeholder="e.g. 21" />
-            <span class="hint">10–100</span>
+            <span class="hint">10 to 100 years</span>
             <span class="error-msg" data-for="age"></span>
           </div>
+
           <div class="field">
             <label for="gender">Gender</label>
             <select id="gender" name="gender" required>
-              <option value="" disabled selected hidden>Select</option>
-              <option value="Male">Male</option>
+              <option value="" disabled selected hidden>Select Gender</option>
               <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other</option>
+              <option value="Non-binary">Non-binary</option>
             </select>
             <span class="error-msg" data-for="gender"></span>
           </div>
+
           <div class="field">
-            <label for="country">Country</label>
+            <label for="academic_level">Academic Level</label>
+            <select id="academic_level" name="academic_level" required>
+              <option value="" disabled selected hidden>Select Level</option>
+              <option value="High School">High School</option>
+              <option value="Undergraduate">Undergraduate</option>
+              <option value="Graduate">Graduate</option>
+            </select>
+            <span class="error-msg" data-for="academic_level"></span>
+          </div>
+
+          <div class="field field-span">
+            <label for="country">Country of Residence</label>
             <input type="text" id="country" name="country" list="country-list" required placeholder="e.g. India" autocomplete="off" />
             <datalist id="country-list">
               <option value="India"></option>
@@ -58,106 +100,110 @@
               <option value="Mexico"></option>
               <option value="Turkey"></option>
               <option value="France"></option>
+              <option value="Other"></option>
             </datalist>
-            <span class="hint">Not listed? Type it anyway.</span>
+            <span class="hint">Top countries grouped or mapped to 'Other' automatically</span>
             <span class="error-msg" data-for="country"></span>
           </div>
         </div>
       </fieldset>
 
+      <!-- SECTION 2: DIGITAL HABITS -->
       <fieldset class="group">
-        <legend><span class="legend-index">02</span> Academic &amp; Digital Habits</legend>
+        <legend><span class="legend-index">02</span> Digital Habits</legend>
         <div class="grid grid-2">
           <div class="field">
-            <label for="academic_level">Academic level</label>
-            <select id="academic_level" name="academic_level" required>
-              <option value="" disabled selected hidden>Select</option>
-              <option value="High School">High School</option>
-              <option value="Undergraduate">Undergraduate</option>
-              <option value="Graduate">Graduate</option>
-            </select>
-            <span class="error-msg" data-for="academic_level"></span>
+            <label for="avg_daily_usage_hours">Average Daily Screen Time</label>
+            <div class="unit-input">
+              <input type="number" id="avg_daily_usage_hours" name="avg_daily_usage_hours" min="0" max="24" step="0.1" required placeholder="4.5" />
+              <span class="unit">hrs/day</span>
+            </div>
+            <span class="hint">0.0 to 24.0 hours</span>
+            <span class="error-msg" data-for="avg_daily_usage_hours"></span>
           </div>
+
           <div class="field">
-            <label for="most_used_platform">Most-used platform</label>
+            <label for="most_used_platform">Most-Used Platform</label>
             <select id="most_used_platform" name="most_used_platform" required>
-              <option value="" disabled selected hidden>Select</option>
-              <option value="Facebook">Facebook</option>
+              <option value="" disabled selected hidden>Select Platform</option>
               <option value="Instagram">Instagram</option>
-              <option value="Snapchat">Snapchat</option>
-              <option value="Twitter">Twitter</option>
               <option value="YouTube">YouTube</option>
               <option value="TikTok">TikTok</option>
+              <option value="Snapchat">Snapchat</option>
+              <option value="Twitter">Twitter / X</option>
+              <option value="Facebook">Facebook</option>
+              <option value="WhatsApp">WhatsApp</option>
               <option value="LinkedIn">LinkedIn</option>
+              <option value="WeChat">WeChat</option>
               <option value="LINE">LINE</option>
               <option value="KakaoTalk">KakaoTalk</option>
               <option value="VKontakte">VKontakte</option>
-              <option value="WhatsApp">WhatsApp</option>
-              <option value="WeChat">WeChat</option>
             </select>
             <span class="error-msg" data-for="most_used_platform"></span>
           </div>
+
           <div class="field">
-            <label for="purpose_of_use">Primary purpose</label>
+            <label for="daily_unlocks">Daily Smartphone Unlocks</label>
+            <input type="number" id="daily_unlocks" name="daily_unlocks" min="0" max="1000" step="1" required placeholder="e.g. 140" />
+            <span class="hint">0 to 1000 unlocks</span>
+            <span class="error-msg" data-for="daily_unlocks"></span>
+          </div>
+
+          <div class="field">
+            <label for="purpose_of_use">Primary Purpose of Use</label>
             <select id="purpose_of_use" name="purpose_of_use" required>
-              <option value="" disabled selected hidden>Select</option>
-              <option value="Networking">Networking</option>
-              <option value="Education">Education</option>
-              <option value="Entertainment">Entertainment</option>
-              <option value="News">News</option>
+              <option value="" disabled selected hidden>Select Purpose</option>
+              <option value="Education">Education &amp; Learning</option>
+              <option value="Entertainment">Entertainment &amp; Media</option>
+              <option value="Networking">Networking &amp; Career</option>
+              <option value="News">News &amp; Information</option>
             </select>
             <span class="error-msg" data-for="purpose_of_use"></span>
-          </div>
-          <div class="field">
-            <label for="avg_daily_usage_hours">Avg. daily screen time</label>
-            <div class="unit-input">
-              <input type="number" id="avg_daily_usage_hours" name="avg_daily_usage_hours" min="0" max="24" step="0.1" required placeholder="0.0" />
-              <span class="unit">hrs</span>
-            </div>
-            <span class="error-msg" data-for="avg_daily_usage_hours"></span>
-          </div>
-          <div class="field">
-            <label for="daily_unlocks">Daily phone unlocks</label>
-            <input type="number" id="daily_unlocks" name="daily_unlocks" min="0" step="1" required placeholder="e.g. 60" />
-            <span class="error-msg" data-for="daily_unlocks"></span>
           </div>
         </div>
       </fieldset>
 
+      <!-- SECTION 3: ACADEMIC & LIFESTYLE -->
       <fieldset class="group">
-        <legend><span class="legend-index">03</span> Lifestyle &amp; Stress</legend>
+        <legend><span class="legend-index">03</span> Academic &amp; Lifestyle</legend>
         <div class="grid grid-3">
           <div class="field">
-            <label for="study_hours">Study hours / day</label>
+            <label for="study_hours">Daily Study Hours</label>
             <div class="unit-input">
-              <input type="number" id="study_hours" name="study_hours" min="0" max="24" step="0.1" required placeholder="0.0" />
-              <span class="unit">hrs</span>
+              <input type="number" id="study_hours" name="study_hours" min="0" max="24" step="0.1" required placeholder="3.0" />
+              <span class="unit">hrs/day</span>
             </div>
+            <span class="hint">0.0 to 24.0 hours</span>
             <span class="error-msg" data-for="study_hours"></span>
           </div>
+
           <div class="field">
-            <label for="physical_activity_hours">Physical activity / day</label>
+            <label for="physical_activity_hours">Daily Physical Activity</label>
             <div class="unit-input">
-              <input type="number" id="physical_activity_hours" name="physical_activity_hours" min="0" max="24" step="0.1" required placeholder="0.0" />
-              <span class="unit">hrs</span>
+              <input type="number" id="physical_activity_hours" name="physical_activity_hours" min="0" max="24" step="0.1" required placeholder="1.5" />
+              <span class="unit">hrs/day</span>
             </div>
+            <span class="hint">Exercise, sports, or walking</span>
             <span class="error-msg" data-for="physical_activity_hours"></span>
           </div>
+
           <div class="field">
-            <label for="sleep_hours_per_night">Sleep / night</label>
+            <label for="sleep_hours_per_night">Nightly Sleep Duration</label>
             <div class="unit-input">
-              <input type="number" id="sleep_hours_per_night" name="sleep_hours_per_night" min="0" max="24" step="0.1" required placeholder="0.0" />
-              <span class="unit">hrs</span>
+              <input type="number" id="sleep_hours_per_night" name="sleep_hours_per_night" min="0" max="24" step="0.1" required placeholder="7.0" />
+              <span class="unit">hrs/night</span>
             </div>
+            <span class="hint">Recommended: 7 to 9 hours</span>
             <span class="error-msg" data-for="sleep_hours_per_night"></span>
           </div>
+
           <div class="field field-span">
-            <label for="stress_level">Perceived stress level</label>
-            <div class="segmented" id="stress_level_group" data-name="stress_level">
-              <button type="button" class="seg-btn" data-value="Low">Low</button>
-              <button type="button" class="seg-btn" data-value="Medium">Medium</button>
-              <button type="button" class="seg-btn" data-value="High">High</button>
-              <button type="button" class="seg-btn" data-value="Very High">Very High</button>
+            <label>Perceived Stress Level</label>
+            <div class="segmented" id="stress_level_group" role="radiogroup" aria-label="Stress Level">
+              <button type="button" class="seg-btn" data-value="Low" role="radio" aria-checked="false">Low</button>
+              <button type="button" class="seg-btn" data-value="Medium" role="radio" aria-checked="false">Medium</button>
+              <button type="button" class="seg-btn" data-value="High" role="radio" aria-checked="false">High</button>
+              <button type="button" class="seg-btn" data-value="Very High" role="radio" aria-checked="false">Very High</button>
             </div>
             <input type="hidden" id="stress_level" name="stress_level" required />
             <span class="error-msg" data-for="stress_level"></span>
@@ -165,79 +211,162 @@
         </div>
       </fieldset>
 
+      <!-- FORM ACTIONS -->
       <div class="form-footer">
-        <button type="submit" class="submit-btn" id="submit-btn">
-          <span class="btn-label">Read my signal</span>
-          <span class="btn-spinner" aria-hidden="true"></span>
-        </button>
+        <div class="footer-btn-group">
+          <button type="submit" class="submit-btn" id="submit-btn">
+            <span class="btn-label">Predict Wellbeing Score</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="btn-secondary" id="form-reset-btn">Reset Form</button>
+        </div>
+        <div class="api-meta-indicator">
+          <span>Endpoint: <code>POST /predict</code></span>
+          <span>Coverage: <strong>90% Conformal</strong></span>
+        </div>
       </div>
     </form>
   </section>
 
-  <!-- RESULT PANEL -->
+  <!-- RIGHT: RESULT & EXPLANATION PANEL -->
   <aside class="panel result-panel" aria-live="polite">
     <div class="result-inner" id="result-inner">
 
+      <!-- STATE: IDLE -->
       <div class="state state-idle" id="state-idle">
-        <svg class="gauge gauge-idle" viewBox="0 0 240 160" aria-hidden="true">
-          <path class="gauge-track" d="M 30 140 A 100 100 0 0 1 210 140" />
-          <g class="gauge-ticks"></g>
-        </svg>
-        <p class="idle-label">Your score will appear here</p>
-        <p class="idle-copy">Fill in the form and submit to generate a predicted mental health score from 0–10.</p>
+        <div class="idle-illustration" aria-hidden="true">
+          <div class="pulse-orbit">
+            <div class="orbit-dot"></div>
+          </div>
+        </div>
+        <h3 class="idle-label">Awaiting Survey Submission</h3>
+        <p class="idle-copy">
+          Complete the survey fields on the left or click <strong>Load Benchmark Sample</strong> to generate an immediate point prediction with calibrated 90% conformal uncertainty intervals.
+        </p>
       </div>
 
+      <!-- STATE: LOADING -->
       <div class="state state-loading" id="state-loading" hidden>
-        <div class="pulse-ring"></div>
-        <p class="loading-label">Reading the signal…</p>
-        <p class="loading-copy">Running your habits through the model.</p>
+        <div class="pulse-ring" aria-hidden="true"></div>
+        <h3 class="loading-label">Evaluating Model Inference…</h3>
+        <p class="loading-copy">Traversing Extra Trees ensemble and computing OOF conformal residual bounds.</p>
       </div>
 
+      <!-- STATE: RESULT SUCCESS -->
       <div class="state state-result" id="state-result" hidden>
-        <svg class="gauge gauge-result" viewBox="0 0 240 160" aria-hidden="true">
-          <defs>
-            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#D9534F"/>
-              <stop offset="45%" stop-color="#E3B341"/>
-              <stop offset="100%" stop-color="#4C9A78"/>
-            </linearGradient>
-          </defs>
-          <path class="gauge-track" d="M 30 140 A 100 100 0 0 1 210 140" />
-          <path class="gauge-fill" id="gauge-fill" d="M 30 140 A 100 100 0 0 1 210 140" />
-          <g class="gauge-ticks"></g>
-          <circle class="gauge-needle-hub" cx="120" cy="140" r="5" />
-        </svg>
-        <div class="score-label" style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); margin-top: 0.5rem;">Estimated Wellbeing Score</div>
-        <div class="score-readout">
-          <span class="score-number" id="score-number">0.0</span>
-          <span class="score-max">/10</span>
-        </div>
-        <div class="interval-card" id="interval-card" style="margin: 0.75rem 0; padding: 0.6rem 0.8rem; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-sm); text-align: center;">
-          <div style="font-size: 0.8rem; font-weight: 600; color: var(--pine-deep); text-transform: uppercase; letter-spacing: 0.04em;">90% Prediction Interval</div>
-          <div style="font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; color: var(--ink); margin: 0.15rem 0;" id="interval-range">—</div>
-          <div style="font-size: 0.75rem; color: var(--ink-soft);" id="interval-width-text">Predictive uncertainty (calibrated marginal coverage)</div>
-        </div>
-        <p class="score-band" id="score-band">—</p>
-        <p class="score-context" id="score-context"></p>
 
-        <div class="explain-section" id="explain-section" style="margin: 1rem 0; text-align: center;">
-          <button type="button" class="btn-explain" id="explain-btn" style="background: none; border: 1px solid var(--pine); color: var(--pine); padding: 6px 14px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 600; cursor: pointer;">
-            <span id="explain-btn-text">Factors contributing to this estimate</span>
-            <span id="explain-spinner" style="display:none;">⏳ Analyzing SHAP values...</span>
+        <!-- PREDICTION RESULT CARD -->
+        <div class="result-card" id="main-result-card">
+          <div class="card-eyebrow">Estimated Wellbeing Score</div>
+          <div class="score-readout">
+            <span class="score-number" id="score-number">0.00</span>
+            <span class="score-scale">/ 10</span>
+          </div>
+          <div class="score-status-badge" id="score-status-badge">Moderate Score</div>
+          <p class="score-subtext" id="score-subtext">
+            Model-estimated wellbeing score based on reported survey attributes.
+          </p>
+        </div>
+
+        <!-- UNCERTAINTY VISUALIZATION & INTERVAL CARD -->
+        <div class="uncertainty-card" id="uncertainty-card">
+          <div class="uncertainty-header">
+            <span class="uncertainty-title">90% Prediction Interval</span>
+            <span class="uncertainty-coverage-tag">90% Coverage</span>
+          </div>
+
+          <!-- VISUAL RANGE TRACK -->
+          <div class="interval-track-container" aria-label="Prediction Interval Visualization">
+            <div class="interval-track-bg">
+              <div class="interval-track-highlight" id="interval-highlight"></div>
+              <div class="interval-marker-point" id="interval-point-marker" title="Point Estimate"></div>
+            </div>
+            <div class="interval-track-labels">
+              <span class="bound-label" id="bound-label-lower">LB: 0.00</span>
+              <span class="bound-label point-estimate-label" id="bound-label-estimate">Est: 0.00</span>
+              <span class="bound-label" id="bound-label-upper">UB: 0.00</span>
+            </div>
+          </div>
+
+          <!-- METRICS GRID -->
+          <div class="interval-metrics-grid">
+            <div class="metric-cell">
+              <span class="metric-key">Interval Range</span>
+              <span class="metric-val" id="metric-interval-range">—</span>
+            </div>
+            <div class="metric-cell">
+              <span class="metric-key">Interval Width</span>
+              <span class="metric-val" id="metric-interval-width">—</span>
+            </div>
+            <div class="metric-cell">
+              <span class="metric-key">Production Model</span>
+              <span class="metric-val" id="metric-model-name">Phase 5 Extra Trees</span>
+            </div>
+            <div class="metric-cell">
+              <span class="metric-key">Uncertainty Engine</span>
+              <span class="metric-val" id="metric-uncertainty-method">5-Fold Cross-Conformal</span>
+            </div>
+          </div>
+
+          <p class="uncertainty-disclaimer">
+            Prediction intervals reflect mathematical conformal bounds, not clinical confidence scores.
+          </p>
+        </div>
+
+        <!-- SCORE INTERPRETATION SECTION -->
+        <div class="interpretation-card" id="interpretation-card">
+          <div class="interpretation-title">Score Interpretation</div>
+          <p class="interpretation-text" id="interpretation-text">
+            <!-- Populated dynamically via JS -->
+          </p>
+        </div>
+
+        <!-- EXPLANATION SECTION (TreeSHAP) -->
+        <div class="explanation-card" id="explanation-card">
+          <div class="explanation-header">
+            <div>
+              <div class="explanation-title">Feature Attribution (TreeSHAP)</div>
+              <div class="explanation-subtitle">Inspect directional feature contributions for this specific prediction</div>
+            </div>
+          </div>
+
+          <button type="button" class="btn-explain" id="explain-btn">
+            <span id="explain-btn-label">Explain this prediction</span>
+            <span class="explain-spinner" id="explain-spinner" aria-hidden="true" style="display:none;"></span>
           </button>
-          <div id="factors-container" style="display:none; margin-top: 0.75rem; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 0.75rem;">
-            <div style="font-size: 0.8rem; font-weight: 700; color: var(--ink); margin-bottom: 0.4rem;">Factors Contributing to This Estimate:</div>
-            <div id="factors-list" style="font-size: 0.75rem;"></div>
+
+          <!-- CONTRIBUTIONS LIST CONTAINER -->
+          <div class="factors-wrapper" id="factors-wrapper" style="display:none;">
+            <div class="attribution-columns">
+              <div class="attribution-col pos-col">
+                <div class="col-head">Positive Contributors (+)</div>
+                <div class="factors-list" id="positive-factors-list"></div>
+              </div>
+              <div class="attribution-col neg-col">
+                <div class="col-head">Negative Contributors (−)</div>
+                <div class="factors-list" id="negative-factors-list"></div>
+              </div>
+            </div>
+
+            <p class="shap-disclaimer">
+              <strong>Notice:</strong> Feature contributions represent <strong>model associations</strong>, not causal relationships. They do not demonstrate medical etiology or clinical conditions.
+            </p>
           </div>
         </div>
 
-        <button type="button" class="reset-btn" id="reset-btn">Run another read</button>
+        <!-- RESULT ACTIONS -->
+        <div class="result-actions">
+          <button type="button" class="btn-reset-result" id="reset-result-btn">Run Another Prediction</button>
+        </div>
+
       </div>
 
+      <!-- STATE: ERROR -->
       <div class="state state-error" id="state-error" hidden>
-        <div class="error-icon" aria-hidden="true">!</div>
-        <p class="error-copy" id="error-copy"></p>
-        <button type="button" class="reset-btn" id="error-retry-btn">Try again</button>
+        <div class="error-badge" aria-hidden="true">✕</div>
+        <h3 class="error-heading" id="error-heading">Prediction Request Failed</h3>
+        <p class="error-detail" id="error-detail"></p>
+        <button type="button" class="btn-secondary" id="error-retry-btn">Dismiss &amp; Try Again</button>
       </div>
 
     </div>
@@ -245,8 +374,16 @@
 
 </main>
 
+<!-- SITE FOOTER -->
 <footer class="site-footer">
-  <p>Built for informational purposes only — this is not a clinical assessment. If you're struggling, please talk to someone you trust.</p>
+  <div class="footer-inner">
+    <p>
+      <strong>Student Wellbeing Score Prediction System</strong> &bull; Production Machine Learning Architecture &bull; Extra Trees Regressor &bull; 5-Fold Cross-Conformal Uncertainty &bull; TreeSHAP Explainability.
+    </p>
+    <p class="footer-notice">
+      This system is designed for educational, research, and technical portfolio demonstration only. It is not an assessment or diagnosis of psychological disorders. If you are experiencing distress, please reach out to qualified healthcare professionals or university counseling services.
+    </p>
+  </div>
 </footer>
 
 <script src="script.js"></script>
