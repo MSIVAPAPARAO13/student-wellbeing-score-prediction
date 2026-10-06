@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 import numpy as np
 import pandas as pd
 import shap
@@ -25,7 +25,7 @@ class ExplanationService:
         self.explainer = None
         self.transformed_feature_names: List[str] = []
         self.feature_mapping: Dict[str, str] = {}
-        self.base_value: float = 6.23
+        self.base_value: Optional[float] = None
         self.is_initialized: bool = False
 
     def initialize(self):
@@ -156,7 +156,7 @@ class ExplanationService:
             feature_contributions=contributions,
             positive_contributors=positive_contributors,
             negative_contributors=negative_contributors,
-            model_version="phase5_tuned_extra_trees",
+            model_version=model_service.model_version,
             disclaimer=RESPONSIBLE_AI_DISCLAIMER
         )
 

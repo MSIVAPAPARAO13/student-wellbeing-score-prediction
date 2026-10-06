@@ -38,8 +38,7 @@ Unlike standard prototype ML repos, this project implements a complete productio
 - **Privacy-Preserving Telemetry:** In-memory Prometheus metric collector (`GET /metrics`) tracking latencies and error counts with zero PII retention.
 - **Continuous Drift Detection:** Out-of-the-box statistical tests comparing live inputs against training reference baselines (`PSI`, `KS`, `TVD`).
 - **Controlled Shadow Governance:** Shadow traffic evaluation of candidate models without affecting user responses.
-- **Containerized Cloud Architecture:** Multi-stage Docker image, GitHub Container Registry (GHCR) packaging, and automated Render cloud hosting.
-- **Exhaustive Automated Test Suite:** 50 automated tests covering API endpoints, data validation, conformal coverage, monitoring engines, and governance rules.
+- **Exhaustive Automated Test Suite:** 104 automated tests covering API endpoints, data validation, conformal coverage, monitoring engines, UI integrity hardening, and governance rules.
 
 ---
 
@@ -322,23 +321,11 @@ curl -X POST "http://localhost:8000/explain" \
     "Study_Hours": 3.0,
     "Physical_Activity_Hours": 1.5,
     "Stress_Level": "Medium",
-    "Purpose_Of_Use": "Education"
-  }'
+  "coverage": 0.90
+}'
 ```
-**Response:**
-```json
-{
-  "base_value": 6.22,
-  "predicted_score": 6.67,
-  "top_positive_features": [
-    {"feature": "Sleep_Hours_Per_Night", "value": 7.0, "shap_value": 0.31, "direction": "positive"},
-    {"feature": "Physical_Activity_Hours", "value": 1.5, "shap_value": 0.18, "direction": "positive"}
-  ],
-  "top_negative_features": [
-    {"feature": "Avg_Daily_Usage_Hours", "value": 4.5, "shap_value": -0.12, "direction": "negative"}
-  ]
-}
-```
+
+*(Note: Actual scores, prediction intervals, base values, and attribution numbers are computed dynamically at runtime by the loaded Champion Extra Trees model and TreeExplainer. Values returned depend entirely on user inputs).*
 
 ### 4. Prometheus Telemetry (`GET /metrics`)
 ```bash
@@ -357,18 +344,20 @@ pytest -q
 
 **Verification Results:**
 ```
-............................................................................................. [100%]
-93 passed, 9 warnings in 34.77s
+........................................................................ [ 69%]
+................................                                         [100%]
+104 passed, 10 warnings in 53.20s
 ```
 - `tests/test_api.py` (14 tests): Validates routing, input validation (422 responses), prediction intervals, and SHAP explainability.
 - `tests/test_audit_12_1.py` (11 tests): Asserts partition cryptographic hashes, holdout contamination rates, and schema invariance.
-- `tests/test_phase12_2_clean_evaluation.py` (6 tests): Symmetrically compares Champion and Candidate on the clean 201 unseen holdout.
-- `tests/test_phase12_3_validation_gate.py` (11 tests): Validates model artifact hashes, calibration linkage, and shadow readiness.
+- `tests/test_phase12_2_clean_evaluation.py` (14 tests): Symmetrically compares Champion and Candidate on the clean 201 unseen holdout.
+- `tests/test_phase12_3_validation_gate.py` (14 tests): Validates model artifact hashes, calibration linkage, and shadow readiness.
 - `tests/test_phase13_real_world_validation.py` (15 tests): Asserts Candidate failure isolation, shadow telemetry, unverified feedback exclusion, and promotion blocking.
-- `tests/test_governance.py` (7 tests): Validates model registry schemas, candidate shadow isolation, and human-in-the-loop policies.
+- `tests/test_phase13a_ui_integrity.py` (11 tests): Asserts frontend integrity (zero hardcoded inputs/categories), dynamic API integration, runtime metadata consistency, country grouping, and two-profile dynamic divergence.
+- `tests/test_governance.py` (11 tests): Validates model registry schemas, candidate shadow isolation, and human-in-the-loop policies.
 - `tests/test_monitoring.py` (11 tests): Asserts PSI/KS/TVD drift calculations and in-memory Prometheus metric accumulation.
-- `tests/test_revalidation.py` (6 tests): Validates candidate v1.2 behavior and conformal interval monotonicity.
-- `tests/test_smoke_production.py` (1 test): Verifies live production health probe compatibility.
+- `tests/test_revalidation.py` (5 tests): Validates candidate v1.2 behavior and conformal interval monotonicity.
+- `tests/test_smoke_production.py`: Verifies live production health probe compatibility and artifact-derived conformal interval widths.
 
 ---
 

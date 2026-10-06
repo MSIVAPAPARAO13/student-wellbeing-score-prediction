@@ -5,6 +5,7 @@ Can be run locally or against target URL:
 """
 
 import sys
+import json
 import argparse
 import requests
 import joblib
@@ -47,18 +48,29 @@ def run_smoke_tests(base_url: str):
     # 2. Test /predict
     print("\n2. Testing POST /predict ...")
     r_predict = session.post(f"{base_url}/predict", json=SMOKE_PAYLOAD, timeout=10)
-    assert r_predict.status_code == 200, f"Predict failed: {r_predict.status_code} - {r_predict.text}"
+    assert r_predict.status_code == 200, f"Predict request failed with HTTP {r_predict.status_code}: {r_predict.text}"
     pred_data = r_predict.json()
-    assert "estimated_wellbeing_score" in pred_data
+    assert "estimated_wellbeing_score" in pred_data, "Missing estimated_wellbeing_score in /predict response"
     score = pred_data["estimated_wellbeing_score"]
     pi = pred_data["prediction_interval"]
-    assert pi["nominal_coverage"] == 0.90
+    assert pi["nominal_coverage"] == 0.90, f"Expected nominal coverage 0.90, got {pi.get('nominal_coverage')}"
     assert pi["lower"] <= score <= pi["upper"], f"Ordering violated: {pi['lower']} <= {score} <= {pi['upper']}"
     assert pi["lower"] < pi["upper"], "Degenerate interval bounds"
-    assert abs(pi["width"] - 1.1884) < 1e-2, f"Expected width 1.1884, got {pi['width']}"
+
+    # Derive expected interval width dynamically from the authoritative conformal artifact
+    conformal_path = Path(__file__).resolve().parent.parent / "models" / "phase7_1_conformal_calibration.json"
+    assert conformal_path.exists(), f"Conformal calibration artifact missing at {conformal_path}"
+    with open(conformal_path, "r", encoding="utf-8") as f:
+        conformal_artifact = json.load(f)
+    q90_threshold = float(conformal_artifact["calibration_thresholds"]["0.90"]["threshold_q"])
+    expected_width = round(2 * q90_threshold, 4)
+    assert abs(pi["width"] - expected_width) < 1e-3, (
+        f"Artifact-derived width mismatch: expected 2 * q90 ({expected_width}), got {pi['width']}"
+    )
+
     assert "disclaimer" in pred_data
     assert "clinical" in pred_data["disclaimer"].lower()
-    print(f"   [PASSED] Score: {score} | 90% PI: [{pi['lower']}, {pi['upper']}] | Width: {pi['width']}")
+    print(f"   [PASSED] Score: {score} | 90% PI: [{pi['lower']}, {pi['upper']}] | Width: {pi['width']} (Derived from q90={q90_threshold:.4f})")
 
     # 3. Direct Model Regression Check
     print("\n3. Testing Local Pipeline vs Serving Equivalence ...")

@@ -171,3 +171,78 @@ def test_invalid_input_fails_cleanly_without_fallback():
         assert res.status_code == 422
         data = res.json()
         assert "estimated_wellbeing_score" not in data
+
+
+def test_health_api_returns_dynamic_runtime_metadata():
+    """9. Assert /health returns verified runtime model and uncertainty state."""
+    from app.model_service import model_service
+    with TestClient(app) as client:
+        res = client.get("/health")
+        assert res.status_code == 200
+        data = res.json()
+
+        assert data["status"] == "ok"
+        assert data["model_loaded"] is True
+        assert data["uncertainty_loaded"] is True
+        assert data["model_hash_verified"] is True
+        assert data["model_version"] == model_service.model_version
+        assert data["uncertainty_method"] == model_service.uncertainty_method
+
+
+def test_country_grouping_explicit_behavior():
+    """10. Assert country grouping explicitly handles top-10 ('USA') vs non-standard ('United States') vs unknown ('Brazil')."""
+    from app.model_service import model_service
+    from app.schemas import StudentSurveyRequest
+
+    # Case 1: Exact top 10 member 'USA' -> retained as 'USA'
+    req_usa = StudentSurveyRequest(**dict(PAYLOAD_A, Country="USA"))
+    df_usa = model_service.format_input_dataframe(req_usa)
+    assert df_usa["Grouped_country"].iloc[0] == "USA"
+
+    # Case 2: 'United States' is not in TOP10_COUNTRIES -> mapped to 'Other'
+    req_us = StudentSurveyRequest(**dict(PAYLOAD_A, Country="United States"))
+    df_us = model_service.format_input_dataframe(req_us)
+    assert df_us["Grouped_country"].iloc[0] == "Other"
+
+    # Case 3: Unknown country 'Brazil' -> mapped to 'Other'
+    req_unk = StudentSurveyRequest(**dict(PAYLOAD_A, Country="Brazil"))
+    df_unk = model_service.format_input_dataframe(req_unk)
+    assert df_unk["Grouped_country"].iloc[0] == "Other"
+
+
+def test_metadata_consistency_across_endpoints_and_artifacts():
+    """11. Assert model_version and uncertainty_method are unified and consistent across all endpoints and artifacts."""
+    import json
+    registry_path = ROOT_DIR / "models" / "model_registry.json"
+    conformal_path = ROOT_DIR / "models" / "phase7_1_conformal_calibration.json"
+
+    with open(registry_path, "r", encoding="utf-8") as f:
+        champ_reg = json.load(f)["champion"]
+    with open(conformal_path, "r", encoding="utf-8") as f:
+        conf_art = json.load(f)
+
+    expected_model_version = champ_reg["model_version"]
+    expected_uncertainty_method = conf_art["method"]
+
+    with TestClient(app) as client:
+        health_res = client.get("/health")
+        predict_res = client.post("/predict", json=PAYLOAD_A)
+        explain_res = client.post("/explain", json=PAYLOAD_A)
+
+        assert health_res.status_code == 200
+        assert predict_res.status_code == 200
+        assert explain_res.status_code == 200
+
+        health_data = health_res.json()
+        predict_data = predict_res.json()
+        explain_data = explain_res.json()
+
+        # All endpoints must agree with the authoritative registry champion version
+        assert health_data["model_version"] == expected_model_version
+        assert predict_data["model_version"] == expected_model_version
+        assert explain_data["model_version"] == expected_model_version
+
+        # Health and predict must agree with the conformal calibration artifact method
+        assert health_data["uncertainty_method"] == expected_uncertainty_method
+        assert predict_data["uncertainty_method"] == expected_uncertainty_method
+

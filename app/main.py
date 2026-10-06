@@ -188,9 +188,9 @@ def health():
         status="ok",
         model_loaded=model_service.is_loaded,
         uncertainty_loaded=model_service.uncertainty_loaded,
-        model_version="phase5_tuned_extra_trees",
-        uncertainty_method="5-fold OOF conformal",
-        model_hash_verified=True
+        model_version=model_service.model_version,
+        uncertainty_method=model_service.uncertainty_method,
+        model_hash_verified=model_service.model_hash_verified
     )
 
 @app.get(

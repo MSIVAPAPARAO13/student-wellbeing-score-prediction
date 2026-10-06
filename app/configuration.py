@@ -15,6 +15,7 @@ class Settings:
     MODEL_PATH: Path = Path(os.getenv("MODEL_PATH", str(BASE_DIR / "models" / "phase5_tuned_extra_trees.joblib")))
     METADATA_PATH: Path = Path(os.getenv("METADATA_PATH", str(BASE_DIR / "models" / "phase5_metadata.json")))
     CONFORMAL_PATH: Path = Path(os.getenv("CONFORMAL_PATH", str(BASE_DIR / "models" / "phase7_1_conformal_calibration.json")))
+    REGISTRY_PATH: Path = Path(os.getenv("REGISTRY_PATH", str(BASE_DIR / "models" / "model_registry.json")))
     
     # Authoritative SHA-256 hash from Phase 7.1
     MODEL_EXPECTED_HASH: str = os.getenv(
