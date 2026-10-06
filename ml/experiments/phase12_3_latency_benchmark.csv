@@ -1,0 +1,5 @@
+model,inference_type,cold_start_ms,warm_mean_ms,warm_median_ms,p95_latency_ms,p99_latency_ms,throughput_rps
+Champion (ExtraTrees 500 trees),Point Prediction,116.546,98.209,95.83,115.104,122.788,10.2
+Candidate v1.2 (ExtraTrees 250 trees),Point Prediction,63.126,60.644,59.068,77.584,82.767,16.5
+Champion (ExtraTrees 500 trees),TreeSHAP Local Explanation,2239.923,1493.282,1481.913,1558.055,1570.855,0.67
+Candidate v1.2 (ExtraTrees 250 trees),TreeSHAP Local Explanation,1197.814,798.543,788.491,832.091,860.114,1.25

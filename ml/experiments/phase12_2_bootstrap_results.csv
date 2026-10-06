@@ -1,0 +1,4 @@
+Metric,Observed_Difference,CI_95_Lower,CI_95_Upper,Crosses_Zero,Interpretation
+Candidate MAE - Champion MAE,-0.013285,-0.040084,0.010312,True,"95% CI crosses zero [-0.040084, 0.010312]; not statistically conclusive"
+Candidate RMSE - Champion RMSE,-0.07419,-0.137915,-0.013305,False,"95% CI entirely below zero [-0.137915, -0.013305] driven by outlier penalty"
+Candidate R2 - Champion R2,0.029882,0.004616,0.064023,False,"95% CI above zero [0.004616, 0.064023] reflects variance reduction"

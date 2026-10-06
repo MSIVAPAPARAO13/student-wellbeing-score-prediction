@@ -1,0 +1,10 @@
+Metric,Value,Interpretation
+Mean Absolute Error Difference,-0.013285,Negative indicates Candidate lower MAE
+Median Absolute Error Difference,0.007867,Positive indicates Champion lower median AE
+Mean Squared Error Difference,-0.054921,Negative indicates Candidate lower MSE
+Candidate Wins Count,86.0,Candidate lower error on 42.79% of rows
+Champion Wins Count,115.0,Champion lower error on 57.21% of rows
+Exact Ties Count,0.0,Zero ties; independent inference
+Wilcoxon Signed-Rank W-Statistic,8986.0,Paired non-parametric test
+Wilcoxon Signed-Rank p-Value,0.158444,p > 0.05: Not statistically significant
+Permutation Test p-Value,0.3033,p > 0.05: Not statistically significant

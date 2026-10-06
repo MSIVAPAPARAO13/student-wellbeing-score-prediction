@@ -1,0 +1,8 @@
+dimension,champion_value,candidate_value,evaluation_notes
+Artifact Disk Size,52.40 MB,128.72 MB,Candidate serialized pipeline is 128.72 MB due to unpruned sub-estimator arrays; tracked via Git LFS
+Estimator Count,500 trees,250 trees,"Candidate has 50% fewer trees, reducing tree-traversal compute footprint"
+Input Feature Dimensions,12 canonical features,12 canonical features,Identical canonical schema input contract
+Transformed Feature Columns,38 columns,35 columns,Candidate uses drop='first' on OneHotEncoder and one-hot on Stress_Level
+Study_Hours Preprocessing,log1p + StandardScaler,RobustScaler,Candidate replaces log1p with RobustScaler
+Stress_Level Preprocessing,OrdinalEncoder (4 levels),OneHotEncoder (drop='first'),Champion preserves ordinal monotonicity; Candidate treats levels as independent indicators
+Inference Memory Footprint,~110 MB in-memory,~85 MB in-memory,Both easily fit within container memory limits (512 MB free tier)

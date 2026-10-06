@@ -1,0 +1,202 @@
+row_fingerprint,Study_Hours,Age,Avg_Daily_Usage_Hours,Daily_Unlocks,Physical_Activity_Hours,Sleep_Hours_Per_Night,Stress_Level,Gender,Academic_Level,Most_Used_Platform,Purpose_Of_Use,Grouped_country,Mental_Health_Score,partition_lineage
+03354e34f46b2e05f88c0228ae77b25f2b60f096e67c147b27fc07ae9ea66aef,0.9,22,7.3,215,1.8,4.9,Very High,Female,Undergraduate,TikTok,Entertainment,Other,5.6,Phase5Holdout_INTERSECT_Phase12Holdout
+1a054ca7b90a62b45bb66508e78fc67eae196967d172d6c09d75b0c4a39f63a5,3.2,19,3.8,140,2.5,6.6,Low,Male,Undergraduate,Snapchat,Entertainment,UK,6.8,Phase5Holdout_INTERSECT_Phase12Holdout
+778aa12537eb4f5b90ca0b9bef8d4d20b3d59815cfc1107b2777d1a5673b0d5a,5.0,20,3.0,106,1.8,8.5,Medium,Female,Undergraduate,Facebook,Networking,Other,8.3,Phase5Holdout_INTERSECT_Phase12Holdout
+91112a296219c24ff084791f7b5b30bfcf7fdd1078af0c44959e979e20df15c5,7.2,22,1.6,87,2.9,7.1,Medium,Female,Undergraduate,LinkedIn,Education,Other,7.4,Phase5Holdout_INTERSECT_Phase12Holdout
+974a93f994db6ec69f3b4b26155c27254a305737d5df2cb73f737fe148d4cf8e,3.5,23,4.8,161,1.4,7.3,High,Female,Graduate,Twitter,News,Other,6.7,Phase5Holdout_INTERSECT_Phase12Holdout
+0f452ac32bf64d8f5fc852185eed47ff37bd7b96555ebb849698bd3a8b980296,5.0,23,2.7,103,2.4,7.8,Medium,Female,Graduate,YouTube,Education,USA,7.7,Phase5Holdout_INTERSECT_Phase12Holdout
+b50c3de8868b97c18cadc45c2cfa34127dc9787e0d44eb555e9c80eec353a986,0.9,20,6.7,221,1.1,6.3,Very High,Female,Undergraduate,Instagram,Entertainment,Other,4.8,Phase5Holdout_INTERSECT_Phase12Holdout
+747fd6107ba4a436fb00004ea6ad9041d315140ca1ad4b8600460f8b668f1403,3.7,22,4.7,178,1.9,7.5,Medium,Male,Undergraduate,TikTok,Entertainment,Canada,7.0,Phase5Holdout_INTERSECT_Phase12Holdout
+44faff03e2682b723aa4d45c5cfd271867b226f79c7588434766450a332cfd2c,5.2,21,2.4,107,2.3,7.4,Low,Male,Undergraduate,Snapchat,Entertainment,India,7.8,Phase5Holdout_INTERSECT_Phase12Holdout
+1c2ddcc6c888f5678dc4caf27d8e95583b02ac515767f8646499b8552b3e27b6,1.0,23,7.5,233,1.6,5.9,Very High,Female,Graduate,Instagram,Entertainment,Other,5.2,Phase5Holdout_INTERSECT_Phase12Holdout
+38db30647351ad219a9a61168e95cd957ff137a5fe2ea79b68d40bc410b328e0,4.3,21,3.2,123,3.2,7.0,Medium,Male,Undergraduate,TikTok,Entertainment,Other,7.2,Phase5Holdout_INTERSECT_Phase12Holdout
+e76415da707b550a3294322ac882051c4f07aff68e999451327b1ffb0e932c71,2.1,21,5.8,177,2.3,4.9,Very High,Female,Undergraduate,YouTube,Education,Other,4.1,Phase5Holdout_INTERSECT_Phase12Holdout
+95712b4b4a813fd1ff29e858af16cdec2a2bb45ac02305e0597ed827a6e5b1c9,1.6,24,7.3,226,1.1,4.7,Very High,Male,Graduate,LinkedIn,Education,Other,4.7,Phase5Holdout_INTERSECT_Phase12Holdout
+720c342ae7af38df3c937f30149ada48f8926c5fbc9404af6c87bb1219273bd8,1.0,21,5.9,178,1.6,5.1,High,Female,Undergraduate,LinkedIn,Education,Germany,5.9,Phase5Holdout_INTERSECT_Phase12Holdout
+58613a627813cd573d84c244857d6f28292862e3f3f264a75dbfa630676f94a3,1.3,23,5.9,179,1.3,6.0,High,Male,Graduate,Snapchat,Entertainment,Other,4.1,Phase5Holdout_INTERSECT_Phase12Holdout
+497d5d927e0383c70c4b40f706cc444fae066a6607df9569d404cca10532ec7a,4.7,19,4.0,140,1.9,7.2,Medium,Male,Undergraduate,TikTok,Entertainment,Other,5.3,Phase5Holdout_INTERSECT_Phase12Holdout
+dd846011f600bb1d2754d461442b0878d7b3aec3bafbdf28303756cd8ce81490,1.7,21,7.2,211,1.4,5.6,Very High,Male,Undergraduate,YouTube,Education,Australia,4.8,Phase5Holdout_INTERSECT_Phase12Holdout
+0b7d515df09d7ee30c1da012a3353322e8998d6a9194365648a159fadd0c6965,2.2,21,6.2,176,1.7,4.7,Very High,Male,Undergraduate,Facebook,Networking,Other,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+b69a5da16b333565be83de876a643dde9205d5ed82668c47232df4f695d2748b,1.0,18,7.7,234,1.0,5.4,Very High,Female,High School,Facebook,Networking,Other,4.0,Phase5Holdout_INTERSECT_Phase12Holdout
+e0f642c55504af01f98f4256c4295e32e16594d0617bcc75ceae6f726d875d9d,1.0,24,8.5,237,0.4,6.1,Very High,Female,Graduate,Facebook,Networking,Australia,5.3,Phase5Holdout_INTERSECT_Phase12Holdout
+aace4e978e5a702153428cb965158dc79a78e6b050975fde774db91f66e82b0d,4.3,21,3.6,115,1.9,6.9,Very High,Male,Undergraduate,Facebook,Networking,Other,7.1,Phase5Holdout_INTERSECT_Phase12Holdout
+fd5c6d4f6514da9d4869c288a28f8c4f7a974a0e3b4027e866b2fa470ff77d36,2.1,18,5.8,208,1.3,5.6,Very High,Female,High School,YouTube,Education,Other,4.3,Phase5Holdout_INTERSECT_Phase12Holdout
+16f72cd96ddd3d988e2454b87dc42f6e46cbfa8a43b4ea212ab35bbbb39b5120,1.8,19,5.8,187,1.2,5.3,Very High,Male,Undergraduate,LinkedIn,Education,USA,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+5e180593ae6a2091b165ac13f84b24bb979e852b11bcaa7f3927f0444f7cfe1b,6.0,20,3.8,146,2.7,8.8,Low,Male,Undergraduate,Facebook,Networking,Other,8.9,Phase5Holdout_INTERSECT_Phase12Holdout
+c3e819a1a619e3ef2f710a959dd8c01d8a8020c674e273ca2c313c62d5ffdd0e,5.9,21,3.9,154,2.6,7.8,Medium,Male,Undergraduate,TikTok,Entertainment,Other,8.4,Phase5Holdout_INTERSECT_Phase12Holdout
+b5772a11b01ee0e49a971b1dfac591b865822f4a4d64f47e8444e79972799303,4.2,22,5.1,152,1.8,7.1,Medium,Female,Undergraduate,Twitter,News,Other,7.0,Phase5Holdout_INTERSECT_Phase12Holdout
+ba79464d1b28f7a9391811b44196b9122b7fc87403a315d5ab727299194e9409,3.3,21,4.8,155,2.0,7.1,High,Female,Undergraduate,TikTok,Entertainment,Other,6.7,Phase5Holdout_INTERSECT_Phase12Holdout
+ace69f0f99deb22640039115f8e8924bf180187b41a030f6dc3cf85b55277fe4,0.7,21,7.5,231,1.1,4.7,Very High,Male,Undergraduate,TikTok,Entertainment,Australia,5.6,Phase5Holdout_INTERSECT_Phase12Holdout
+21658cc7a5cf0c01eeef93128e82f13239c125e434a27964c9af38c1e3d5ae97,1.2,19,8.3,250,1.7,5.5,Very High,Female,Undergraduate,YouTube,Education,Other,4.4,Phase5Holdout_INTERSECT_Phase12Holdout
+4a60cca559fce9529a8ac2cabd3e5b09282be93bc33938eb1902ce4cc90a6590,1.2,23,7.4,210,1.1,5.7,Very High,Female,Graduate,LinkedIn,Education,Other,5.3,Phase5Holdout_INTERSECT_Phase12Holdout
+33dfceca40e5d6a4884678f751bb9720a37220679d9c77adda88b212365cad88,2.4,20,6.0,179,1.3,5.3,Very High,Male,Undergraduate,YouTube,Education,Other,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+3a5afa7a1ecccf1b1c5eef54a46f0c7a9288f44abb7fddd26521d39f4230c9c9,2.8,21,4.9,176,1.5,6.7,Medium,Male,Undergraduate,Instagram,Entertainment,UK,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+00c83b9ccca2dd75f45739ddf0a004c9ead559458cc7a54c0e259118113c06b1,1.0,20,7.7,256,1.6,5.6,Very High,Male,Undergraduate,TikTok,Entertainment,USA,5.3,Phase5Holdout_INTERSECT_Phase12Holdout
+da90d0131025a3acea7cbb1a0a05430f4ab84824d7fd915cf23353d390095249,3.3,21,6.9,224,1.4,6.0,Very High,Male,Undergraduate,WhatsApp,News,India,5.3,Phase5Holdout_INTERSECT_Phase12Holdout
+f3926a1e7218fcad09498e89f6bf0f2b414543389dd53449e283f00c1176cef4,5.7,23,1.5,74,2.7,7.2,Low,Female,Graduate,Snapchat,Entertainment,India,7.7,Phase5Holdout_INTERSECT_Phase12Holdout
+2e5ea1ceb303aefc69942bb853d37bd36c320015fea79f4d0ad91d89ae6c74e9,1.1,20,6.0,178,1.2,5.1,Very High,Female,Undergraduate,YouTube,Education,Other,4.1,Phase5Holdout_INTERSECT_Phase12Holdout
+64c36a51207b40df7067a9b14550ed4ca388620e7f9ef1d65ff387e074a36e32,4.5,20,3.3,135,1.9,8.6,Medium,Female,Undergraduate,TikTok,Entertainment,Other,7.0,Phase5Holdout_INTERSECT_Phase12Holdout
+1686c8ae3be7323c54fd920911fc28112f4a9212f5760e8b8b855420a967264e,6.1,23,3.1,120,2.8,7.4,Medium,Female,Graduate,YouTube,Education,Other,8.3,Phase5Holdout_INTERSECT_Phase12Holdout
+768c3bd0a60e9a326d34ab3f85d4f17f0d281ac7fd577d015a6e43f501a6020d,1.0,24,7.6,231,1.1,5.3,Very High,Female,Graduate,Instagram,Entertainment,USA,4.9,Phase5Holdout_INTERSECT_Phase12Holdout
+aa742c4e04602fcd1072e496b523dd9c23f0c5fdb182c58d093c9085db54e630,1.0,22,7.0,201,1.2,5.9,Very High,Female,Undergraduate,Instagram,Entertainment,Other,4.0,Phase5Holdout_INTERSECT_Phase12Holdout
+27c54f31b6440d81dee14e427f310952319424d1558058542c8b8ecf84c12189,4.8,23,3.3,139,1.4,8.6,Medium,Male,Graduate,TikTok,Entertainment,Other,7.2,Phase5Holdout_INTERSECT_Phase12Holdout
+82999c6f4492c68dcae41e31fb417ed37a374cb58fd8072f94158b79782956bd,1.2,22,6.6,191,2.1,4.9,Very High,Male,Undergraduate,Snapchat,Entertainment,Other,4.8,Phase5Holdout_INTERSECT_Phase12Holdout
+107e053f9257cc0644f0e3224e80b228f23863c2c39c782152801fe620feff5f,1.1,18,7.3,232,0.4,5.1,Very High,Male,High School,LinkedIn,Education,Other,5.5,Phase5Holdout_INTERSECT_Phase12Holdout
+b50af1d34dfe2f40acb84211236e5dc4252a1c7b2f60fe0aad3da17eec15f2e7,1.0,18,7.0,230,1.9,4.9,Very High,Female,High School,TikTok,Entertainment,USA,5.4,Phase5Holdout_INTERSECT_Phase12Holdout
+6d41a9a022ca26647c513c5430d6ee387217407b97053059e6e0409b92ead19a,2.7,20,4.6,174,1.6,6.1,High,Female,Undergraduate,YouTube,Education,USA,6.8,Phase5Holdout_INTERSECT_Phase12Holdout
+1d261d00aedd6b99d7ec7b1fbdadbcd21d24258fe445eb78a7bb91c06a90a235,6.2,20,2.4,86,1.8,8.8,Low,Male,Undergraduate,Facebook,Networking,Other,8.5,Phase5Holdout_INTERSECT_Phase12Holdout
+a4579da72825c0e589977ac7bc84932feac25a650035d3c253d5b744fdbf9044,2.4,24,6.8,193,1.3,5.0,Very High,Female,Graduate,Snapchat,Entertainment,Other,4.5,Phase5Holdout_INTERSECT_Phase12Holdout
+77943db76137a043f7cf49d4b02b24e5214018981c6215637823c796bcce60bc,4.1,22,5.3,182,2.0,5.7,High,Male,Undergraduate,YouTube,Education,Germany,5.4,Phase5Holdout_INTERSECT_Phase12Holdout
+3aa08dbde10e31f6baabf4532065518acc00a534ce2d45cf4c08addd52534114,2.7,24,5.6,174,1.5,6.9,High,Male,Graduate,Instagram,Entertainment,USA,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+23c20233af71ea474edb692c2816ed107c9161bd89c99ad565a87f633495908e,1.4,23,6.7,213,0.8,5.8,Very High,Male,Graduate,Instagram,Entertainment,Turkey,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+87f7bab7d7ffa7e6d1e3d5f580edb41a93f85eb9c82ff415c3aa4d798a285369,2.1,21,7.5,239,1.1,5.0,Very High,Female,Undergraduate,YouTube,Education,Australia,4.8,Phase5Holdout_INTERSECT_Phase12Holdout
+4de3e1921d6f40dc776e3936c1392950502bede0a9e2472f2cdbfda76cb4e2f5,5.5,23,2.5,103,2.9,7.3,Medium,Male,Graduate,LinkedIn,Education,Other,8.0,Phase5Holdout_INTERSECT_Phase12Holdout
+c7e924af2ce046c70f356fa855a45cde82ed27f2a77bd5469134c3e39bd2fb3a,0.7,19,7.0,222,1.9,5.7,Very High,Female,Undergraduate,WhatsApp,Entertainment,India,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+0b3fcca5edc9a60f691e7a79c3938418426bb4fc88a4f4895b04ff740fc4f376,2.2,21,5.8,198,1.2,6.5,High,Male,Undergraduate,TikTok,Entertainment,UK,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+031a2fe1e381200c13a0495e68c4e1132a3083bb45f4c90be75568201527be6a,3.5,20,4.5,181,1.8,6.0,High,Female,Undergraduate,TikTok,Entertainment,Other,5.9,Phase5Holdout_INTERSECT_Phase12Holdout
+ef2b8615a4090ded9459c7e0d753abdb7a06322efe8ab4aebe24e7f60e4309e0,4.0,18,3.3,129,1.2,8.3,Medium,Female,High School,Instagram,Entertainment,Other,8.5,Phase5Holdout_INTERSECT_Phase12Holdout
+257295b40b28deb17d861bea3d88c8a467ad6afe2197b7f04c1da4ea2fed4ab3,6.3,22,2.2,84,2.6,9.2,Low,Female,Undergraduate,YouTube,Education,Other,9.1,Phase5Holdout_INTERSECT_Phase12Holdout
+4cbc0a6bb0155782c43cadb55ecee8542b7e1218acf0e1ab7aaedcdb6e632619,2.0,19,4.5,156,1.9,6.0,High,Female,Undergraduate,Facebook,Networking,Other,6.4,Phase5Holdout_INTERSECT_Phase12Holdout
+b02834ef574b552423b83674074c9e083920faabc8ec4e9325da884e7ee2c736,1.8,20,6.7,206,1.2,5.1,Very High,Female,Undergraduate,TikTok,Entertainment,Germany,4.6,Phase5Holdout_INTERSECT_Phase12Holdout
+0980a437877b6582a0f6c56cc02847680bf872b97100f35b1efaacfbcabae9ce,5.0,20,4.7,162,1.6,7.1,High,Female,Undergraduate,KakaoTalk,Entertainment,Other,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+fc82aee5c458fe4ff9c669ced995bf4c8dde0b0473f1e31b426cf544b5b22526,3.7,19,6.1,172,1.7,7.5,Very High,Male,Undergraduate,LinkedIn,Education,Other,6.5,Phase5Holdout_INTERSECT_Phase12Holdout
+2b8f4997c24a245da4f10f568594165f5955210fe981ff8c51c851aa831c69fe,4.5,18,3.9,124,1.1,7.3,Medium,Male,High School,Facebook,Networking,Other,8.5,Phase5Holdout_INTERSECT_Phase12Holdout
+1c48160b2131e0bed3fa467b09b5605104a2cf1e1dfbc8fb1929cd96a428a197,1.8,23,6.3,216,1.6,6.2,Very High,Male,Graduate,Twitter,News,UK,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+6985fc74579873075297ef286f0c36255c3f4abce23165301fe1fec6ef441702,3.4,19,3.9,128,2.2,8.2,High,Male,Undergraduate,TikTok,Entertainment,Other,7.2,Phase5Holdout_INTERSECT_Phase12Holdout
+77b8b800421663ddecb606eeccc16118c7658fb3f0e45c7d1377f2567f290b42,1.8,20,7.1,214,2.4,5.7,Very High,Female,Undergraduate,WhatsApp,Networking,India,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+8cf76b243b57f922d65936668a8330f20a0ec7a1c21aa8b925e03d7d1ada62e3,6.6,18,2.4,86,1.6,7.3,Low,Male,High School,Twitter,News,Other,8.4,Phase5Holdout_INTERSECT_Phase12Holdout
+ab72aebaff8c7bee6515227ecf9513d2dc3438d5e4e7c5d91465c7ff223b49fb,2.6,23,6.1,206,1.6,4.6,Very High,Female,Graduate,Instagram,Entertainment,India,5.2,Phase5Holdout_INTERSECT_Phase12Holdout
+aaef8e3758ee4dd8352e0ce8c2f4e2207964bbbc81086f2806b3aa863e4bbf81,4.2,21,4.4,136,1.2,6.4,High,Female,Undergraduate,LinkedIn,Education,India,6.4,Phase5Holdout_INTERSECT_Phase12Holdout
+753344da806884b10e4e14f5b4ea339c952350e22ac567cb57f0f29ad8ede325,5.1,23,2.1,86,2.7,8.1,Low,Female,Graduate,LinkedIn,Education,Other,8.8,Phase5Holdout_INTERSECT_Phase12Holdout
+c039b59958810f9609cde92ce74536dc3d81ca9ca22dfb8a178752ae74332e1c,5.6,20,2.8,107,2.5,8.3,Low,Female,Undergraduate,LinkedIn,Education,Other,8.2,Phase5Holdout_INTERSECT_Phase12Holdout
+b7a9e66ef47fe380dc5a6ded8d95386451933c0e61981944f7fc87a14fcb8ab0,1.2,23,6.4,213,1.6,5.0,Very High,Male,Graduate,LinkedIn,Education,Other,4.3,Phase5Holdout_INTERSECT_Phase12Holdout
+a2ddccfef8563aa20e8139bf124bc798e34be25d9cfa3d2479cf07028e35448c,6.0,22,2.7,98,2.5,9.1,Low,Male,Undergraduate,Facebook,Networking,Other,8.0,Phase5Holdout_INTERSECT_Phase12Holdout
+bf74e5fe86779e843c9e7bb8361cf4efe5199baad76f3ec0d4dc89a06bde2c33,3.0,22,5.9,190,1.5,6.7,Very High,Male,Undergraduate,Snapchat,Entertainment,Other,6.5,Phase5Holdout_INTERSECT_Phase12Holdout
+6e24255961d4a4285027548837b2c2797749c37805ae2b03d3553656b269a08d,2.9,24,6.4,222,1.4,6.0,High,Female,Graduate,Twitter,News,USA,5.2,Phase5Holdout_INTERSECT_Phase12Holdout
+75475498c1bb32a7e95ee679d271c7eb0097079c1c4a1c644928ae130f2e2b47,2.5,21,5.8,186,1.2,5.6,High,Female,Undergraduate,TikTok,Entertainment,Other,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+cb9be1410026cb364efd69d731aae3577c12eee13458a8e291d8653fab549ac8,7.0,23,1.6,85,2.0,8.7,Low,Female,Graduate,TikTok,Entertainment,Other,8.9,Phase5Holdout_INTERSECT_Phase12Holdout
+bc69b5ecb56cb1d664aec89f1928fe7f88c82257b3d15782bba11cd72dd82e54,1.0,21,6.9,234,1.4,6.1,Very High,Female,Undergraduate,TikTok,Entertainment,Turkey,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+a4eaa0b777dd3443a782b04e58577cf63de2ad74fbcc43575a8ab871fd09fcc8,6.1,20,2.2,93,2.8,9.7,Low,Female,Undergraduate,Instagram,Entertainment,Other,7.9,Phase5Holdout_INTERSECT_Phase12Holdout
+d22db099caeed80e93d363f1e4b1b1900b5da2884f0fe940e276caa1aca1915c,5.4,19,2.9,94,1.8,8.2,Low,Male,Undergraduate,Instagram,Entertainment,Other,7.5,Phase5Holdout_INTERSECT_Phase12Holdout
+ad96f7914aed002e81fb5360804ca68ae6bd269aa48e6a65df40274c95669e76,4.3,18,3.7,133,1.6,7.3,High,Male,High School,LinkedIn,Education,Other,6.9,Phase5Holdout_INTERSECT_Phase12Holdout
+21edcd11092d1046b54019a1ad1986c3ded79cb69ab6a3559abbd65775dcbae1,1.8,19,5.7,187,1.4,5.4,Very High,Male,Undergraduate,LinkedIn,Education,USA,5.1,Phase5Holdout_INTERSECT_Phase12Holdout
+3880f1243713ce897dcf9134ee376054a8e7a1fd093d9f5fa4387bf381598330,4.9,19,4.1,140,2.0,7.5,Medium,Male,Undergraduate,TikTok,Entertainment,Other,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+bcc7da0c8eb72dca066b41af11de1c77cb6de01b8fc6ce0352804964b993b67a,3.0,19,5.5,182,1.9,7.3,High,Female,Undergraduate,Twitter,News,Other,6.5,Phase5Holdout_INTERSECT_Phase12Holdout
+2839d68f7fccedececed917322dfd501b0be785b19e58b39802404d2fd928178,3.7,20,5.5,192,2.0,5.3,High,Female,Undergraduate,TikTok,Entertainment,Other,4.9,Phase5Holdout_INTERSECT_Phase12Holdout
+2cb28d1498b0930e436d6fe893646e9adb4ef654458570f272912360811d4352,6.0,21,3.4,125,2.6,9.0,Low,Male,Undergraduate,Facebook,Networking,Other,8.0,Phase5Holdout_INTERSECT_Phase12Holdout
+df7f8a7d596976a401d5feb7213c762f0f606ac89463c72119d2bdeb0cca98a7,1.0,20,8.2,260,1.5,5.8,Very High,Female,Undergraduate,Instagram,Entertainment,Other,4.9,Phase5Holdout_INTERSECT_Phase12Holdout
+69483da88a92e2b683b1e0d05912467e7b3b72c93d4e53b25ca0f45d319b860d,1.9,24,4.8,158,2.8,7.3,Medium,Female,Graduate,Twitter,News,France,7.0,Phase5Holdout_INTERSECT_Phase12Holdout
+93c1fd545ab53abe3faaa17efa91319724ca5bb4f9345aecef7a4b671cce63b6,1.6,22,5.7,208,2.2,6.4,Very High,Female,Undergraduate,Instagram,Entertainment,India,6.3,Phase5Holdout_INTERSECT_Phase12Holdout
+b5e4236b7c3942f47849d6b80f3b05aa8bebaaef6381cc77b6b4a89b7e3fd2b0,1.9,19,5.9,211,1.5,4.6,Very High,Female,Undergraduate,Facebook,Networking,USA,4.4,Phase5Holdout_INTERSECT_Phase12Holdout
+9e53edcd823dfcc97bb25d416e221a4790ab7afc93760be8e8b7eb4596938768,3.7,23,4.4,161,1.3,7.2,High,Female,Graduate,Twitter,News,Other,7.4,Phase5Holdout_INTERSECT_Phase12Holdout
+17ec004abe6ad36825fd96bf56df92d4e29db51aa09aab86821689dff3aaf05c,1.6,19,5.8,188,2.1,5.4,High,Male,Undergraduate,TikTok,Entertainment,Other,6.1,Phase5Holdout_INTERSECT_Phase12Holdout
+a51718333bc1305e17ddb52a5e65dccf957191dc3cab704cfdcf430c3db492ea,4.6,23,3.4,111,3.1,8.7,Medium,Male,Graduate,YouTube,Education,Australia,7.8,Phase5Holdout_INTERSECT_Phase12Holdout
+817b824641e00e1179899668be806800c9d46825845b8580560b8b94cfb5b58f,6.2,19,2.9,114,2.0,8.4,Medium,Female,Undergraduate,LINE,News,Other,7.9,Phase5Holdout_INTERSECT_Phase12Holdout
+0bea2c9f2cfd95cea94c82972c16751be167fd9e83c6331b882d08e9783e0032,4.0,20,4.3,167,2.9,6.2,Medium,Male,Undergraduate,LinkedIn,Education,UK,6.2,Phase5Holdout_INTERSECT_Phase12Holdout
+e10e2836d3bb81c0ee7a3f5b1d87a5f737ab5517bd1f6bba0da6b05ec8b72ee8,1.4,24,7.0,226,1.1,5.0,Very High,Male,Graduate,LinkedIn,Education,Other,4.5,Phase5Holdout_INTERSECT_Phase12Holdout
+3d7954ff26157a771018243f5c2eb5cdf3de47e6f589630f7b987ea76eba3300,1.5,22,7.6,225,0.8,5.2,Very High,Female,Undergraduate,TikTok,Entertainment,Australia,4.5,Phase5Holdout_INTERSECT_Phase12Holdout
+51c11e32c4e87a570f234922b2cb92cdb6672d64b2e5eeb26181433b56591953,5.0,21,2.5,107,2.4,7.4,Low,Male,Undergraduate,Snapchat,Entertainment,India,8.0,Phase5Holdout_INTERSECT_Phase12Holdout
+4395922e93bba72873d0470643953f5ba87b39f7b0f9404db3b229e4e5348833,5.5,24,1.7,89,1.8,7.1,Medium,Female,Graduate,YouTube,Education,Canada,7.5,Phase5Holdout_INTERSECT_Phase12Holdout
+2a797a3a65c1433831950a3aedb43ad8bcdc2a31b1d482cadaf26edd60366918,5.0,21,3.8,145,2.1,8.2,Medium,Male,Undergraduate,Facebook,Networking,Other,6.9,Phase5Holdout_INTERSECT_Phase12Holdout
+d85a43d65a7e9025eb3038ddae99a7a1525e97a9da1dace39adb8bd0653fa8c2,2.9,22,4.7,164,1.9,4.5,High,Male,Undergraduate,TikTok,Entertainment,Other,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+e2a810861b9018906b0f03a21db299e4fea84c5bf094ef4ac6c805c38c06f5a3,1.5,22,5.8,183,1.8,5.7,High,Female,Undergraduate,TikTok,Entertainment,Other,4.1,Phase5Holdout_INTERSECT_Phase12Holdout
+d68c01a7681602d2321c3c683f2f54040b150d8c06af0eaa024c61ff790f361c,4.1,19,4.9,162,1.4,5.6,High,Male,Undergraduate,TikTok,Entertainment,Other,5.8,Phase5Holdout_INTERSECT_Phase12Holdout
+a2cb46f922d5b0dc48be78f1d3354d15f4095e45f93480ae391149aee703f724,1.7,22,7.2,214,1.4,5.1,Very High,Male,Undergraduate,WhatsApp,Education,India,5.1,Phase5Holdout_INTERSECT_Phase12Holdout
+7de036f25e04715d1271ea425d88b842c329546031a084a9a558cff6c8412ae2,1.0,24,5.6,204,0.6,5.6,High,Male,Graduate,TikTok,Entertainment,UK,4.9,Phase5Holdout_INTERSECT_Phase12Holdout
+3684539aa3ff96752e1da1f5a1fb0d6be4dba4f465c068a3fdad7c5b86c39751,5.4,21,3.0,136,3.3,7.1,Medium,Male,Undergraduate,Instagram,Entertainment,India,7.4,Phase5Holdout_INTERSECT_Phase12Holdout
+b0d65ef14d2c108ffeabebd778766f5cbcba168545b8d30a4675f51bfeaa4869,2.7,21,4.9,162,2.4,6.8,Medium,Female,Undergraduate,LinkedIn,Education,Other,6.3,Phase5Holdout_INTERSECT_Phase12Holdout
+e5d111e4e70cb1b0824c1241df3dd960011984221aa691c859aafb9e12449b34,4.2,24,3.6,133,1.5,9.3,Medium,Female,Graduate,Instagram,Entertainment,Other,9.0,Phase5Holdout_INTERSECT_Phase12Holdout
+8f17d09d4ad722373f4c6dc2e780e4697083314ed0482a46e859effca33c812b,1.6,21,6.4,203,2.2,6.1,High,Male,Undergraduate,Facebook,Networking,UK,4.8,Phase5Holdout_INTERSECT_Phase12Holdout
+218327874dd5d190117e2be500cf32672c6f8244eca7dc090b6e58ecdd57010a,1.1,19,6.5,231,1.5,6.1,Very High,Female,Undergraduate,WhatsApp,Education,India,5.1,Phase5Holdout_INTERSECT_Phase12Holdout
+e4637e94731ba59ad1ca671a8b1d887cecc018dbfcef87f00ec38d123ddab825,3.5,22,5.2,157,1.9,7.1,High,Male,Undergraduate,TikTok,Entertainment,Turkey,5.7,Phase5Holdout_INTERSECT_Phase12Holdout
+0d015f58802fe12346378222d6df8fcefbc6ccf02f8643e4d527deba95b13913,3.4,20,4.4,165,1.1,7.4,Medium,Female,Undergraduate,Instagram,Entertainment,Australia,7.0,Phase5Holdout_INTERSECT_Phase12Holdout
+a172dbe15c5f29524807cb3d47b8aa665281baf3ec80a8fda35ea91febbb7d51,2.4,19,6.1,189,1.6,5.2,Very High,Female,Undergraduate,Instagram,Entertainment,Other,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+e64606cec7c2696be7cc35856628a0598361eef6df99f14d49e7361ddc8eed0c,1.0,19,6.3,211,2.2,5.2,Very High,Female,Undergraduate,Instagram,Entertainment,Other,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+51cfad7d3b7d5d165441413a8b2f89f82d061172ef69e82556dcb3482669d056,4.5,19,3.2,121,1.6,8.3,Medium,Female,Undergraduate,Instagram,Entertainment,France,6.8,Phase5Holdout_INTERSECT_Phase12Holdout
+d3cce37a49bd889887d27770f9616ab7edd1bd6c84d256b12b95b9b317d58f7d,5.7,21,2.5,94,3.2,7.2,Low,Female,Undergraduate,YouTube,Education,India,7.0,Phase5Holdout_INTERSECT_Phase12Holdout
+f2e3551989cd3826d09f03c285a169d87e09bc8456aaba2b1624634c3f45978c,2.4,21,4.7,142,1.3,7.3,High,Male,Undergraduate,Instagram,Entertainment,Australia,6.4,Phase5Holdout_INTERSECT_Phase12Holdout
+80b7b96b27556c7e6f54a843fac6257309f262e79e73e4eb107bcb06962498a8,1.0,21,7.3,211,1.5,4.9,Very High,Male,Undergraduate,WhatsApp,Entertainment,Mexico,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+66cf2e72717badb0ee95b15faa42c863771548b0505fd976e3d59d28d3c35c9b,1.0,20,7.0,239,1.5,5.3,Very High,Male,Undergraduate,Instagram,Entertainment,Other,5.1,Phase5Holdout_INTERSECT_Phase12Holdout
+ee25dc69809a30e1b06b66619bfdad7b3452913e5cb1326b80c9390cb0223a02,3.5,19,5.8,180,1.2,5.7,Very High,Female,Undergraduate,Instagram,Entertainment,Other,4.8,Phase5Holdout_INTERSECT_Phase12Holdout
+808a20df8f865e01157a899acfb1117168f3357e864ea2d45a7d69862ec45780,5.4,22,4.0,127,2.2,7.1,High,Female,Undergraduate,Facebook,Networking,USA,6.7,Phase5Holdout_INTERSECT_Phase12Holdout
+9dbb262798097947fd417ea70518f3ce814c16fbd4ac21b7a9a68188627da7c8,1.0,21,6.7,219,1.2,5.5,Very High,Male,Undergraduate,WhatsApp,Networking,Mexico,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+6512d26faaf3dd5126da868dcf79cb312cd1161b2a462f289c85122830f6ac26,0.9,21,7.5,228,1.1,6.1,Very High,Female,Undergraduate,Snapchat,Entertainment,USA,5.2,Phase5Holdout_INTERSECT_Phase12Holdout
+0ae4e53ad4014ab782cdc983ee3ca88c8f06674192fac2810f3e477deef90ad8,3.2,20,6.6,216,0.7,6.1,Very High,Female,Undergraduate,Instagram,Entertainment,Turkey,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+013280d8ab29887108d0837e7a8531f83d934e2356eb6ce923c36f0c15b0b4b3,4.7,19,4.5,140,2.0,7.5,Medium,Male,Undergraduate,TikTok,Entertainment,Other,4.9,Phase5Holdout_INTERSECT_Phase12Holdout
+bacf8dbc5aaa400f475bb7e03b7ed0629efd876347c05a8785f0f042633491ea,1.2,20,8.0,230,1.6,4.6,Very High,Male,Undergraduate,Instagram,Entertainment,Canada,5.3,Phase5Holdout_INTERSECT_Phase12Holdout
+9cde0c856460d2049a3e46b5469cd33dcc9460313b1c54aef9cfd27d2e48fb4f,2.0,19,5.3,179,1.6,7.4,High,Male,Undergraduate,Twitter,News,USA,6.6,Phase5Holdout_INTERSECT_Phase12Holdout
+29c6fc6993378f75d2352ea4d08e69481ed5382fe71a873257bfd5a4841d3a30,3.8,20,4.4,145,0.9,4.9,High,Female,Undergraduate,Instagram,Entertainment,India,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+46dcd6ba8dbdd4dc3c93eacf44984f6d1e5da3a4d4b8a5e578d527422e1c1765,1.0,20,7.6,227,0.7,4.6,Very High,Male,Undergraduate,LinkedIn,Education,Other,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+a7059e0ad17d2b7f701c1c66234e596643bab9e38934a93649c1c3fc876a57dc,0.8,24,7.3,242,1.5,5.0,Very High,Female,Graduate,YouTube,Education,Other,4.7,Phase5Holdout_INTERSECT_Phase12Holdout
+31ca8e41304b25b8d34fcd4ee863b50ecea02c9971a3a9b3e02be56c62d29c11,4.7,22,2.9,107,2.2,7.0,Medium,Male,Undergraduate,Facebook,Networking,Other,7.0,Phase5Holdout_INTERSECT_Phase12Holdout
+611628b6fe6754b9016360322f24e028be3a937fed25ebe6023bdc0b8081d7a1,4.1,22,4.4,143,2.2,7.8,Medium,Male,Undergraduate,TikTok,Entertainment,Turkey,5.9,Phase5Holdout_INTERSECT_Phase12Holdout
+886738de422fc71adc1934d419d64446e2cd58d4a284408ab37a112e047316e9,1.0,19,7.9,258,1.3,5.0,Very High,Female,Undergraduate,Twitter,News,Other,4.9,Phase5Holdout_INTERSECT_Phase12Holdout
+90c167db3fb05074ddf69bdff09899086a673b6822fbad306b760c542bf18d31,4.4,24,2.5,91,1.9,7.9,Low,Male,Graduate,LinkedIn,Education,Other,8.8,Phase5Holdout_INTERSECT_Phase12Holdout
+2b0c30a9e0dd5e7100e45561facdaf3135d45a214a77a39df6425edaa68fe4e9,2.7,22,5.7,168,1.6,7.5,High,Male,Undergraduate,LinkedIn,Education,Other,7.1,Phase5Holdout_INTERSECT_Phase12Holdout
+b82621a981febd25ab5c7b16d57a522910769bf3ea449f3223ae5d3d968e3f08,3.1,23,5.4,172,0.8,5.8,High,Male,Graduate,Instagram,Entertainment,USA,4.0,Phase5Holdout_INTERSECT_Phase12Holdout
+9a16750a0394437d13508b9451bc8558bc5ba5ef5474f309ca9b0c6602b233d5,2.1,20,3.9,159,2.3,8.9,Medium,Female,Undergraduate,Facebook,Networking,Other,6.8,Phase5Holdout_INTERSECT_Phase12Holdout
+82e363f5c7649ef9838019e2b207cf6153ac84f18253e60cf7e57dbd0355bc70,1.0,18,8.2,239,0.0,5.2,Very High,Male,High School,LinkedIn,Education,Other,4.6,Phase5Holdout_INTERSECT_Phase12Holdout
+c7eae2e97829c95f8502a887fadddbbf2d6d79ed5abb7d6a8c2ed12bc0e9dd6f,1.3,20,7.8,244,0.4,5.2,Very High,Male,Undergraduate,Twitter,News,Other,5.2,Phase5Holdout_INTERSECT_Phase12Holdout
+ceaee9eb705b181062a11525cece6dce952fa17b4d2960d6aea7e1299e53ea7a,1.6,19,5.7,188,2.0,5.7,High,Male,Undergraduate,TikTok,Entertainment,Other,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+56d04511eecb68ffcf6a4e907f1b4f4339d9ae40993a9e5285c01ec6e1033609,1.6,21,5.7,193,0.9,6.0,Very High,Male,Undergraduate,Facebook,Networking,Other,6.6,Phase5Holdout_INTERSECT_Phase12Holdout
+84c5c28ccf6994ed23ca660ba62e478000550fbcd409257aba8ddf6be69adfaf,5.1,24,2.8,115,1.4,8.5,Medium,Male,Graduate,Snapchat,Entertainment,Other,7.5,Phase5Holdout_INTERSECT_Phase12Holdout
+15b08cc16de0023bd9d1381d2cb7c01bdff438d3ae58867af72621846b7c7fe5,6.2,21,2.2,106,2.0,7.1,Medium,Male,Undergraduate,Snapchat,Entertainment,India,8.3,Phase5Holdout_INTERSECT_Phase12Holdout
+2c58e903ec572c9c26f12015cf7239ac3cb46a0ff754368f470b811ef2e29d99,5.9,24,1.4,68,2.9,9.1,Low,Male,Graduate,Snapchat,Entertainment,Other,7.2,Phase5Holdout_INTERSECT_Phase12Holdout
+1f0bab055a84f74ed882a4740ad4d2d7b8f968289800fa0419f8f2347c578f57,3.2,21,4.8,155,1.9,7.1,High,Female,Undergraduate,TikTok,Entertainment,Other,7.0,Phase5Holdout_INTERSECT_Phase12Holdout
+97a5d68d71bc473386afa0dd84e79c97841298f76909b28f363362feb5284e03,5.9,20,3.4,131,2.5,8.8,Medium,Female,Undergraduate,Instagram,Entertainment,Other,7.9,Phase5Holdout_INTERSECT_Phase12Holdout
+722cc7ad3c99829b18f813102563f58d188d8ffba2ab33cf384b3223ee71f58b,5.9,22,3.3,110,2.9,8.5,Medium,Male,Undergraduate,Facebook,Networking,Other,8.0,Phase5Holdout_INTERSECT_Phase12Holdout
+219c065581aa1e451e25b73ef2d3a5ad57c108b61dbbfd40650910d820fa056d,6.3,20,2.9,133,3.1,7.9,Low,Female,Undergraduate,TikTok,Entertainment,UK,7.6,Phase5Holdout_INTERSECT_Phase12Holdout
+7b6cfecc3db1420c96979e8c93ac6e7226ec8d6638cd572795cb5e03f29368dc,4.0,22,3.9,126,1.8,7.7,Medium,Female,Undergraduate,Instagram,Entertainment,Other,8.3,Phase5Holdout_INTERSECT_Phase12Holdout
+cddd7fc56d50e648368319e0c49ccba0b1ff10910b812231b2dd9dfeae2050cb,3.5,21,4.6,151,1.4,6.2,High,Male,Undergraduate,TikTok,Entertainment,UK,6.4,Phase5Holdout_INTERSECT_Phase12Holdout
+f0838486b2cd77463256eeb89cffea78d2748ac707b5f345e6f059c0dfeb9c4e,4.3,22,3.7,155,2.4,8.2,Medium,Male,Undergraduate,TikTok,Entertainment,Turkey,5.9,Phase5Holdout_INTERSECT_Phase12Holdout
+cb05dc71be5ff89b8e0e374a64dfb2306d7873c530fc67b64a062a80da3955f8,1.7,21,8.2,251,1.0,5.2,Very High,Male,Undergraduate,YouTube,Education,Other,4.8,Phase5Holdout_INTERSECT_Phase12Holdout
+3a7d74cd5e8756f99fc42b0abf58843b812fb95d705907d9bc36fdbc084a1baa,1.0,24,7.4,226,1.6,5.6,Very High,Male,Graduate,Twitter,News,Other,5.1,Phase5Holdout_INTERSECT_Phase12Holdout
+ccbd69bdae4f57872bbe935d1b15699054c689e83c8f233eb902467b7b4c0df8,2.8,22,4.1,151,2.5,7.8,Medium,Male,Undergraduate,TikTok,Entertainment,Turkey,6.1,Phase5Holdout_INTERSECT_Phase12Holdout
+a72f7b320fc5f537e03414c52e95541e4db03d97eb9bc303999d676625890e71,5.1,24,3.2,123,2.1,7.5,Medium,Male,Graduate,TikTok,Entertainment,Canada,8.0,Phase5Holdout_INTERSECT_Phase12Holdout
+8a6215a29a1ce9da94aeb2c19de168bcc569a23ed808a08e9032f476119f2783,1.2,19,6.3,191,1.5,4.8,Very High,Male,Undergraduate,TikTok,Entertainment,Other,4.0,Phase5Holdout_INTERSECT_Phase12Holdout
+1f5140077eefa05126faaace836f29fb89d363a69f381d163c7752510781a2ba,1.0,21,8.3,261,1.2,4.7,Very High,Male,Undergraduate,Snapchat,Entertainment,Other,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+2cd1ced9c0aa7e664594acd6cbf9fd0bb251fbd7c8486af2c3abbb510f81e438,1.8,21,6.5,212,2.1,6.0,Very High,Female,Undergraduate,Instagram,Entertainment,Other,4.2,Phase5Holdout_INTERSECT_Phase12Holdout
+e772bc47a40878f4a2caa9ec8b4261a8da7af741b951e49e2666e43d3517b876,4.7,23,2.5,100,2.1,7.3,Medium,Female,Graduate,LinkedIn,Education,Other,8.0,Phase5Holdout_INTERSECT_Phase12Holdout
+308f64eaea4626282398c25682b49d700850cbad8ed270fced520b4e8bfbee89,3.7,20,5.2,165,3.0,7.2,High,Female,Undergraduate,YouTube,Education,UK,6.6,Phase5Holdout_INTERSECT_Phase12Holdout
+a0c2683281ec679767f01f4fc18fc7f5e9f099abe42eab6fb93073861486b567,2.6,19,5.0,181,2.3,6.9,High,Female,Undergraduate,Instagram,Entertainment,Other,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+57fc5b21f0126ea43f1f133a69edec47c30c163767bee06fd607dbb57d329da3,4.6,20,4.1,132,1.6,6.6,Medium,Male,Undergraduate,Twitter,News,Other,6.7,Phase5Holdout_INTERSECT_Phase12Holdout
+d83f7de15692e882d72163ae471a561f81bd1b16c8614bfed38388db864f826f,1.0,20,5.9,178,1.6,5.4,Very High,Female,Undergraduate,YouTube,Education,Other,4.2,Phase5Holdout_INTERSECT_Phase12Holdout
+db67649946602db829fd21c7341c49d86dff8e7e8d791af478c02e15e47d5a48,2.9,21,5.1,153,2.3,7.4,High,Male,Undergraduate,Facebook,Networking,India,7.0,Phase5Holdout_INTERSECT_Phase12Holdout
+313fc9ddd94ac815b3ee085e8aebc1d681fe32e2527bbe8dd359641e5b493527,0.7,23,5.4,181,1.7,7.1,High,Male,Graduate,Instagram,Entertainment,Canada,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+ebeb16ea5e1cff40e7373a926b52794b0287817b8f42571f8a32f87ee10d491e,1.0,24,7.2,246,0.5,5.9,Very High,Female,Graduate,YouTube,Education,Other,5.2,Phase5Holdout_INTERSECT_Phase12Holdout
+53992ba6ab667f02cce25bb9d6dc522fd61bbf9dda21dc8b69f321652b9f1af3,1.9,19,4.8,162,2.2,6.2,Medium,Male,Undergraduate,Snapchat,Entertainment,France,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+914ec2d66f7ed793be780ec82c2156a0bb3d41512ec0ca702b27f02b7a4e3458,4.7,21,3.7,151,2.0,6.3,Medium,Male,Undergraduate,YouTube,Education,Canada,6.4,Phase5Holdout_INTERSECT_Phase12Holdout
+78bef2391031e95a311c145345fe756f66ea8e5d0d7c7cbb438d63c27df4cc55,5.4,21,3.1,139,2.2,7.2,Medium,Female,Undergraduate,Facebook,Networking,India,8.5,Phase5Holdout_INTERSECT_Phase12Holdout
+9383302383e173b41d2fcbf436caad73a04468232cc5e3ff22ccfebed57f6467,0.8,19,7.0,233,1.2,5.4,Very High,Female,Undergraduate,YouTube,Education,Other,4.8,Phase5Holdout_INTERSECT_Phase12Holdout
+3c5b10b791e96bab0c9a0a4b8206b810b168b56852a34db08b1dc273298fe0d5,4.6,21,3.4,123,2.8,6.9,Medium,Male,Undergraduate,TikTok,Entertainment,Other,7.2,Phase5Holdout_INTERSECT_Phase12Holdout
+3c0a683a2c8ef3762f6bb0c989055e8239cacefd3666c731cd143c829f5f7b43,4.6,19,3.3,152,2.0,7.9,Low,Female,Undergraduate,LINE,Education,Other,8.2,Phase5Holdout_INTERSECT_Phase12Holdout
+781df14ffb83aa91308e8209c7438858dc3fd3c00ccba192c574638fa85b2e56,1.0,21,6.2,218,1.2,5.4,Very High,Female,Undergraduate,Twitter,News,Other,5.4,Phase5Holdout_INTERSECT_Phase12Holdout
+a3295bb676b1f29ab5a748386df4cce847aa738858bc1d3b988b62195d1f4e23,3.8,18,3.6,134,2.0,7.5,Medium,Female,High School,Facebook,Networking,UK,8.7,Phase5Holdout_INTERSECT_Phase12Holdout
+241b77495a0abde26dc877c0ee5898d13af05294024648cc66c58fd940f6ea27,0.9,24,8.2,229,0.6,4.7,Very High,Female,Graduate,YouTube,Education,Other,5.6,Phase5Holdout_INTERSECT_Phase12Holdout
+c4c2efcf3595926521569e5ced531b0e7e0b848c83998adb54d34f2beb43727a,1.5,19,4.8,149,0.9,7.4,High,Male,Undergraduate,Facebook,Networking,Other,7.1,Phase5Holdout_INTERSECT_Phase12Holdout
+cc3f5c14bf90163b6f84b15fe740e4d86026d24440b45b4ece3abf8b34e2eb7a,5.2,21,5.2,151,1.1,7.1,Medium,Male,Undergraduate,Instagram,Entertainment,Canada,6.1,Phase5Holdout_INTERSECT_Phase12Holdout
+1fd5651f210f73e1143022fea5abc25239c97a7315015742492bf028aa73b90d,1.8,20,5.0,169,1.7,7.0,High,Female,Undergraduate,KakaoTalk,Entertainment,Other,6.1,Phase5Holdout_INTERSECT_Phase12Holdout
+038a632db1ede0eed6fea6f414a47496996c9017a10cf3d61dd86b22fc2293bb,2.3,21,5.6,200,0.1,7.3,High,Male,Undergraduate,YouTube,Education,Other,6.1,Phase5Holdout_INTERSECT_Phase12Holdout
+39d15514710cfe67720e0bc32c384ce1fef6b360f6781b2434a1d3595621a3b8,5.4,18,1.9,87,2.8,7.9,Low,Female,High School,YouTube,Education,USA,7.2,Phase5Holdout_INTERSECT_Phase12Holdout
+3bba3dcae4362dbab3859035abd730f7a7fc95d3fb80987438da67964890c651,3.6,19,4.5,143,0.9,5.7,High,Male,Undergraduate,Instagram,Entertainment,Other,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+99e1cbf06254cea85c28914c6d9de9dbabc11d0dbc7609ab93fb89cae6d4ef6d,4.1,24,4.8,148,1.8,7.3,Medium,Male,Graduate,Facebook,Networking,Other,6.7,Phase5Holdout_INTERSECT_Phase12Holdout
+d5eb13f7933c3a70c2355cc64c802d9d603542505f2b972ce76fabbc9fbe47c9,1.0,19,7.0,239,0.7,5.4,Very High,Male,Undergraduate,YouTube,Education,Other,5.9,Phase5Holdout_INTERSECT_Phase12Holdout
+e25f605c6e4e49d786b15bf52b93a6528853b186fde2f45f1b8d4ca7abfdd97a,0.9,19,6.0,202,2.0,5.5,High,Female,Undergraduate,LinkedIn,Education,Other,3.7,Phase5Holdout_INTERSECT_Phase12Holdout
+39db2b09b5c41094cc095dbf5a211ddd8d4ccbb47a9be5518a6e9f81a9fe4801,0.8,23,6.0,223,2.2,5.3,High,Female,Graduate,Twitter,News,Other,4.5,Phase5Holdout_INTERSECT_Phase12Holdout
+5e8018fb4fd22cdee9e0beb57573f843479e296d1b2e88345ccd1983c44756df,1.9,20,5.5,190,0.8,6.9,High,Female,Undergraduate,Instagram,Entertainment,USA,6.4,Phase5Holdout_INTERSECT_Phase12Holdout
+96548fda2db91b69334dcafcaa9290b7144eb3722202085cca9ab44be802ab23,3.5,20,6.6,194,1.6,6.0,High,Male,Undergraduate,Facebook,Networking,UK,5.1,Phase5Holdout_INTERSECT_Phase12Holdout
+e3a8f9410340b604c818ac577075363020fda0135f1e8e94c6d8537552532930,5.6,19,2.2,93,3.2,7.4,Low,Female,Undergraduate,Twitter,News,Other,9.0,Phase5Holdout_INTERSECT_Phase12Holdout
+024358a06c757db8d8deabdadf395ed28321dd13629e275feed8555b89049e06,1.3,19,7.4,227,0.9,5.7,Very High,Male,Undergraduate,LinkedIn,Education,Other,6.2,Phase5Holdout_INTERSECT_Phase12Holdout
+f1ca447f68b2c305d6449275bed659023138ec3a3b71b0df127143d86583cd8e,5.2,19,3.7,134,2.8,8.5,Medium,Male,Undergraduate,TikTok,Entertainment,Other,7.5,Phase5Holdout_INTERSECT_Phase12Holdout
+b71caaf0a1e1022b88109a36e63620efe4a36e72d01696fe29b4597fc9afabbb,2.5,22,5.0,186,1.2,6.7,Medium,Male,Undergraduate,TikTok,Entertainment,Canada,6.3,Phase5Holdout_INTERSECT_Phase12Holdout
+edccd05cce0ff4f2c77c575e039455c7ab7b008c238c028a272bb4fb3b3c6649,6.7,23,1.0,73,2.3,8.8,Low,Female,Graduate,LinkedIn,Education,Other,7.6,Phase5Holdout_INTERSECT_Phase12Holdout
+a1609f5cbd89c87a5ddbda2f678e61b7130fd8d8c4d22333fa51c494f1137ac4,1.1,20,5.9,203,1.3,6.4,Very High,Female,Undergraduate,Facebook,Networking,Other,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+6463ba79f34566399b3e86add6f48037b9fac4dfc7f3c7bc975302836a579d59,3.8,21,4.5,146,1.9,7.7,Medium,Male,Undergraduate,Instagram,Entertainment,Turkey,6.0,Phase5Holdout_INTERSECT_Phase12Holdout
+363c6750345b9898ee2723d397d4eb2147efbc7ba35faf707d402bd8e0527948,2.5,23,4.0,157,2.3,7.7,Medium,Female,Graduate,Instagram,Entertainment,Other,6.9,Phase5Holdout_INTERSECT_Phase12Holdout
+b7baefcd3ded9fe505bb5050e168b315608c84ba374b749a7e895a6ff2123900,1.2,19,7.1,213,1.2,5.6,Very High,Female,Undergraduate,Instagram,Entertainment,USA,4.2,Phase5Holdout_INTERSECT_Phase12Holdout
+c042b9e39902dbb7343764250b030d5338a558d0f23f9a7fba4efd09f7d3170b,0.8,20,7.0,235,0.5,5.1,Very High,Female,Undergraduate,Instagram,Entertainment,Other,4.2,Phase5Holdout_INTERSECT_Phase12Holdout
+f2e3952246d3a1678bb667e0e5d1ac0d0f637b60c6c1a3d197bd718d45d1d3f5,2.0,23,6.7,198,2.0,6.1,Very High,Female,Graduate,Instagram,Entertainment,Turkey,5.0,Phase5Holdout_INTERSECT_Phase12Holdout
+5c704e6d8daadcdc906fac69e5481e7038b04846abe8581320953da7c98a94c8,3.3,19,5.4,180,1.1,5.5,Very High,Female,Undergraduate,Instagram,Entertainment,Other,4.8,Phase5Holdout_INTERSECT_Phase12Holdout
+2b33fae1624098933f69603ad7ca3ed50e0b400d6d2e625e87cc1b941855fbc1,2.2,20,7.5,232,1.4,5.7,Very High,Female,Undergraduate,LinkedIn,Education,Other,4.2,Phase5Holdout_INTERSECT_Phase12Holdout
+8635725e8facf096b0ea3bd844aff192e9bec88ce8c42f90fef55fe7646dba2d,2.1,20,6.0,189,3.0,5.8,Very High,Male,Undergraduate,Snapchat,Entertainment,Other,4.9,Phase5Holdout_INTERSECT_Phase12Holdout
+0e29372cdede7043ed8d5341694f3b6a453f6b652fbf66b131e20267512bef8d,5.3,19,3.6,143,2.6,8.1,Medium,Female,Undergraduate,LINE,Education,Other,8.3,Phase5Holdout_INTERSECT_Phase12Holdout

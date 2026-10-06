@@ -1,0 +1,7 @@
+Model,Nominal_Coverage,Threshold_q,Empirical_Coverage,Mean_Interval_Width,Coverage_Error
+Champion (phase5_tuned_extra_trees),0.8,0.415600000000011,0.8507,0.8312,0.0507
+Candidate (candidate_v1_2_revalidated),0.8,0.4244,0.8557,0.8488,0.0557
+Champion (phase5_tuned_extra_trees),0.9,0.5942000000000469,0.9204,1.1884,0.0204
+Candidate (candidate_v1_2_revalidated),0.9,0.5984,0.9104,1.1968,0.0104
+Champion (phase5_tuned_extra_trees),0.95,0.7902000000000013,0.9403,1.5804,-0.0097
+Candidate (candidate_v1_2_revalidated),0.95,0.7788,0.9602,1.5576,0.0102

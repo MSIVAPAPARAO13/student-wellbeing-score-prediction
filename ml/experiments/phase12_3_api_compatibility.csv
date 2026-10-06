@@ -1,0 +1,9 @@
+contract_field,canonical_specification,candidate_behavior,compatibility_status,notes
+Input Feature Names,12 canonical survey attributes,Consumes identical 12 feature names,PASS,Verified input ingestion on StudentSurveyRequest schema
+Missing / Null Values,Imputed or rejected with 422,Compatible with pipeline imputer steps,PASS,FastAPI Pydantic validation handles missing field rejections before pipeline
+Unknown Categorical Values,handle_unknown='ignore' on OHE,handle_unknown='ignore' verified,PASS,Pipeline transforms unknown categories safely to all zeros
+Numerical Range Validation,"Pydantic ge/le bounds on age, hours, unlocks",Compatible across full bounded numerical ranges,PASS,Input guarantees enforce valid numerical boundaries
+Prediction Output Structure,"Float score in range [1.0, 10.0]","Produces scalar float score [1.0, 10.0]",PASS,Conforms to PredictionResponse.estimated_wellbeing_score
+Uncertainty Output Structure,"Conformal interval [lower, upper, width]","Compatible with calibrated thresholds q80=0.4244, q90=0.5984, q95=0.7788",PASS,Conforms to PredictionInterval model schema
+Explanation Compatibility,TreeSHAP feature attributions on 12 features,Compatible; additivity verified (error < 1e-10),PASS,Requires mapping 35 transformed features back to 12 survey inputs
+Public Production Isolation,User-facing /predict must call Champion exclusively,Not wired into public route; isolated to shadow execution,PASS,Champion remains 100% authoritative for client traffic

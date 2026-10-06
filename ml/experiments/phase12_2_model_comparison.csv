@@ -1,0 +1,7 @@
+Metric,Champion,Candidate,Candidate_Minus_Champion,Preferred
+R2,0.909767,0.939649,0.029882,Candidate (Higher)
+RMSE,0.407234,0.333045,-0.07419,Candidate (Lower)
+MAE,0.263506,0.25022,-0.013285,Candidate (Lower)
+Mean Error,-0.002367,0.00855,0.010917,Near Zero
+Median AE,0.1784,0.188,0.0096,Champion (Lower)
+Max AE,2.0802,1.38,-0.7002,Candidate (Lower)
