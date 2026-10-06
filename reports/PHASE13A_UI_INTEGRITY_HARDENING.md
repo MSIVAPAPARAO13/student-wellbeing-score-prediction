@@ -122,7 +122,8 @@ Live verification was executed against the local service (`http://127.0.0.1:8000
 }
 ```
 
-### 2. Multi-Profile Divergence
+### 2. Multi-Profile Divergence (Observed Verification Evidence)
+*(Note: The following values were observed during the Phase 13A local verification run and serve as empirical evidence of dynamic model-driven divergence, NOT as guaranteed future outputs).*
 - **Profile A (Low Usage / Low Stress / Regular Habits):**
   - Inputs: Age 20, Usage 2.0h, Unlocks 45, Sleep 8.5h, Study 6.0h, Physical Activity 3.0h, Stress Low.
   - Estimated Wellbeing Score: **8.03 / 10**
@@ -170,12 +171,14 @@ pytest -q
 
 ## 9. Governance & Phase Status
 
+- **Implementation Status:** **COMPLETE**
 - **Phase 13:** **ACTIVE / IN PROGRESS**
   - Champion: **ACTIVE PRODUCTION**
   - Candidate: **SHADOW / VALIDATING**
-  - Shadow window completed: **0 / 14 days**
+  - Shadow window completed: **0 / 14 days at current documented observation state**
   - Verified production labels: **0 / 100**
-  - Promotion status: **STRICTLY BLOCKED**
+  - Promotion status: **BLOCKED**
+  - Human approval: **PENDING**
   - Automatic retraining: **DISABLED**
   - Automatic promotion: **DISABLED**
 - **Phase 14:** **NOT STARTED**

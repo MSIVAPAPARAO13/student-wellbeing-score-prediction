@@ -48,7 +48,7 @@ The system estimates a continuous **Student Wellbeing Score** on a bounded scale
 | **Phase 9** | Cloud Deployment & Containerization | Multi-stage Docker containerization, GHCR package publishing, automated cloud hosting configuration. |
 | **Phase 10** | Continuous Production Monitoring | Automated drift monitoring without PII storage: Population Stability Index (PSI), Kolmogorov-Smirnov (KS), Total Variation Distance (TVD). |
 | **Phase 11** | Model Governance & Shadow Serving | Central Model Registry (`models/model_registry.json`), lifecycle states, isolated shadow serving, anti-auto-retraining policies. |
-| **Phase 12** | Controlled Model Improvement | Trained Candidate v1.2 (`RandomForestRegressor`) on new records; generated initial validation metrics. |
+| **Phase 12** | Controlled Model Improvement | Trained Candidate v1.2 (`ExtraTreesRegressor`, 250 estimators, `max_features='sqrt'`, `random_state=42`) on new records; generated initial validation metrics. |
 | **Phase 12.1** | Evaluation Integrity Audit | **Discovered 79.9% holdout overlap** between Phase 12 holdout and historical Phase 5 training data; blocked flawed candidate promotion. |
 | **Phase 12.2** | Clean Head-to-Head Evaluation | Symmetrically evaluated Champion vs. Candidate on the clean, unseen 201-row dataset. Demonstrated Candidate is statistically non-superior. |
 | **Phase 12.3** | Candidate Validation Gate | Formally blocked Candidate promotion; approved Candidate exclusively for non-interfering shadow observation. |
@@ -133,9 +133,12 @@ The system estimates a continuous **Student Wellbeing Score** on a bounded scale
 - **Shadow Duration Requirement:** 14 consecutive calendar days.
 - **Verified Label Requirement:** 100 verified post-deployment labels.
 - **Current Observation Metrics:**
-  - Shadow days completed: **0 / 14**
+  - Shadow days completed: **0 / 14 days at current documented observation state**
   - Verified production labels: **0 / 100**
-  - Promotion status: **STRICTLY BLOCKED**
+  - Promotion status: **BLOCKED**
+  - Human approval: **PENDING**
+  - Automatic retraining: **DISABLED**
+  - Automatic promotion: **DISABLED**
 
 ---
 
@@ -190,23 +193,23 @@ python main.py
 Follow these steps during an interview or live system demonstration:
 
 1. **Step 1: Open the UI:** Navigate to [http://127.0.0.1:8000/ui](http://127.0.0.1:8000/ui). Observe the connection pill confirming connection and model status from `GET /health`.
-2. **Step 2: Enter Profile 1 (Balanced Habits):**
+2. **Step 2: Enter Profile 1 (Sample Balanced Inputs):**
    - Age: 20, Gender: Female, Level: Undergraduate, Country: USA
    - Screen Time: 2.0 hrs, Platform: LinkedIn, Unlocks: 45
    - Study: 6.0 hrs, Physical Activity: 3.0 hrs, Sleep: 8.5 hrs, Stress: Low, Purpose: Education
 3. **Step 3: Click "Estimate Wellbeing Score":**
    - The UI sends `POST /predict`.
-   - Observe the returned continuous score (e.g., ~8.0 / 10).
-   - Observe the 90% prediction interval and dynamic metadata fields.
+   - Observe the returned continuous score generated at runtime by the loaded Champion model.
+   - Observe the prediction interval and dynamic metadata fields populated from the API response.
 4. **Step 4: Click "Explain this prediction":**
    - The UI sends `POST /explain`.
-   - Observe TreeSHAP attributions: Sleep and physical activity appear as top positive contributors.
-5. **Step 5: Change Inputs to Profile 2 (High Screen Time & Strain):**
+   - Click "Explain this prediction" and inspect the actual TreeSHAP contributors returned for this submitted profile.
+5. **Step 5: Change Inputs to Profile 2 (Alternative Input Profile):**
    - Screen Time: 10.0 hrs, Unlocks: 250, Sleep: 4.0 hrs, Physical Activity: 0.0 hrs, Stress: Very High
 6. **Step 6: Click "Estimate Wellbeing Score" Again:**
-   - Observe the new predicted score drop significantly (e.g., ~5.0 / 10).
+   - Change the survey inputs and run the prediction again. Compare the new runtime score and explanation with the previous result.
 7. **Step 7: Re-run Explanation:**
-   - TreeSHAP immediately recalculates: Screen time, unlocks, and stress shift into the top negative contributors.
+   - Click "Explain this prediction" to observe the updated runtime TreeSHAP feature attributions for Profile 2.
 8. **Step 8: Check Governance & Observability:**
    - Open [http://127.0.0.1:8000/governance/shadow/status](http://127.0.0.1:8000/governance/shadow/status) to verify that shadow evaluations were recorded in the background with zero impact on user latency.
 
@@ -233,20 +236,33 @@ Follow these steps during an interview or live system demonstration:
 }
 ```
 
-### Example Response Structure
-*(Note: Actual values are generated at request time by the loaded Champion Extra Trees model and conformal calibration engine)*
+### Example Response Structure (`POST /predict`)
+> [!NOTE]
+> Actual prediction, interval bounds, interval width, and explanations are generated at runtime by the loaded Champion model and calibration artifact.
+
 ```json
 {
-  "estimated_wellbeing_score": 6.67,
+  "estimated_wellbeing_score": "<runtime model output>",
   "prediction_interval": {
-    "nominal_coverage": 0.9,
-    "lower": 6.07,
-    "upper": 7.26,
-    "width": 1.1884
+    "nominal_coverage": 0.90,
+    "lower": "<runtime lower bound>",
+    "upper": "<runtime upper bound>",
+    "width": "<runtime interval width>"
   },
-  "model_version": "phase5_tuned_extra_trees",
-  "uncertainty_method": "5-Fold Cross-Conformal / Out-Of-Fold Residual Calibration",
-  "disclaimer": "This is a survey-based wellbeing score estimate and predictive uncertainty interval, not a clinical assessment or medical diagnosis."
+  "model_version": "<runtime model version>",
+  "uncertainty_method": "<runtime calibration method>",
+  "disclaimer": "<runtime/API disclaimer>"
+}
+```
+
+### Example Response Structure (`POST /explain`)
+```json
+{
+  "estimated_wellbeing_score": "<runtime model output>",
+  "base_value": "<runtime TreeSHAP expected value>",
+  "feature_contributions": "<runtime TreeSHAP contributions>",
+  "positive_contributors": "<runtime contributors>",
+  "negative_contributors": "<runtime contributors>"
 }
 ```
 
@@ -259,19 +275,26 @@ Run the test suite:
 pytest -q
 ```
 
-### Current Test Suite Status
-- **104 passed, 0 failed, 10 warnings in ~53s**
-- **Test Categories:**
-  - `test_api.py` (14 tests): Routing, schema validation, 422 error handlers, conformal intervals.
-  - `test_audit_12_1.py` (11 tests): Partition cryptographic hashes, holdout contamination rates, schema invariance.
-  - `test_phase12_2_clean_evaluation.py` (14 tests): Symmetric evaluation on the 201 unseen holdout.
-  - `test_phase12_3_validation_gate.py` (14 tests): Artifact hashes, calibration linkage, shadow readiness.
-  - `test_phase13_real_world_validation.py` (15 tests): Shadow isolation, unverified label rejection, promotion blocks.
-  - `test_phase13a_ui_integrity.py` (11 tests): Model-driven UI integrity, metadata consistency, country grouping, multi-profile divergence.
-  - `test_governance.py` (11 tests): Model registry, shadow engine, anti-auto-retraining policies.
-  - `test_monitoring.py` (11 tests): PSI, KS, TVD statistical drift calculation.
-  - `test_revalidation.py` (5 tests): Candidate v1.2 behavior, interval monotonicity.
-  - `test_smoke_production.py` (1 test): Live server probe and artifact-derived width validation.
+### Pytest Execution Result
+Pytest completed with:
+- **104 passed**
+- **0 failed**
+- **0 skipped**
+- **10 warnings**
+- **Execution time: ~53s**
+
+### Test Categories
+The suite provides comprehensive test coverage across the following functional areas:
+- **API Endpoints & Validation (`tests/test_api.py`):** Routing, Pydantic schema validation, 422 error handlers, prediction interval generation.
+- **Evaluation Integrity Audit (`tests/test_audit_12_1.py`):** Partition cryptographic hashes, holdout contamination rates, schema invariance.
+- **Clean Head-to-Head Evaluation (`tests/test_phase12_2_clean_evaluation.py`):** Symmetric evaluation on the 201 unseen holdout.
+- **Candidate Validation Gate (`tests/test_phase12_3_validation_gate.py`):** Artifact hashes, calibration linkage, shadow readiness.
+- **Production Validation & Shadow Rules (`tests/test_phase13_real_world_validation.py`):** Shadow isolation, unverified label rejection, promotion blocks.
+- **UI Integrity Hardening (`tests/test_phase13a_ui_integrity.py`):** Model-driven UI integrity, metadata consistency, country grouping, multi-profile divergence.
+- **Governance & Registry (`tests/test_governance.py`):** Model registry, shadow engine, anti-auto-retraining policies.
+- **Statistical Monitoring (`tests/test_monitoring.py`):** PSI, KS, TVD statistical drift calculation.
+- **Model Revalidation (`tests/test_revalidation.py`):** Candidate v1.2 behavior, interval monotonicity.
+- **Smoke & Production Health (`tests/test_smoke_production.py`):** Live server probe and artifact-derived width validation.
 
 ---
 
@@ -290,9 +313,14 @@ pytest -q
   - SHA-256: `a012e7a1c0ca5c9fccb21d1e46bf3b4b4a72635204c13efdc4f93d6c636747f8`
 - **Candidate Model:** `models/candidate_v1_2_revalidated.joblib` (**SHADOW / VALIDATING**)
   - SHA-256: `aad2f208a298289de57a0a8fd4aef941be0edaf940439dca98eaaf718439cdbc`
-- **Phase 13:** **ACTIVE / IN PROGRESS** (0 / 14 shadow days, 0 / 100 verified labels)
+- **Phase 13:** **ACTIVE / IN PROGRESS**
+  - Shadow window: **0 / 14 days at current documented observation state**
+  - Verified labels: **0 / 100**
+  - Promotion: **BLOCKED**
+  - Human approval: **PENDING**
+  - Automatic retraining: **DISABLED**
+  - Automatic promotion: **DISABLED**
 - **Phase 14:** **NOT STARTED**
-- **Candidate Promotion:** **STRICTLY BLOCKED**
 
 ---
 
