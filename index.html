@@ -207,12 +207,30 @@
           <g class="gauge-ticks"></g>
           <circle class="gauge-needle-hub" cx="120" cy="140" r="5" />
         </svg>
+        <div class="score-label" style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); margin-top: 0.5rem;">Estimated Wellbeing Score</div>
         <div class="score-readout">
           <span class="score-number" id="score-number">0.0</span>
           <span class="score-max">/10</span>
         </div>
+        <div class="interval-card" id="interval-card" style="margin: 0.75rem 0; padding: 0.6rem 0.8rem; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-sm); text-align: center;">
+          <div style="font-size: 0.8rem; font-weight: 600; color: var(--pine-deep); text-transform: uppercase; letter-spacing: 0.04em;">90% Prediction Interval</div>
+          <div style="font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700; color: var(--ink); margin: 0.15rem 0;" id="interval-range">—</div>
+          <div style="font-size: 0.75rem; color: var(--ink-soft);" id="interval-width-text">Predictive uncertainty (calibrated marginal coverage)</div>
+        </div>
         <p class="score-band" id="score-band">—</p>
         <p class="score-context" id="score-context"></p>
+
+        <div class="explain-section" id="explain-section" style="margin: 1rem 0; text-align: center;">
+          <button type="button" class="btn-explain" id="explain-btn" style="background: none; border: 1px solid var(--pine); color: var(--pine); padding: 6px 14px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+            <span id="explain-btn-text">Factors contributing to this estimate</span>
+            <span id="explain-spinner" style="display:none;">⏳ Analyzing SHAP values...</span>
+          </button>
+          <div id="factors-container" style="display:none; margin-top: 0.75rem; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 0.75rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--ink); margin-bottom: 0.4rem;">Factors Contributing to This Estimate:</div>
+            <div id="factors-list" style="font-size: 0.75rem;"></div>
+          </div>
+        </div>
+
         <button type="button" class="reset-btn" id="reset-btn">Run another read</button>
       </div>
 

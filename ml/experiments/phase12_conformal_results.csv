@@ -1,0 +1,4 @@
+Nominal_Coverage,Threshold_q,Interval_Width,Empirical_Holdout_Coverage,Coverage_Error
+0.8,0.4244,0.8488,0.817,0.017
+0.9,0.5984,1.1968,0.908,0.008
+0.95,0.7788,1.5576,0.948,-0.002

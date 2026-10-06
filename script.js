@@ -1,7 +1,11 @@
 (() => {
   "use strict";
 
-  const API_BASE = "https://mansik-santulan-score.onrender.com";
+  const API_BASE = window.__API_BASE__ || (
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
+      ? "http://127.0.0.1:8000"
+      : "https://mansik-santulan-score.onrender.com"
+  );
 
   const form = document.getElementById("predict-form");
   const submitBtn = document.getElementById("submit-btn");
@@ -180,13 +184,37 @@
     };
   }
 
-  function renderResult(score) {
-    const clamped = Math.max(0, Math.min(10, score));
-    const { label, context } = bandFor(clamped);
+  let lastSubmittedPayload = null;
 
-    scoreNumberEl.textContent = score.toFixed(2);
+  function renderResult(data) {
+    const score = (typeof data.estimated_wellbeing_score === "number")
+      ? data.estimated_wellbeing_score
+      : data.predicted_mental_health_score;
+    const clamped = Math.max(0, Math.min(10, score));
+    const { label } = bandFor(clamped);
+
+    scoreNumberEl.textContent = score.toFixed(1);
     scoreBandEl.textContent = label;
-    scoreContextEl.textContent = context;
+    scoreContextEl.textContent = "The model-generated estimate is based on the survey responses. The interval communicates predictive uncertainty and is not a clinical assessment.";
+
+    // Render prediction interval
+    const intervalRangeEl = document.getElementById("interval-range");
+    const intervalWidthTextEl = document.getElementById("interval-width-text");
+    if (data.prediction_interval && intervalRangeEl) {
+      const pi = data.prediction_interval;
+      intervalRangeEl.textContent = `${pi.lower.toFixed(1)} – ${pi.upper.toFixed(1)}`;
+      if (intervalWidthTextEl) {
+        intervalWidthTextEl.textContent = `Predictive uncertainty: width ${pi.width.toFixed(2)} (margin ±${(pi.width / 2).toFixed(2)})`;
+      }
+    }
+
+    // Reset explain section
+    const factorsContainer = document.getElementById("factors-container");
+    const explainSpinner = document.getElementById("explain-spinner");
+    const explainBtnText = document.getElementById("explain-btn-text");
+    if (factorsContainer) factorsContainer.style.display = "none";
+    if (explainSpinner) explainSpinner.style.display = "none";
+    if (explainBtnText) explainBtnText.style.display = "inline";
 
     // reset then animate the arc fill on next frame
     gaugeFill.style.transition = "none";
@@ -198,6 +226,72 @@
     });
 
     showState("result");
+  }
+
+  // ---------------------------------------------------------
+  // Handle Explain Factors Button (TreeSHAP)
+  // ---------------------------------------------------------
+  const explainBtn = document.getElementById("explain-btn");
+  if (explainBtn) {
+    explainBtn.addEventListener("click", async () => {
+      if (!lastSubmittedPayload) return;
+      const explainSpinner = document.getElementById("explain-spinner");
+      const explainBtnText = document.getElementById("explain-btn-text");
+      const factorsContainer = document.getElementById("factors-container");
+      const factorsList = document.getElementById("factors-list");
+
+      explainBtnText.style.display = "none";
+      explainSpinner.style.display = "inline";
+      explainBtn.disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE}/explain`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(lastSubmittedPayload),
+        });
+
+        if (!res.ok) throw new Error("Explanation request failed");
+        const expData = await res.json();
+
+        // Render factors
+        factorsList.innerHTML = "";
+        const allFactors = expData.feature_contributions || [];
+        // Sort by absolute SHAP value
+        const topFactors = [...allFactors]
+          .sort((a, b) => Math.abs(b.shap_value) - Math.abs(a.shap_value))
+          .slice(0, 5);
+
+        topFactors.forEach((f) => {
+          const item = document.createElement("div");
+          item.style.marginBottom = "6px";
+          item.style.display = "flex";
+          item.style.justifyContent = "space-between";
+          item.style.alignItems = "center";
+
+          const friendlyName = f.feature.replace(/_/g, " ");
+          const badgeColor = f.direction === "positive" ? "#21594A" : f.direction === "negative" ? "#D9534F" : "#4A5850";
+          const sign = f.shap_value > 0 ? "+" : "";
+
+          item.innerHTML = `
+            <span><strong>${friendlyName}</strong> (${f.value}):</span>
+            <span style="color: ${badgeColor}; font-weight: 600; font-family: var(--font-mono);">${sign}${f.shap_value.toFixed(2)}</span>
+          `;
+          factorsList.appendChild(item);
+        });
+
+        factorsContainer.style.display = "block";
+      } catch (err) {
+        if (factorsList) {
+          factorsList.innerHTML = `<span style="color: var(--coral);">Could not load feature explanations. Please try again.</span>`;
+          factorsContainer.style.display = "block";
+        }
+      } finally {
+        explainBtnText.style.display = "inline";
+        explainSpinner.style.display = "none";
+        explainBtn.disabled = false;
+      }
+    });
   }
 
   function renderError(label, copy) {
@@ -214,11 +308,11 @@
     if (!Array.isArray(detail)) return false;
     let matched = false;
     detail.forEach((err) => {
-      const field = Array.isArray(err.loc) ? err.loc[err.loc.length - 1] : null;
+      const field = Array.isArray(err.loc) ? err.loc[err.loc.length - 1] : (err.field || null);
       const input = field ? document.getElementById(field) : null;
       const target = field === "stress_level" ? stressHiddenInput : input;
       if (target) {
-        setFieldError(target, err.msg || "Invalid value.");
+        setFieldError(target, err.msg || err.message || "Invalid value.");
         matched = true;
       }
     });
@@ -241,6 +335,7 @@
       return;
     }
 
+    lastSubmittedPayload = payload;
     setSubmitting(true);
     showState("loading");
 
@@ -272,12 +367,12 @@
       }
 
       const data = await res.json();
-      if (typeof data.predicted_mental_health_score !== "number") {
+      if (typeof data.estimated_wellbeing_score !== "number" && typeof data.predicted_mental_health_score !== "number") {
         renderError("Unexpected response", "The API responded, but the score was missing or malformed.");
         return;
       }
 
-      renderResult(data.predicted_mental_health_score);
+      renderResult(data);
     } catch (err) {
       renderError(
         "Can't reach the server",

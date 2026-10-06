@@ -1,0 +1,36 @@
+{
+  "method": "5-Fold Cross-Conformal / Out-Of-Fold Residual Calibration",
+  "phase": 12,
+  "candidate_version": "candidate_v1_2_revalidated",
+  "source_model_hash": "aad2f208a298289de57a0a8fd4aef941be0edaf940439dca98eaaf718439cdbc",
+  "data_mode": "SIMULATED_DEMONSTRATION",
+  "dataset_version": "phase12_simulated_demonstration_v1",
+  "calibration_sample_count": 3998,
+  "holdout_sample_count": 1000,
+  "calibration_thresholds": {
+    "0.80": {
+      "nominal_coverage": 0.8,
+      "alpha": 0.2,
+      "threshold_q": 0.4244,
+      "empirical_holdout_coverage": 0.817,
+      "coverage_error": 0.017,
+      "mean_interval_width": 0.8488
+    },
+    "0.90": {
+      "nominal_coverage": 0.9,
+      "alpha": 0.1,
+      "threshold_q": 0.5984,
+      "empirical_holdout_coverage": 0.908,
+      "coverage_error": 0.008,
+      "mean_interval_width": 1.1968
+    },
+    "0.95": {
+      "nominal_coverage": 0.95,
+      "alpha": 0.05,
+      "threshold_q": 0.7788,
+      "empirical_holdout_coverage": 0.948,
+      "coverage_error": -0.002,
+      "mean_interval_width": 1.5576
+    }
+  }
+}

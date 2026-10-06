@@ -1,0 +1,22 @@
+{
+  "model_version": "candidate_v1_2_revalidated",
+  "model_family": "ExtraTreesRegressor (250 Trees)",
+  "phase": 12,
+  "data_mode": "SIMULATED_DEMONSTRATION",
+  "dataset_version": "phase12_simulated_demonstration_v1",
+  "artifact_hash": "aad2f208a298289de57a0a8fd4aef941be0edaf940439dca98eaaf718439cdbc",
+  "hyperparameters": {
+    "n_estimators": 250,
+    "max_features": "sqrt",
+    "random_state": 42
+  },
+  "validation_metrics": {
+    "holdout_r2": 0.919638,
+    "holdout_rmse": 0.363917,
+    "cv_r2": 0.90374667028895,
+    "cv_rmse": 0.39513071749887785
+  },
+  "conformal_calibration_artifact": "models/candidate_v1_2_conformal_calibration.json",
+  "approval_status": "VALIDATING",
+  "shadow_serving_eligible": true
+}

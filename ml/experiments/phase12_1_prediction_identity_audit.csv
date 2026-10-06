@@ -1,0 +1,7 @@
+Metric,Value,Interpretation
+Sample Size,1000,Phase 12 Holdout Records
+Max Absolute Difference,2.373800,Max single-record prediction divergence
+Mean Absolute Difference,0.222607,Average point prediction difference
+RMSE Between Models,0.335840,Root mean square deviation between model predictions
+Exact Equal Predictions,0,Zero identical predictions; models produce independent inference
+Report Metric Ties Cause,Report Duplication,Report table mistakenly duplicated retrained 500-tree experiment row

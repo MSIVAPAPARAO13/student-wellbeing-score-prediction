@@ -1,0 +1,32 @@
+{
+    "model_name": "ExtraTreesRegressor",
+    "model_version": "phase5_tuned_v1",
+    "phase": 5,
+    "training_records": 3998,
+    "holdout_records": 1000,
+    "feature_count": 12,
+    "random_state": 42,
+    "sklearn_version": "1.9.0",
+    "optuna_version": "5.0.0",
+    "numpy_version": "2.5.3",
+    "pandas_version": "3.0.5",
+    "hyperparameters": {
+        "n_estimators": 500,
+        "max_depth": null,
+        "min_samples_split": 2,
+        "min_samples_leaf": 1,
+        "max_features": "sqrt"
+    },
+    "CV_R2": 0.9110063413694472,
+    "CV_R2_STD": 0.0035251884690408707,
+    "CV_MAE": 0.2684860017388534,
+    "CV_RMSE": 0.3765113638792527,
+    "Test_R2": 0.9275482855359479,
+    "Test_MAE": 0.24902231190475996,
+    "Test_RMSE": 0.3596406426799059,
+    "Train_R2": 0.999989750921325,
+    "Train_CV_Gap": 0.08898340955187778,
+    "training_time_s": 0.44755220017395914,
+    "inference_time_ms": 152.72031999193132,
+    "artifact_size_kb": 53658.107421875
+}

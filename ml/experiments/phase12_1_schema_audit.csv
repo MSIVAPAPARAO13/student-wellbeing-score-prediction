@@ -1,0 +1,6 @@
+Dimension,Production_Champion_Artifact,Candidate_v1_2_Artifact,Phase_12_Documentation,Audit_Finding
+Input Feature Count,12 features,12 features,12 features,MATCH
+Transformed Feature Count,38 features,35 features,38 features claimed,MISMATCH: Candidate uses 35 features due to drop='first' on nominals
+Study_Hours Transformer,log1p + StandardScaler,RobustScaler,RobustScaler claimed,MISMATCH: Production Champion uses log1p + StandardScaler; docs mistakenly stated RobustScaler
+Stress_Level Encoding,OrdinalEncoder,OneHotEncoder(drop='first'),OneHotEncoder claimed,MISMATCH: Production Champion encodes Stress_Level ordinally; Candidate used OneHot
+Stress_Level Categories,"['Low', 'Medium', 'High', 'Very High']","['High', 'Low', 'Moderate']","['Low', 'Moderate', 'High'] claimed",MISMATCH: Production Champion has 4 levels with 'Medium' and 'Very High'; docs listed 'Moderate'

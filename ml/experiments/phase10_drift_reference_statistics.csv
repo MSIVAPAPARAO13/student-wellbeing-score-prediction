@@ -1,0 +1,135 @@
+feature,feature_type,category,count,mean,std,median,min,max,q10,q25,q75,q90,frequency
+Age,numerical,N/A,3998,20.8192,1.7388,21.0,18.0,24.0,19.0,19.0,22.0,23.0,1.0
+Avg_Daily_Usage_Hours,numerical,N/A,3998,5.081,1.6456,5.0,1.1,8.8,2.9,3.8,6.3,7.3,1.0
+Daily_Unlocks,numerical,N/A,3998,171.6526,42.6408,171.0,62.0,273.0,115.0,140.0,203.75,230.0,1.0
+Sleep_Hours_Per_Night,numerical,N/A,3998,6.6373,1.2194,6.6,3.6,9.9,5.0,5.7,7.5,8.3,1.0
+Study_Hours,numerical,N/A,3998,2.9991,1.6288,2.8,0.5,8.3,1.0,1.5,4.2,5.3,1.0
+Physical_Activity_Hours,numerical,N/A,3998,1.7481,0.6668,1.7,-0.4,4.1,0.9,1.3,2.2,2.6,1.0
+Gender,categorical,Male,2087,,,,,,,,,,0.522
+Gender,categorical,Female,1911,,,,,,,,,,0.478
+Academic_Level,categorical,Undergraduate,2905,,,,,,,,,,0.7266
+Academic_Level,categorical,Graduate,732,,,,,,,,,,0.1831
+Academic_Level,categorical,High School,361,,,,,,,,,,0.0903
+Country,categorical,Other,1513,,,,,,,,,,0.3784
+Country,categorical,India,303,,,,,,,,,,0.0758
+Country,categorical,USA,280,,,,,,,,,,0.07
+Country,categorical,Canada,184,,,,,,,,,,0.046
+Country,categorical,Australia,155,,,,,,,,,,0.0388
+Country,categorical,UK,150,,,,,,,,,,0.0375
+Country,categorical,Germany,109,,,,,,,,,,0.0273
+Country,categorical,Mexico,75,,,,,,,,,,0.0188
+Country,categorical,France,74,,,,,,,,,,0.0185
+Country,categorical,Turkey,74,,,,,,,,,,0.0185
+Country,categorical,Spain,73,,,,,,,,,,0.0183
+Country,categorical,Japan,63,,,,,,,,,,0.0158
+Country,categorical,Ireland,62,,,,,,,,,,0.0155
+Country,categorical,Denmark,58,,,,,,,,,,0.0145
+Country,categorical,Russia,58,,,,,,,,,,0.0145
+Country,categorical,Nepal,57,,,,,,,,,,0.0143
+Country,categorical,Switzerland,57,,,,,,,,,,0.0143
+Country,categorical,Italy,52,,,,,,,,,,0.013
+Country,categorical,Sri Lanka,46,,,,,,,,,,0.0115
+Country,categorical,Maldives,44,,,,,,,,,,0.011
+Country,categorical,Poland,41,,,,,,,,,,0.0103
+Country,categorical,Pakistan,40,,,,,,,,,,0.01
+Country,categorical,Bangladesh,40,,,,,,,,,,0.01
+Country,categorical,Brazil,32,,,,,,,,,,0.008
+Country,categorical,South Korea,32,,,,,,,,,,0.008
+Country,categorical,China,29,,,,,,,,,,0.0073
+Country,categorical,Singapore,23,,,,,,,,,,0.0058
+Country,categorical,Malaysia,21,,,,,,,,,,0.0053
+Country,categorical,Netherlands,20,,,,,,,,,,0.005
+Country,categorical,Finland,17,,,,,,,,,,0.0043
+Country,categorical,New Zealand,17,,,,,,,,,,0.0043
+Country,categorical,UAE,16,,,,,,,,,,0.004
+Country,categorical,Uzbekistan,7,,,,,,,,,,0.0018
+Country,categorical,Qatar,6,,,,,,,,,,0.0015
+Country,categorical,Afghanistan,6,,,,,,,,,,0.0015
+Country,categorical,Egypt,5,,,,,,,,,,0.0013
+Country,categorical,Cyprus,5,,,,,,,,,,0.0013
+Country,categorical,Andorra,5,,,,,,,,,,0.0013
+Country,categorical,Sweden,5,,,,,,,,,,0.0013
+Country,categorical,Romania,4,,,,,,,,,,0.001
+Country,categorical,North Macedonia,4,,,,,,,,,,0.001
+Country,categorical,Moldova,4,,,,,,,,,,0.001
+Country,categorical,Lithuania,4,,,,,,,,,,0.001
+Country,categorical,Norway,4,,,,,,,,,,0.001
+Country,categorical,South Africa,4,,,,,,,,,,0.001
+Country,categorical,Vietnam,4,,,,,,,,,,0.001
+Country,categorical,Lebanon,4,,,,,,,,,,0.001
+Country,categorical,Argentina,4,,,,,,,,,,0.001
+Country,categorical,Greece,3,,,,,,,,,,0.0008
+Country,categorical,Monaco,3,,,,,,,,,,0.0008
+Country,categorical,Paraguay,3,,,,,,,,,,0.0008
+Country,categorical,Slovakia,3,,,,,,,,,,0.0008
+Country,categorical,Georgia,3,,,,,,,,,,0.0008
+Country,categorical,Tajikistan,3,,,,,,,,,,0.0008
+Country,categorical,Vatican City,3,,,,,,,,,,0.0008
+Country,categorical,Latvia,3,,,,,,,,,,0.0008
+Country,categorical,Costa Rica,3,,,,,,,,,,0.0008
+Country,categorical,Czech Republic,3,,,,,,,,,,0.0008
+Country,categorical,San Marino,3,,,,,,,,,,0.0008
+Country,categorical,Morocco,3,,,,,,,,,,0.0008
+Country,categorical,Panama,3,,,,,,,,,,0.0008
+Country,categorical,Trinidad,3,,,,,,,,,,0.0008
+Country,categorical,Luxembourg,2,,,,,,,,,,0.0005
+Country,categorical,Bulgaria,2,,,,,,,,,,0.0005
+Country,categorical,Portugal,2,,,,,,,,,,0.0005
+Country,categorical,Hungary,2,,,,,,,,,,0.0005
+Country,categorical,Taiwan,2,,,,,,,,,,0.0005
+Country,categorical,Bahrain,2,,,,,,,,,,0.0005
+Country,categorical,Belgium,2,,,,,,,,,,0.0005
+Country,categorical,Austria,2,,,,,,,,,,0.0005
+Country,categorical,Ghana,2,,,,,,,,,,0.0005
+Country,categorical,Albania,2,,,,,,,,,,0.0005
+Country,categorical,Liechtenstein,2,,,,,,,,,,0.0005
+Country,categorical,Peru,2,,,,,,,,,,0.0005
+Country,categorical,Malta,2,,,,,,,,,,0.0005
+Country,categorical,Jordan,2,,,,,,,,,,0.0005
+Country,categorical,Israel,2,,,,,,,,,,0.0005
+Country,categorical,Kosovo,2,,,,,,,,,,0.0005
+Country,categorical,Bhutan,2,,,,,,,,,,0.0005
+Country,categorical,Philippines,2,,,,,,,,,,0.0005
+Country,categorical,Venezuela,2,,,,,,,,,,0.0005
+Country,categorical,Ukraine,2,,,,,,,,,,0.0005
+Country,categorical,Azerbaijan,2,,,,,,,,,,0.0005
+Country,categorical,Oman,2,,,,,,,,,,0.0005
+Country,categorical,Chile,2,,,,,,,,,,0.0005
+Country,categorical,Iraq,2,,,,,,,,,,0.0005
+Country,categorical,Nigeria,2,,,,,,,,,,0.0005
+Country,categorical,Kenya,1,,,,,,,,,,0.0003
+Country,categorical,Kazakhstan,1,,,,,,,,,,0.0003
+Country,categorical,Yemen,1,,,,,,,,,,0.0003
+Country,categorical,Colombia,1,,,,,,,,,,0.0003
+Country,categorical,Indonesia,1,,,,,,,,,,0.0003
+Country,categorical,Slovenia,1,,,,,,,,,,0.0003
+Country,categorical,Armenia,1,,,,,,,,,,0.0003
+Country,categorical,Iceland,1,,,,,,,,,,0.0003
+Country,categorical,Uruguay,1,,,,,,,,,,0.0003
+Country,categorical,Jamaica,1,,,,,,,,,,0.0003
+Country,categorical,Hong Kong,1,,,,,,,,,,0.0003
+Country,categorical,Croatia,1,,,,,,,,,,0.0003
+Country,categorical,Kyrgyzstan,1,,,,,,,,,,0.0003
+Country,categorical,Bahamas,1,,,,,,,,,,0.0003
+Country,categorical,Serbia,1,,,,,,,,,,0.0003
+Country,categorical,Estonia,1,,,,,,,,,,0.0003
+Most_Used_Platform,categorical,Instagram,895,,,,,,,,,,0.2239
+Most_Used_Platform,categorical,TikTok,732,,,,,,,,,,0.1831
+Most_Used_Platform,categorical,Facebook,587,,,,,,,,,,0.1468
+Most_Used_Platform,categorical,LinkedIn,407,,,,,,,,,,0.1018
+Most_Used_Platform,categorical,YouTube,388,,,,,,,,,,0.097
+Most_Used_Platform,categorical,Twitter,374,,,,,,,,,,0.0935
+Most_Used_Platform,categorical,Snapchat,339,,,,,,,,,,0.0848
+Most_Used_Platform,categorical,WhatsApp,139,,,,,,,,,,0.0348
+Most_Used_Platform,categorical,LINE,42,,,,,,,,,,0.0105
+Most_Used_Platform,categorical,VKontakte,37,,,,,,,,,,0.0093
+Most_Used_Platform,categorical,KakaoTalk,30,,,,,,,,,,0.0075
+Most_Used_Platform,categorical,WeChat,28,,,,,,,,,,0.007
+Stress_Level,categorical,Very High,1287,,,,,,,,,,0.3219
+Stress_Level,categorical,High,1167,,,,,,,,,,0.2919
+Stress_Level,categorical,Medium,1046,,,,,,,,,,0.2616
+Stress_Level,categorical,Low,498,,,,,,,,,,0.1246
+Purpose_Of_Use,categorical,Entertainment,2031,,,,,,,,,,0.508
+Purpose_Of_Use,categorical,Education,860,,,,,,,,,,0.2151
+Purpose_Of_Use,categorical,Networking,647,,,,,,,,,,0.1618
+Purpose_Of_Use,categorical,News,460,,,,,,,,,,0.1151

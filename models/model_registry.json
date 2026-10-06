@@ -1,0 +1,190 @@
+{
+  "registry_version": "1.0.0",
+  "last_updated": "2026-10-06T04:20:00Z",
+  "governance_policy": {
+    "automatic_retraining_allowed": false,
+    "automatic_promotion_allowed": false,
+    "promotion_requires_human_approval": true,
+    "minimum_evaluation_sample_size": 100,
+    "coverage_tolerance_floor": 0.85,
+    "r2_degradation_tolerance": 0.03
+  },
+  "lifecycle_states": [
+    "REGISTERED",
+    "VALIDATING",
+    "SHADOW",
+    "APPROVED_FOR_PRODUCTION",
+    "REJECTED",
+    "RETIRED"
+  ],
+  "champion": {
+    "model_version": "phase5_tuned_extra_trees",
+    "status": "CHAMPION",
+    "approval_status": "APPROVED_FOR_PRODUCTION",
+    "deployment_status": "ACTIVE",
+    "model_family": "ExtraTreesRegressor",
+    "artifact_path": "models/phase5_tuned_extra_trees.joblib",
+    "artifact_hash": "a012e7a1c0ca5c9fccb21d1e46bf3b4b4a72635204c13efdc4f93d6c636747f8",
+    "training_dataset_version": "v2.0_deduplicated_3998_records",
+    "training_date": "2026-10-05T06:00:00Z",
+    "code_commit": "6a3111bf6dcd8a2d858a3c6377b35702c8453627",
+    "release_tag": "v1.0.0",
+    "docker_image": "ghcr.io/tanishq-latent/mental-health-score:latest",
+    "docker_digest": "sha-6a3111b",
+    "feature_schema": [
+      "Study_Hours",
+      "Age",
+      "Avg_Daily_Usage_Hours",
+      "Daily_Unlocks",
+      "Physical_Activity_Hours",
+      "Sleep_Hours_Per_Night",
+      "Stress_Level",
+      "Gender",
+      "Academic_Level",
+      "Most_Used_Platform",
+      "Purpose_Of_Use",
+      "Grouped_country"
+    ],
+    "hyperparameters": {
+      "n_estimators": 500,
+      "max_depth": null,
+      "min_samples_split": 2,
+      "min_samples_leaf": 1,
+      "max_features": "sqrt",
+      "random_state": 42
+    },
+    "validation_metrics": {
+      "holdout_r2": 0.927548,
+      "holdout_rmse": 0.359641,
+      "holdout_mae": 0.249022,
+      "cv_r2": 0.911006,
+      "cv_rmse": 0.376511,
+      "cv_mae": 0.268486,
+      "train_cv_gap": 0.088983
+    },
+    "uncertainty_method": "5-Fold Cross-Conformal / Out-Of-Fold Residual Calibration",
+    "calibration_artifact": "models/phase7_1_conformal_calibration.json",
+    "calibration_hash": "22a8f3fc5b2863855e1c2cc0dc4f1df056d0250057d1094c93f5f66d95108d0b",
+    "calibration_metrics": {
+      "empirical_80_coverage": 0.8460,
+      "empirical_90_coverage": 0.9270,
+      "empirical_95_coverage": 0.9580,
+      "mean_90_interval_width": 1.1884,
+      "q80": 0.4156,
+      "q90": 0.5942,
+      "q95": 0.7902
+    }
+  },
+  "challengers": [
+    {
+      "model_version": "candidate_v1_1_fast_trees",
+      "status": "CHALLENGER",
+      "approval_status": "SHADOW",
+      "deployment_status": "SHADOW_ONLY",
+      "model_family": "ExtraTreesRegressor (Lightweight 100 Trees)",
+      "artifact_path": "models/phase4_candidate.joblib",
+      "artifact_hash": "b445c73df087078c4a263cf23b634b8ba3d38ee9f84a09a817060cc7ce03a2e4",
+      "training_dataset_version": "v2.0_deduplicated_3998_records",
+      "hyperparameters": {
+        "n_estimators": 100,
+        "max_depth": null,
+        "random_state": 42
+      },
+      "validation_metrics": {
+        "holdout_r2": 0.918392,
+        "holdout_rmse": 0.381689,
+        "holdout_mae": 0.260199,
+        "cv_r2": 0.905368,
+        "cv_rmse": 0.388058,
+        "cv_mae": 0.276339
+      },
+      "shadow_serving_config": {
+        "enabled": true,
+        "traffic_sample_rate": 1.0,
+        "affect_user_response": false
+      }
+    },
+    {
+      "model_version": "candidate_v1_2_revalidated",
+      "status": "CHALLENGER",
+      "approval_status": "VALIDATING",
+      "deployment_status": "SHADOW_ONLY",
+      "model_family": "ExtraTreesRegressor (250 Trees, sqrt features)",
+      "artifact_path": "models/candidate_v1_2_revalidated.joblib",
+      "artifact_hash": "aad2f208a298289de57a0a8fd4aef941be0edaf940439dca98eaaf718439cdbc",
+      "training_dataset_version": "phase12_simulated_demonstration_v1",
+      "hyperparameters": {
+        "n_estimators": 250,
+        "max_depth": null,
+        "max_features": "sqrt",
+        "random_state": 42
+      },
+      "validation_metrics": {
+        "holdout_r2": 0.923286,
+        "holdout_rmse": 0.355563,
+        "holdout_mae": 0.252392,
+        "cv_r2": 0.911874,
+        "cv_rmse": 0.377863,
+        "cv_mae": 0.270860
+      },
+      "uncertainty_method": "5-Fold Cross-Conformal / Out-Of-Fold Residual Calibration",
+      "calibration_artifact": "models/candidate_v1_2_conformal_calibration.json",
+      "calibration_metrics": {
+        "empirical_80_coverage": 0.817,
+        "empirical_90_coverage": 0.908,
+        "empirical_95_coverage": 0.948,
+        "mean_90_interval_width": 1.1968,
+        "q80": 0.4244,
+        "q90": 0.5984,
+        "q95": 0.7788
+      },
+      "shadow_serving_config": {
+        "enabled": true,
+        "traffic_sample_rate": 1.0,
+        "affect_user_response": false
+      }
+    }
+  ],
+  "audit_log": [
+    {
+      "timestamp": "2026-10-05T06:00:00Z",
+      "model_version": "phase5_tuned_extra_trees",
+      "event": "MODEL_REGISTERED",
+      "actor": "system",
+      "decision": "REGISTERED",
+      "evidence_reference": "ml/experiments/phase5_hyperparameter_results.csv"
+    },
+    {
+      "timestamp": "2026-10-05T08:00:00Z",
+      "model_version": "phase5_tuned_extra_trees",
+      "event": "VALIDATION_PASSED",
+      "actor": "system",
+      "decision": "PASSED",
+      "evidence_reference": "reports/phase7_1_conformal_audit_report.md"
+    },
+    {
+      "timestamp": "2026-10-05T12:00:00Z",
+      "model_version": "phase5_tuned_extra_trees",
+      "event": "MODEL_PROMOTED",
+      "actor": "governance_committee",
+      "decision": "APPROVED_FOR_PRODUCTION",
+      "evidence_reference": "PHASE9_CLOUD_DEPLOYMENT_REPORT.md"
+    },
+    {
+      "timestamp": "2026-10-06T04:00:00Z",
+      "model_version": "candidate_v1_1_fast_trees",
+      "event": "SHADOW_STARTED",
+      "actor": "system",
+      "decision": "SHADOW_EVALUATION_ONLY",
+      "evidence_reference": "PHASE11_MODEL_GOVERNANCE_REPORT.md"
+    },
+    {
+      "timestamp": "2026-10-06T05:35:00Z",
+      "model_version": "candidate_v1_2_revalidated",
+      "event": "PHASE12_REVALIDATION_CHALLENGER_REGISTERED",
+      "actor": "phase12_governance_pipeline",
+      "decision": "CHALLENGER_VALIDATING_SHADOW_ONLY",
+      "evidence_reference": "reports/PHASE12_CONTROLLED_MODEL_IMPROVEMENT_REPORT.md"
+    }
+  ]
+}

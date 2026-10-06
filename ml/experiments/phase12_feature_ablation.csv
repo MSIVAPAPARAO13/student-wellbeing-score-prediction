@@ -1,0 +1,4 @@
+Experiment,Features_Added,CV_R2,CV_RMSE,CV_MAE,R2_Delta,Decision
+Baseline (12 Raw Features),None,0.903747,0.395131,0.279715,0.0,BASELINE
+Candidate F1 (Sleep_to_Screen_Ratio),Sleep_to_Screen_Ratio,0.900094,0.402596,0.284644,-0.003653,REJECTED (Redundant / Noise)
+Candidate F2 (Lifestyle_Balance_Index),Lifestyle_Balance_Index,0.903097,0.396471,0.281794,-0.00065,REJECTED (Redundant / Noise)

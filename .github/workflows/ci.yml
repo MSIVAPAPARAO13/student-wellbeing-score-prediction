@@ -1,0 +1,89 @@
+name: CI - Production Validation & Security Quality Gates
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-test:
+    name: Verify Model, Calibration & API Suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install Production & Testing Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest httpx
+
+      - name: Verify Model SHA-256 Immutability
+        run: |
+          python -c '
+          import hashlib, sys
+          EXPECTED = "a012e7a1c0ca5c9fccb21d1e46bf3b4b4a72635204c13efdc4f93d6c636747f8"
+          model_path = "models/phase5_tuned_extra_trees.joblib"
+          with open(model_path, "rb") as f:
+              actual_hash = hashlib.sha256(f.read()).hexdigest()
+          print(f"Authoritative SHA-256 : {EXPECTED}")
+          print(f"Current Model SHA-256 : {actual_hash}")
+          if actual_hash.lower() != EXPECTED.lower():
+              print("FATAL: Model hash mismatch! The production artifact has been altered.")
+              sys.exit(1)
+          print("SUCCESS: Model integrity verified bit-for-bit.")
+          '
+
+      - name: Verify Conformal Calibration Artifact Integrity
+        run: |
+          python -c '
+          import json, sys
+          calib_path = "models/phase7_1_conformal_calibration.json"
+          with open(calib_path, "r", encoding="utf-8") as f:
+              data = json.load(f)
+          assert data["calibration_sample_count"] == 3998, "Calib sample count must be 3998"
+          assert data["target_column"] == "Mental_Health_Score", "Target column mismatch"
+          thresh = data["calibration_thresholds"]
+          assert abs(thresh["0.80"]["threshold_q"] - 0.4156) < 1e-3, "0.80 threshold mismatch"
+          assert abs(thresh["0.90"]["threshold_q"] - 0.5942) < 1e-3, "0.90 threshold mismatch"
+          assert abs(thresh["0.95"]["threshold_q"] - 0.7902) < 1e-3, "0.95 threshold mismatch"
+          print("SUCCESS: Phase 7.1 Conformal calibration artifact verified.")
+          '
+
+      - name: Verify Holdout Dataset Isolation
+        run: |
+          python -c '
+          import os, sys
+          # Ensure holdout records are not embedded inside app/
+          for root, dirs, files in os.walk("app"):
+              for f in files:
+                  if "holdout" in f.lower() or f.endswith(".csv"):
+                      print(f"FATAL: Found quarantined dataset in app: {f}")
+                      sys.exit(1)
+          print("SUCCESS: Holdout dataset strictly isolated from production serving package.")
+          '
+
+      - name: Validate Application Import
+        run: |
+          python -c "from app.main import app; print('SUCCESS: FastAPI application imported cleanly.')"
+
+      - name: Run Production Test Suite
+        run: |
+          pytest -v tests/test_api.py tests/test_monitoring.py tests/test_governance.py
+
+      - name: Validate Docker Image Build
+        run: |
+          docker build -t test-wellbeing-service:ci .

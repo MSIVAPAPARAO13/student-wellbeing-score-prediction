@@ -1,0 +1,24 @@
+.git
+.gitignore
+.vscode
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+venv
+.venv
+env
+ml/data/
+ml/notebooks/
+ml/experiments/
+ml/evaluation/
+reports/
+scratch/
+catboost_info/
+ML_Project.ipynb
+ML Project.html
+Student Social Media And Mental Health Impact.csv
+Mental_Health_Model.pkl
+*.md
+!README.md
