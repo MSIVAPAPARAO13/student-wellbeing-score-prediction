@@ -249,6 +249,19 @@ class FeedbackIngestionEngine:
         """Returns strictly verified feedback records eligible for model evaluation."""
         return [r for r in self.records.values() if r.verification_status == "VERIFIED" and r.observed_score is not None]
 
+    def get_verified_label_counter(self) -> Dict[str, Any]:
+        """Returns live counter of verified post-deployment labels vs 100-label threshold."""
+        verified = self.get_verified_records()
+        count = len(verified)
+        target = 100
+        return {
+            "verified_count": count,
+            "target_count": target,
+            "display": f"{count} / {target}",
+            "threshold_met": count >= target,
+            "data_mode": "LIVE_VERIFIED" if count > 0 else "OFFLINE / NO VERIFIED PRODUCTION LABELS"
+        }
+
 
 # =====================================================================
 # Performance & Interval Evaluator
@@ -447,18 +460,34 @@ class ShadowServingManager:
     1. Shadow scoring errors never interrupt the user response.
     2. Shadow scores are never returned to clients.
     3. Minimal comparison telemetry is retained in memory.
+    4. Explicit 14-day observation timeline and latency percentiles are tracked.
     """
 
     def __init__(self, registry_manager: Optional[ModelRegistryManager] = None):
         self.registry = registry_manager or ModelRegistryManager()
         self.shadow_comparisons: List[Dict[str, Any]] = []
         self._max_buffer = 1000
+        # Phase 13 Shadow observation timeline and operational counters
+        self.shadow_start_timestamp = "2026-10-06T09:30:00Z"
+        self.shadow_requests = 0
+        self.shadow_successes = 0
+        self.shadow_exceptions = 0
+        self.shadow_timeouts = 0
+        self.shadow_latencies_ms: List[float] = []
+        self._candidate_model = None
+        self._candidate_calib = None
+        # Controlled test simulation hooks for failure isolation verification
+        self.simulate_exception = False
+        self.simulate_timeout = False
 
     def evaluate_shadow(
         self,
         champion_pred: float,
         challenger_pred: float,
-        prediction_id: Optional[str] = None
+        prediction_id: Optional[str] = None,
+        champion_width: Optional[float] = None,
+        challenger_width: Optional[float] = None,
+        latency_ms: Optional[float] = None
     ) -> Dict[str, Any]:
         """Records paired prediction comparison between Champion and Challenger."""
         pid = prediction_id or str(uuid.uuid4())[:8]
@@ -471,7 +500,10 @@ class ShadowServingManager:
             "champion_prediction": round(float(champion_pred), 4),
             "challenger_prediction": round(float(challenger_pred), 4),
             "difference": round(diff, 4),
-            "abs_difference": round(abs_diff, 4)
+            "abs_difference": round(abs_diff, 4),
+            "champion_interval_width": round(float(champion_width), 4) if champion_width is not None else None,
+            "candidate_interval_width": round(float(challenger_width), 4) if challenger_width is not None else None,
+            "candidate_latency_ms": round(float(latency_ms), 3) if latency_ms is not None else None
         }
 
         self.shadow_comparisons.append(rec)
@@ -479,6 +511,140 @@ class ShadowServingManager:
             self.shadow_comparisons = self.shadow_comparisons[-self._max_buffer:]
 
         return rec
+
+    def evaluate_live_shadow(
+        self,
+        survey_data: Any,
+        champion_response: Any
+    ) -> Optional[Dict[str, Any]]:
+        """Executes live candidate scoring in shadow mode.
+        
+        CRITICAL SAFEGUARDS:
+        1. If candidate throws, times out, or crashes, this method catches it and logs warning.
+        2. It NEVER propagates an exception to the caller.
+        3. It NEVER alters the champion_response returned to the user.
+        """
+        # Check if candidate shadow serving is active in registry
+        challengers = self.registry.get_challengers()
+        candidate_cfg = next(
+            (c.get("shadow_serving_config", {}) for c in challengers if c.get("model_version") == "candidate_v1_2_revalidated"),
+            None
+        )
+        if not candidate_cfg or not candidate_cfg.get("enabled", True):
+            return None
+
+        self.shadow_requests += 1
+
+        # Controlled simulation hooks for testing
+        if self.simulate_timeout:
+            self.shadow_timeouts += 1
+            logger.warning("Simulated Candidate shadow timeout (isolated from user response)")
+            return None
+
+        if self.simulate_exception:
+            self.shadow_exceptions += 1
+            logger.warning("Simulated Candidate shadow exception (isolated from user response)")
+            return None
+
+        import time
+        t0 = time.perf_counter()
+        try:
+            # Lazy load candidate pipeline
+            if self._candidate_model is None:
+                cand_path = self.registry.registry_path.parent / "candidate_v1_2_revalidated.joblib"
+                if not cand_path.exists():
+                    root = Path(__file__).resolve().parent.parent
+                    cand_path = root / "models" / "candidate_v1_2_revalidated.joblib"
+                import joblib
+                self._candidate_model = joblib.load(cand_path)
+
+            if self._candidate_calib is None:
+                calib_path = self.registry.registry_path.parent / "candidate_v1_2_conformal_calibration.json"
+                if not calib_path.exists():
+                    root = Path(__file__).resolve().parent.parent
+                    calib_path = root / "models" / "candidate_v1_2_conformal_calibration.json"
+                with open(calib_path, "r", encoding="utf-8") as f:
+                    self._candidate_calib = json.load(f)
+
+            # Convert input
+            if hasattr(survey_data, "model_dump"):
+                row_dict = survey_data.model_dump()
+            elif hasattr(survey_data, "dict"):
+                row_dict = survey_data.dict()
+            elif isinstance(survey_data, dict):
+                row_dict = survey_data.copy()
+            else:
+                row_dict = {}
+
+            # Country grouping
+            top10 = ["Australia", "Canada", "France", "Germany", "India", "Mexico", "Other", "Turkey", "UK", "USA"]
+            raw_country = row_dict.get("Country", "Other")
+            row_dict["Grouped_country"] = raw_country if raw_country in top10 else "Other"
+
+            input_cols = [
+                "Study_Hours", "Age", "Avg_Daily_Usage_Hours", "Daily_Unlocks",
+                "Physical_Activity_Hours", "Sleep_Hours_Per_Night", "Stress_Level",
+                "Gender", "Academic_Level", "Most_Used_Platform", "Purpose_Of_Use",
+                "Grouped_country"
+            ]
+            df_row = pd.DataFrame([{col: row_dict.get(col) for col in input_cols}])
+
+            cand_raw_pred = float(self._candidate_model.predict(df_row)[0])
+            cand_score = max(SCORE_MIN_DOMAIN, min(SCORE_MAX_DOMAIN, round(cand_raw_pred, 2)))
+
+            # Uncertainty interval width
+            cov_key = f"{row_dict.get('coverage', 0.90):.2f}"
+            thresh = self._candidate_calib.get("calibration_thresholds", {}).get(cov_key, {})
+            cand_width = round(2 * float(thresh.get("threshold_q", 0.5984)), 4) if thresh else 1.1968
+
+            lat_ms = (time.perf_counter() - t0) * 1000.0
+            self.shadow_latencies_ms.append(lat_ms)
+            if len(self.shadow_latencies_ms) > self._max_buffer:
+                self.shadow_latencies_ms = self.shadow_latencies_ms[-self._max_buffer:]
+
+            self.shadow_successes += 1
+
+            champ_pred = float(champion_response.estimated_wellbeing_score)
+            champ_w = float(champion_response.prediction_interval.width) if champion_response.prediction_interval else None
+
+            return self.evaluate_shadow(
+                champion_pred=champ_pred,
+                challenger_pred=cand_score,
+                prediction_id=str(uuid.uuid4())[:8],
+                champion_width=champ_w,
+                challenger_width=cand_width,
+                latency_ms=lat_ms
+            )
+        except Exception as exc:
+            self.shadow_exceptions += 1
+            logger.warning("Candidate shadow scoring failed safely without impacting user: %s", exc)
+            return None
+
+    def get_shadow_status(self) -> Dict[str, Any]:
+        """Returns live observation status, days elapsed, exception counts, and latency percentiles."""
+        start_dt = datetime.fromisoformat(self.shadow_start_timestamp.replace("Z", "+00:00"))
+        now_dt = datetime.now(timezone.utc)
+        elapsed_days = max(0.0, (now_dt - start_dt).total_seconds() / 86400.0)
+        days_completed = int(elapsed_days)
+        days_remaining = max(0, 14 - days_completed)
+
+        latencies = self.shadow_latencies_ms or [0.0]
+        return {
+            "shadow_start_timestamp": self.shadow_start_timestamp,
+            "days_elapsed": round(elapsed_days, 3),
+            "days_completed": days_completed,
+            "days_remaining": days_remaining,
+            "days_required": 14,
+            "is_14_days_completed": days_completed >= 14,
+            "shadow_requests": self.shadow_requests,
+            "shadow_successes": self.shadow_successes,
+            "shadow_exceptions": self.shadow_exceptions,
+            "shadow_timeouts": self.shadow_timeouts,
+            "latency_p50_ms": round(float(np.median(latencies)), 2) if self.shadow_latencies_ms else None,
+            "latency_p95_ms": round(float(np.percentile(latencies, 95)), 2) if self.shadow_latencies_ms else None,
+            "latency_p99_ms": round(float(np.percentile(latencies, 99)), 2) if self.shadow_latencies_ms else None,
+            "summary": self.get_summary()
+        }
 
     def get_summary(self) -> Dict[str, Any]:
         """Returns summary statistics of shadow scoring comparisons."""

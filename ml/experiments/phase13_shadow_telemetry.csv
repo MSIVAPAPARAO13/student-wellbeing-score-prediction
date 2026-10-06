@@ -1,0 +1,17 @@
+metric,value,unit,notes
+shadow_observation_status,ACTIVE_CONTROLLED_SHADOW,status,Candidate executes in isolated shadow mode
+shadow_start_timestamp,2026-10-06T09:30:00Z,iso8601,Official start timestamp recorded
+days_elapsed,0.0,days,Continuous observation in progress
+days_completed,0,days,Full consecutive calendar days completed
+days_remaining,14,days,14 consecutive days required
+days_required,14,days,Governance observation threshold
+is_14_days_completed,FALSE,boolean,Observation gate pending
+shadow_requests,0,count,Production shadow requests recorded
+shadow_successes,0,count,Successful shadow candidate predictions
+shadow_exceptions,0,count,Isolated candidate exceptions
+shadow_timeouts,0,count,Isolated candidate timeouts
+candidate_p50_latency_ms,DATA_NOT_AVAILABLE,ms,Awaiting production request volume
+candidate_p95_latency_ms,DATA_NOT_AVAILABLE,ms,Awaiting production request volume
+candidate_p99_latency_ms,DATA_NOT_AVAILABLE,ms,Awaiting production request volume
+champion_latency_ms,DATA_NOT_AVAILABLE,ms,Awaiting production request volume
+user_response_impact,0,count,Strictly zero impact on user response

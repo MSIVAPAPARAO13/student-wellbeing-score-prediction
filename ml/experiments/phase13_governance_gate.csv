@@ -1,0 +1,12 @@
+gate_dimension,requirement,current_state,gate_status,blocker_reason
+technical_integrity,champion_and_candidate_hash_verified,"VERIFIED (Champion a012e7..., Candidate aad2f2...)",PASS,None
+candidate_failure_isolation,candidate_crash_does_not_affect_user,"VERIFIED (100% isolated, champion response unaffected)",PASS,None
+candidate_shadow_routing,candidate_never_returned_to_user,VERIFIED (shadow execution telemetry-only),PASS,None
+verified_production_labels,>= 100 verified post-deployment labels,0 / 100,FAIL,Insufficient verified production labels (0 of 100)
+shadow_observation_period,>= 14 consecutive calendar days,0 / 14 days completed (start: 2026-10-06T09:30:00Z),FAIL,Shadow observation in progress (14 days remaining)
+real_world_model_evaluation,paired evaluation on >= 100 verified labels,DATA_NOT_AVAILABLE,FAIL,Awaiting verified production outcomes
+uncertainty_evaluation,empirical post-deployment coverage evaluation,DATA_NOT_AVAILABLE,FAIL,Awaiting verified production outcomes
+drift_governance,no critical unresolved drift in production,BASELINE_READY,PASS,None (monitoring healthy)
+shadow_reliability,zero production outages caused by candidate,"HEALTHY (0 timeouts, 0 uncaught exceptions)",PASS,None
+human_approval,signoff from Model Governance Committee,PENDING,PENDING,Requires completed 14-day shadow & >= 100 labels
+promotion_decision,ALL GATES MUST PASS FOR PROMOTION,BLOCKED,BLOCKED,Candidate promotion strictly blocked until all gates satisfied

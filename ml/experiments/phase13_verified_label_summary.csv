@@ -1,0 +1,9 @@
+metric,value,threshold,status,notes
+verified_production_labels,0,100,IN_PROGRESS,0 / 100 verified post-deployment labels
+unverified_feedback_excluded,0,0,EXCLUDED,Unverified feedback excluded from ground truth
+rejected_feedback_excluded,0,0,EXCLUDED,Out-of-domain/corrupted feedback rejected
+duplicate_labels_rejected,0,0,EXCLUDED,Duplicate prediction IDs strictly deduplicated
+historical_offline_labels_used,0,0,STRICTLY_SEPARATED,Offline labels never counted as production
+synthetic_labels_used,0,0,STRICTLY_FORBIDDEN,No synthetic data counted as evidence
+target_definition,Mental_Health_Score,1.0 - 10.0,VALIDATED,Continuous survey-based student wellbeing score
+verification_gate_met,FALSE,TRUE,BLOCKED,Requires >= 100 verified post-deployment labels

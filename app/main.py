@@ -18,7 +18,7 @@ from app.schemas import (
 from app.model_service import model_service
 from app.explanation_service import explanation_service
 from app.monitoring import metrics_collector
-from app.governance import registry_manager, shadow_manager
+from app.governance import registry_manager, shadow_manager, feedback_engine
 
 # Configure production logging
 logging.basicConfig(
@@ -219,6 +219,13 @@ def predict(data: StudentSurveyRequest):
     resp = model_service.predict(data)
     width = resp.prediction_interval.width if resp.prediction_interval else None
     metrics_collector.record_prediction(resp.estimated_wellbeing_score, width)
+
+    # Controlled shadow observation for Candidate v1.2 (strictly isolated from user response)
+    try:
+        shadow_manager.evaluate_live_shadow(data, resp)
+    except Exception as exc:
+        logger.warning(f"Shadow observation failed safely without affecting production response: {exc}")
+
     return resp
 
 @app.post(
@@ -274,3 +281,23 @@ def get_governance_registry():
 )
 def get_governance_shadow():
     return shadow_manager.get_summary()
+
+@app.get(
+    "/governance/shadow/status",
+    summary="Detailed Shadow Serving Lifecycle Status",
+    description="Returns observation duration, elapsed/remaining days, exception counters, latency percentiles, and verified label count."
+)
+def get_governance_shadow_status():
+    shadow_status = shadow_manager.get_shadow_status()
+    label_status = feedback_engine.get_verified_label_counter()
+    return {
+        "shadow_status": shadow_status,
+        "verified_labels": label_status,
+        "governance_gate": {
+            "verified_labels_met": label_status["threshold_met"],
+            "shadow_duration_met": shadow_status["is_14_days_completed"],
+            "promotion_eligible": False,
+            "promotion_state": "BLOCKED",
+            "human_approval": "PENDING"
+        }
+    }
