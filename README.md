@@ -133,7 +133,9 @@ To provide clear individual interpretability, the service includes a TreeSHAP ex
 - **Dynamic Base Value:** Compares individual predictions against the population expected value ($\mathbb{E}[Y] \approx 6.22$).
 - **Bidirectional Factors:** Separates habits into **positive contributors** (factors improving estimated wellbeing) and **negative contributors** (factors lowering estimated wellbeing).
 
-![TreeSHAP Feature Attributions](docs/images/explanation.png)
+<p align="center">
+  <img src="./docs/images/explanation.png" alt="TreeSHAP Feature Attributions" width="100%" />
+</p>
 
 ---
 
@@ -210,19 +212,23 @@ The project includes an interactive web interface (`index.html`, `style.css`, `s
 ### Application Overview
 Structured survey inputs across Personal Information, Digital Habits, and Academic Profile with client-side boundary validation:
 
-![Student Wellbeing Score Prediction Interface](docs/images/home.png)
+<p align="center">
+  <img src="./docs/images/home.png" alt="Student Wellbeing Score Prediction Interface" width="100%" />
+</p>
 
 ### Prediction Result & Calibrated Uncertainty
 Continuous point estimate alongside calibrated 5-fold cross-conformal prediction intervals:
 
-![Prediction Result and Conformal Interval](docs/images/prediction-result.png)
+<p align="center">
+  <img src="./docs/images/prediction-result.png" alt="Prediction Result and Conformal Interval" width="100%" />
+</p>
 
 ### Validation & Responsive Layout
 Proactive inline validation error states and fully responsive layout across desktop, tablet, and mobile viewports:
 
 | Desktop Form Validation | Responsive Mobile Interface |
 | :---: | :---: |
-| ![Form Validation Error Feedback](docs/images/validation.png) | ![Responsive Mobile Layout](docs/images/mobile.png) |
+| <img src="./docs/images/validation.png" alt="Form Validation Error Feedback" width="100%" /> | <img src="./docs/images/mobile.png" alt="Responsive Mobile Layout" width="100%" /> |
 
 ---
 
