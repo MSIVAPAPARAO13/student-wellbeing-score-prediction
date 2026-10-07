@@ -221,13 +221,17 @@
   function setSubmitting(isSubmitting) {
     submitBtn.disabled = isSubmitting;
     submitBtn.classList.toggle("loading", isSubmitting);
+    const label = submitBtn.querySelector(".btn-label");
+    if (label) {
+      label.textContent = isSubmitting ? "Estimating Score…" : "Predict Wellbeing Score";
+    }
   }
 
   function clearResultDisplay() {
     scoreNumberEl.textContent = "—";
-    boundLabelLowerEl.textContent = "LB: —";
-    boundLabelEstimateEl.textContent = "Est: —";
-    boundLabelUpperEl.textContent = "UB: —";
+    boundLabelLowerEl.textContent = "Lower: —";
+    boundLabelEstimateEl.textContent = "Estimate: —";
+    boundLabelUpperEl.textContent = "Upper: —";
     metricIntervalRangeEl.textContent = "—";
     metricIntervalWidthEl.textContent = "—";
     metricModelNameEl.textContent = "—";
@@ -275,9 +279,9 @@
       intervalHighlightEl.style.width = `${Math.max(2, rightPercent - leftPercent)}%`;
       intervalPointMarkerEl.style.left = `${estimatePercent}%`;
 
-      boundLabelLowerEl.textContent = `LB: ${lower.toFixed(2)}`;
-      boundLabelEstimateEl.textContent = `Est: ${score.toFixed(2)}`;
-      boundLabelUpperEl.textContent = `UB: ${upper.toFixed(2)}`;
+      boundLabelLowerEl.textContent = `Lower: ${lower.toFixed(2)}`;
+      boundLabelEstimateEl.textContent = `Estimate: ${score.toFixed(2)}`;
+      boundLabelUpperEl.textContent = `Upper: ${upper.toFixed(2)}`;
     } else {
       metricIntervalRangeEl.textContent = "Unavailable";
       metricIntervalWidthEl.textContent = "Unavailable";
@@ -331,7 +335,7 @@
       const predScore = Number(expData.estimated_wellbeing_score);
 
       if (shapSummaryMetaEl) {
-        shapSummaryMetaEl.textContent = `Model Estimate: ${predScore.toFixed(2)} | Expected Base Value E[Y]: ${baseVal.toFixed(2)}`;
+        shapSummaryMetaEl.textContent = `Estimated Score: ${predScore.toFixed(2)} | Expected Baseline Average: ${baseVal.toFixed(2)}`;
       }
 
       const pos = Array.isArray(expData.positive_contributors) ? expData.positive_contributors : [];

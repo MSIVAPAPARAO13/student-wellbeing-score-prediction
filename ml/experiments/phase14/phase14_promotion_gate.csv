@@ -1,0 +1,19 @@
+Gate,Requirement,Actual,Status,Evidence
+1. 14-day shadow,Consecutive shadow observation window >= 14 calendar days,0 days (~0.8 days elapsed),BLOCKED,Observation window in progress (14 days remaining)
+2. >=100 verified labels,Genuinely new verified post-deployment labels >= 100,0 verified labels,BLOCKED,Zero verified post-deployment labels accumulated (0/100)
+3. statistical comparison,Statistically significant paired improvement (bootstrap 95% CI > 0; p < 0.05),DATA_NOT_AVAILABLE,BLOCKED,Cannot compute paired bootstrap CI without verified production labels
+4. practical improvement,Practical improvement threshold >= 0.05 MAE reduction,DATA_NOT_AVAILABLE,BLOCKED,Cannot determine practical superiority without verified production labels
+5. MAE,Production MAE lower than Champion baseline,DATA_NOT_AVAILABLE,BLOCKED,Requires paired post-deployment ground truth
+6. RMSE,Production RMSE lower than Champion baseline,DATA_NOT_AVAILABLE,BLOCKED,Requires paired post-deployment ground truth
+7. R²,Production R2 higher than Champion baseline,DATA_NOT_AVAILABLE,BLOCKED,Requires paired post-deployment ground truth
+8. conformal 80%,Empirical coverage at 80% nominal >= 75%,DATA_NOT_AVAILABLE,BLOCKED,Requires paired post-deployment ground truth
+9. conformal 90%,Empirical coverage at 90% nominal >= 85%,DATA_NOT_AVAILABLE,BLOCKED,Requires paired post-deployment ground truth
+10. conformal 95%,Empirical coverage at 95% nominal >= 90%,DATA_NOT_AVAILABLE,BLOCKED,Requires paired post-deployment ground truth
+11. interval width,Mean interval width non-degrading (width <= Champion + 0.10),DATA_NOT_AVAILABLE,BLOCKED,Requires post-deployment conformal predictions on verified set
+12. latency,Warm inference latency satisfies production SLA (P95 < 150 ms),77.58 ms (Candidate Benchmark) / DATA_NOT_AVAILABLE (Live),PASS,Candidate P95 77.58ms satisfies authoritative < 150ms SLA (Phase 12.3 / Phase 8); live telemetry awaiting traffic
+13. error rate,Candidate shadow exception rate == 0.0%,0.0% (Zero shadow crashes),PASS,Candidate shadow exceptions isolated with 0 user impacts
+14. drift status,No critical unresolved population drift (PSI < 0.25; KS p >= 0.01),NO_UNRESOLVED_DRIFT,PASS,Feature drift monitoring baseline verified healthy
+15. schema compatibility,100% feature schema and survey dimension compatibility (12 inputs),100% Compatible (12/12 survey features),PASS,Strict schema validation enforced in Pydantic and Pipeline
+16. artifact integrity,Exact SHA-256 hash match against authoritative registry,MATCHED,PASS,Champion (a012e7a1...) & Candidate (aad2f208...) hashes identical
+17. SHAP compatibility,SHAP tree explainability intact with observational language,100% Compatible,PASS,TreeExplainer succeeds across all 12 feature dimensions
+18. governance approval,Explicit human approval from Model Governance Committee,PENDING,BLOCKED,Governance sign-off requires satisfied 14-day & 100-label gates

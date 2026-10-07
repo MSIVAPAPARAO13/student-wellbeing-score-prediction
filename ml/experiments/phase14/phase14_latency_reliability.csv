@@ -1,0 +1,9 @@
+Metric,Offline_Benchmark_Ref,Production_Observed,Status,Note
+P50 Latency (Point Inference),Champ: 95.83ms / Cand: 59.07ms,DATA_NOT_AVAILABLE,AWAITING_TRAFFIC,Production telemetry requires sustained traffic
+P95 Latency (Point Inference),"SLA: < 150ms | Champ: 115.10ms / Cand: 77.58ms",DATA_NOT_AVAILABLE,AWAITING_TRAFFIC,Candidate benchmark 77.58ms satisfies authoritative < 150ms P95 SLA (Phase 12.3 Gate 11)
+P99 Latency (Point Inference),Champ: 122.79ms / Cand: 82.77ms,DATA_NOT_AVAILABLE,AWAITING_TRAFFIC,Production telemetry requires sustained traffic
+Timeout Rate,0.0%,0.0%,PASS,Zero shadow timeouts recorded
+Exception Rate,0.0%,0.0%,PASS,Zero shadow exceptions recorded
+Successful Evaluation Rate,100.0%,DATA_NOT_AVAILABLE,AWAITING_TRAFFIC,0 live evaluation requests logged
+Candidate Shadow Failure Rate,0.0%,0.0%,PASS,Zero shadow crashes
+User Response Impact,0 events,0 events,PASS,Candidate execution 100% isolated via non-blocking try-except

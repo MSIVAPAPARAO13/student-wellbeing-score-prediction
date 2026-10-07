@@ -1,0 +1,17 @@
+parameter,value,status,notes
+phase,14B,ACTIVE,Phase 14B Controlled Shadow Observation & Governance Readiness
+shadow_start_timestamp,2026-10-06T09:30:00Z,AUTHORITATIVE,Formal Phase 13 shadow launch timestamp
+shadow_days_elapsed,1.069,ACTIVE,Dynamically calculated elapsed observation days from runtime
+shadow_days_required,14,INCOMPLETE,Minimum consecutive production shadow days required for promotion eligibility
+shadow_days_remaining,12.931,ACTIVE,Remaining shadow observation days required
+shadow_status,ACTIVE,OBSERVING,State is ACTIVE; READY_FOR_DECISION requires >= 14.0 days
+is_14_days_completed,False,BLOCKED,Elapsed shadow duration does not meet the 14-day threshold
+champion_model,models/phase5_tuned_extra_trees.joblib,ACTIVE_PRODUCTION,Serving 100% of user traffic via /predict
+candidate_model,models/candidate_v1_2_revalidated.joblib,SHADOW_CHALLENGER,Evaluating out-of-band in isolated shadow execution
+promotion_eligibility,False,BLOCKED,Candidate cannot be promoted until all gates are satisfied
+promotion_state,BLOCKED,OPTION_C,Decision: OPTION C — INSUFFICIENT EVIDENCE
+decision,OPTION C — INSUFFICIENT EVIDENCE,BLOCKED,Evidence accumulation in progress
+human_approval,PENDING,REQUIRED,Human approval required for any promotion
+automatic_retraining,DISABLED,ENFORCED,Automatic retraining strictly forbidden by governance policy
+automatic_promotion,DISABLED,ENFORCED,Automatic promotion strictly forbidden by governance policy
+model_modifications,NONE,PRESERVED,Zero weight modifications or retraining performed

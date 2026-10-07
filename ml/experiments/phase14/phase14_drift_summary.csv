@@ -1,0 +1,7 @@
+Check,Method,Baseline_Status,Production_Evidence,Classification,Note
+Input Feature Numerical Drift,KS Test (threshold p < 0.01),Reference distribution saved,DATA_NOT_AVAILABLE,NO_UNRESOLVED_DRIFT,No unresolved drift recorded
+Input Feature Categorical Drift,TVD (threshold > 0.15),Reference distribution saved,DATA_NOT_AVAILABLE,NO_UNRESOLVED_DRIFT,No unresolved drift recorded
+Overall Feature Population Drift,PSI (threshold > 0.25),Reference distribution saved,DATA_NOT_AVAILABLE,NO_UNRESOLVED_DRIFT,Baseline established in Phase 10
+Prediction Distribution Drift,KS Test (threshold p < 0.01),Reference distribution saved,DATA_NOT_AVAILABLE,NO_UNRESOLVED_DRIFT,No unresolved prediction drift
+Input Data Quality Checks,Range & Categorical Pydantic Enums,Active in API & Pipeline,0 violations recorded,NO_UNRESOLVED_DRIFT,Inputs conform to schema
+Overall Drift Governance Status,Composite Phase 10 Monitors,Active in app/monitoring.py,Clean baseline,NO_UNRESOLVED_DRIFT,No unresolved critical drift blocks evaluation

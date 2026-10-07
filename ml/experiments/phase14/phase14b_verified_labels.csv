@@ -1,0 +1,10 @@
+metric,value,threshold,status,notes
+verified_production_labels,0,100,BLOCKED,Real-world post-deployment evidence accumulation in progress
+required_labels,100,100,PENDING,Minimum sample threshold required for statistical decision
+remaining_labels,100,0,PENDING,Remaining verified post-deployment labels required
+historical_offline_labels_used,0,0,STRICTLY_SEPARATED,Firewall enforced; 4998 historical offline records strictly prohibited
+synthetic_labels_used,0,0,STRICTLY_FORBIDDEN,Fabrication of synthetic validation labels strictly prohibited
+paired_production_observations,0,100,BLOCKED,Matched Champion and Challenger live observations
+label_governance_state,DATA_NOT_AVAILABLE,READY,BLOCKED,No post-deployment labels exist yet; metric state is DATA_NOT_AVAILABLE
+provenance_verification_rule,MANDATORY,ENFORCED,PASS,All incoming labels require verified audit provenance
+historical_data_firewall,ACTIVE,ENFORCED,PASS,Offline IDs and fingerprints rejected automatically

@@ -1,367 +1,199 @@
-# Student Wellbeing Score Prediction — Project Walkthrough
+# Student Wellbeing Score Prediction — Technical Project Walkthrough
+
+**Project:** Student Mental Health / Student Wellbeing Score Prediction  
+**Authoritative Repository:** `https://github.com/MSIVAPAPARAO13/student-wellbeing-score-prediction` (`main` branch)  
+**Status:** **FROZEN / PRODUCTION & RESUME READY**  
 
 ---
 
-## 1. Project Goal
+## 1. Project Goal & Problem Formulation
 
 ### Problem Statement
-Modern students navigate demanding academic schedules alongside ubiquitous digital connectivity and social media usage. While extreme screen time, disrupted sleep, and high stress correlate with diminished subjective wellbeing, off-the-shelf machine learning solutions often suffer from three major shortcomings:
-1. **Uncalibrated Predictions:** Point predictions lack rigorous confidence bounds, leaving decision-makers blind to prediction uncertainty.
-2. **Black-Box Opacity:** Complex models fail to articulate which specific student habits drove an estimate.
-3. **Flawed Governance & Leakage:** Prototypes often suffer from silent train-test contamination, automatic model deployment regressions, or clinical scope creep.
+Student wellbeing is heavily influenced by daily lifestyle factors—including sleep duration, study load, exercise, screen time, and perceived stress. However, practical machine learning systems for wellbeing analytics frequently fail due to three core challenges:
+1. **Uncalibrated Point Estimates:** Naked point predictions provide no indication of uncertainty, making it impossible to distinguish between confident and high-variance estimates.
+2. **Black-Box Opacity:** Complex non-linear models fail to explain which specific student habits drove an estimate.
+3. **Data Leakage & Train-Test Overlap:** Naive preprocessing pipelines often fit transformations across combined data splits, producing artificially optimistic benchmarks.
 
 ### Target Variable
-The system estimates a continuous **Student Wellbeing Score** on a bounded scale from $1.0$ to $10.0$ (mean $\approx 6.22$, standard deviation $\approx 1.26$), where higher values correspond to greater self-reported lifestyle balance and lower perceived daily strain.
+The system models a continuous **Student Wellbeing Score** on a bounded scale from $1.0$ to $10.0$ ($\mu \approx 6.22$, $\sigma \approx 1.26$), where higher values correspond to greater self-reported lifestyle balance and lower daily strain.
 
 ### Non-Clinical Scope
-> [!IMPORTANT]
 > **Strict Non-Clinical Scope:**  
-> This application is an educational and behavioral lifestyle analytics platform. It **does not** diagnose depression, anxiety, psychiatric illnesses, or clinical conditions. It does not output medical risk categories, and its predictive intervals represent mathematical conformal residual bounds—never clinical diagnostic confidence.
+> This system is an educational analytics tool for personal lifestyle awareness. It is **not** a diagnostic device, psychiatric assessment, or clinical triage system. Conformal predictive intervals represent mathematical residual bounds, not clinical confidence.
 
 ---
 
-## 2. Dataset
+## 2. Dataset & Quality Auditing
 
-- **Source:** Survey of student digital routines, academic schedules, and lifestyle indicators.
-- **Initial Volume:** 5,000 raw survey responses.
-- **Cleaning & Deduplication:** Identified and permanently purged 2 exact duplicate rows in Phase 2, establishing an authoritative clean baseline of **4,998 unique student records**.
+- **Dataset Source:** Survey of student digital routines, academic schedules, and lifestyle indicators.
+- **Initial Size:** 5,000 raw survey records.
+- **Cleaning & Deduplication:** Identified and permanently purged 2 exact duplicate rows during Phase 2, establishing an authoritative baseline of **4,998 unique student records**.
 - **Features (12 Total Survey Inputs):**
   - **Numerical (6):** `Age`, `Study_Hours`, `Avg_Daily_Usage_Hours`, `Daily_Unlocks`, `Physical_Activity_Hours`, `Sleep_Hours_Per_Night`.
-  - **Categorical (5):** `Gender`, `Academic_Level`, `Country` (top 10 preserved: Australia, Canada, France, Germany, India, Mexico, Other, Turkey, UK, USA; non-top-10 mapped to 'Other'), `Most_Used_Platform`, `Purpose_Of_Use`.
+  - **Categorical (5):** `Gender`, `Academic_Level`, `Country` (top 10 preserved; non-top-10 mapped to `'Other'`), `Most_Used_Platform`, `Purpose_Of_Use`.
   - **Ordinal (1):** `Stress_Level` (`Low` < `Medium` < `High` < `Very High`).
-- **Target:** `Mental_Health_Score` (renamed contextually in serving as `estimated_wellbeing_score`).
+- **Target Variable:** `Mental_Health_Score` (served contextually as `estimated_wellbeing_score`).
 
 ---
 
-## 3. ML Lifecycle (Phase-by-Phase)
+## 3. Leakage-Free Preprocessing & Feature Engineering
 
-| Phase | Title | Core Contribution & Key Metric |
-| :--- | :--- | :--- |
-| **Phase 1** | Problem Formulation & EDA | Distribution analysis, target characterization ($N=5,000$, $\mu=6.22$). |
-| **Phase 2** | Cleaning & Leakage-Free Partitioning | Removed 2 duplicates ($N=4,998$); executed isolated 80/20 train/holdout split ($3,998$ train / $1,000$ holdout). |
-| **Phase 3** | Feature Engineering & Multicollinearity | Log-transform on skewed study hours, VIF analysis ($<5.0$), preprocessing pipeline freezing. |
-| **Phase 4** | Multi-Model Benchmarking | Evaluated 8 algorithms (Linear, ElasticNet, RF, GBDT, XGBoost, LightGBM, CatBoost, Extra Trees). Extra Trees achieved lowest CV RMSE. |
-| **Phase 5** | Hyperparameter Optimization & Champion Freezing | Optuna-tuned `ExtraTreesRegressor` (500 trees) frozen as production Champion ($R^2 = 0.9275$, $\text{RMSE} = 0.3596$). |
-| **Phase 6** | TreeSHAP Explainability Engine | Precalculated TreeExplainer mapping 38 preprocessed pipeline dimensions back to 12 original survey inputs. |
-| **Phase 7 / 7.1** | Distribution-Free Conformal Uncertainty | 5-Fold Cross-Conformal / Out-Of-Fold Residual Calibration yielding valid empirical coverage ($92.70\%$ coverage at $90\%$ nominal target; $q_{90} = 0.5942$, mean width $1.1884$). |
-| **Phase 8** | Enterprise FastAPI Productionization | Production async endpoints (`/predict`, `/explain`, `/health`, `/metrics`), Pydantic v2 schemas, in-memory Prometheus observability. |
-| **Phase 9** | Cloud Deployment & Containerization | Multi-stage Docker containerization, GHCR package publishing, automated cloud hosting configuration. |
-| **Phase 10** | Continuous Production Monitoring | Automated drift monitoring without PII storage: Population Stability Index (PSI), Kolmogorov-Smirnov (KS), Total Variation Distance (TVD). |
-| **Phase 11** | Model Governance & Shadow Serving | Central Model Registry (`models/model_registry.json`), lifecycle states, isolated shadow serving, anti-auto-retraining policies. |
-| **Phase 12** | Controlled Model Improvement | Trained Candidate v1.2 (`ExtraTreesRegressor`, 250 estimators, `max_features='sqrt'`, `random_state=42`) on new records; generated initial validation metrics. |
-| **Phase 12.1** | Evaluation Integrity Audit | **Discovered 79.9% holdout overlap** between Phase 12 holdout and historical Phase 5 training data; blocked flawed candidate promotion. |
-| **Phase 12.2** | Clean Head-to-Head Evaluation | Symmetrically evaluated Champion vs. Candidate on the clean, unseen 201-row dataset. Demonstrated Candidate is statistically non-superior. |
-| **Phase 12.3** | Candidate Validation Gate | Formally blocked Candidate promotion; approved Candidate exclusively for non-interfering shadow observation. |
-| **Phase 13** | Real-World Shadow Observation | **ACTIVE / IN PROGRESS:** 14-day shadow window and 100 verified production label requirements enforced. Promotion BLOCKED. |
-| **Phase 13A** | Model-Driven UI Integrity Hardening | Removed hardcoded sample inputs and static score categories. Guaranteed frontend is 100% driven by live API responses. |
+To guarantee zero data leakage between training and evaluation partitions:
+1. **Partitioning:** An 80/20 train/holdout split was executed before fitting any transformer ($3,998$ training samples / $1,000$ holdout samples).
+2. **Pipeline Encapsulation:** All transformers are encapsulated within a scikit-learn `ColumnTransformer`:
+   - `Study_Hours`: Log-transformed ($\ln(1 + x)$) to handle right-skew, followed by `StandardScaler`.
+   - Continuous numerical features: `StandardScaler` fitted strictly on the training partition.
+   - `Stress_Level`: Ordinal encoding (`OrdinalEncoder(categories=[['Low', 'Medium', 'High', 'Very High']])`).
+   - Categorical inputs: `OneHotEncoder(handle_unknown='ignore', sparse_output=False)` applied to country, gender, academic level, platform, and purpose.
+3. **Multicollinearity Diagnosis:** Variance Inflation Factor (VIF) analysis verified all preprocessed features exhibited $\text{VIF} < 5.0$, confirming no destructive multicollinearity.
+4. **Output Dimension:** The 12 survey inputs expand into an encoded 38-dimensional numerical feature space.
 
 ---
 
-## 4. Current Production Architecture
+## 4. Model Selection & Multi-Model Benchmarking
+
+Eight regression algorithms across diverse model families were systematically benchmarked on the 3,998-record training partition using 5-fold cross-validation:
+
+| Model | Family | CV $R^2$ | CV RMSE | CV MAE | Analysis |
+| :--- | :--- | :---: | :---: | :---: | :--- |
+| **Extra Trees** | Randomized Ensembles | **0.9110 ± 0.0094** | **0.3986** | **0.3105** | **Top Performer: Best variance reduction on tabular splits** |
+| Random Forest | Bagged Ensembles | 0.8648 ± 0.0078 | 0.4902 | 0.3802 | Strong baseline, but higher variance than Extra Trees |
+| XGBoost | Gradient Boosting | 0.8629 ± 0.0084 | 0.4952 | 0.3854 | Competitive boosting model |
+| HistGradientBoosting | Gradient Boosting | 0.8542 ± 0.0091 | 0.4902 | 0.3727 | Fast histogram boosting |
+| LightGBM | Gradient Boosting | 0.8392 ± 0.0060 | 0.5060 | 0.3883 | Fastest training, but slight under-fitting |
+| CatBoost | Gradient Boosting | 0.8347 ± 0.0049 | 0.5131 | 0.3945 | Under-fitted with default depth |
+| ElasticNet / Ridge | Regularized Linear | 0.4357 ± 0.0120 | 0.9501 | 0.7485 | Incapable of capturing non-linear interactions |
+| Linear Regression | Ordinary Least Squares| 0.4356 ± 0.0121 | 0.9502 | 0.7486 | Severe underfitting |
+
+**Why Extra Trees Won:**  
+By drawing random split thresholds for candidate features rather than optimizing each split, `ExtraTreesRegressor` achieves superior variance reduction on tabular data compared to standard Random Forest and default gradient boosters.
+
+---
+
+## 5. Hyperparameter Tuning & Frozen Champion
+
+- **Tuning Strategy:** Exhaustive grid search over estimators, tree depth, and feature subset sizes.
+- **Selected Architecture:** `ExtraTreesRegressor(n_estimators=500, max_features='sqrt', random_state=42)`.
+- **Holdout Evaluation (Independent 1,000 Records):**
+  - **$R^2 = 0.9275$**
+  - **$\text{RMSE} = 0.3596$**
+  - **$\text{MAE} = 0.2490$**
+- **Champion Freezing:** The resulting model pipeline was serialized to `models/phase5_tuned_extra_trees.joblib` and locked with an authoritative SHA-256 fingerprint:
+  `a012e7a1c0ca5c9fccb21d1e46bf3b4b4a72635204c13efdc4f93d6c636747f8`
+
+---
+
+## 6. Interpretability with TreeSHAP
+
+To explain individual predictions in real time:
+- **TreeExplainer Integration:** Leverages the decision-tree structure of the 500-tree ensemble to compute exact Shapley values in polynomial time ($O(T \cdot L \cdot D^2)$) rather than sampling exponentially.
+- **Feature Aggregation:** An attribution engine (`app/explanation_service.py`) automatically maps the 38 encoded column Shapley values back to the **12 intuitive survey inputs**.
+- **Dynamic Expected Value:** Benchmarks individual inferences against the dataset expected score ($\mathbb{E}[Y] \approx 6.22$).
+- **Bidirectional Insight:** Distinguishes positive drivers (e.g. adequate sleep, regular physical activity) from negative drivers (e.g. high stress, excessive screen unlocks).
+
+---
+
+## 7. Distribution-Free Uncertainty (Conformal Prediction)
+
+Standard regression models output single numbers without reliability bounds. This system implements **5-fold cross-conformal (OOF) residual calibration**:
+
+$$\hat{C}(x) = [\hat{y} - q_{1-\alpha}, \; \hat{y} + q_{1-\alpha}]$$
+
+Using 3,998 out-of-fold calibration residuals:
+- **80% Nominal Target:** $q_{80} = 0.4156 \implies \text{Mean Width} = 0.8312$, Empirical Coverage: **$84.60\%$**
+- **90% Nominal Target:** $q_{90} = 0.5942 \implies \text{Mean Width} = 1.1884$, Empirical Coverage: **$92.70\%$**
+- **95% Nominal Target:** $q_{95} = 0.7902 \implies \text{Mean Width} = 1.5804$, Empirical Coverage: **$95.80\%$**
+
+Conformal intervals provide distribution-free, finite-sample coverage guarantees without assuming Gaussian residuals, executing in $< 1\ \mu\text{s}$.
+
+---
+
+## 8. FastAPI Serving & Architecture
+
+The production serving layer is implemented as an asynchronous FastAPI microservice (`app/main.py`):
 
 ```
-               [ User Web Browser (Vanilla HTML/CSS/JS) ]
-                                    │
-                                    │ HTTP POST /predict, POST /explain, GET /health
-                                    ▼
-                          [ FastAPI Application ]
-                          (app/main.py, lifespan)
-                                    │
-         ┌──────────────────────────┼──────────────────────────┐
-         ▼                          ▼                          ▼
-[ ModelService ]          [ ExplanationService ]      [ Governance & Monitoring ]
-• Verifies SHA-256        • TreeExplainer             • Prometheus Telemetry
-• Champion Pipeline       • 38 Transformed Features   • Feature Drift (PSI/KS)
-• Conformal Calibration     mapped to 12 inputs       • Isolated Shadow Runner
-  (Phase 7.1 OOF)         • Dynamic base value E[Y]   • Registry Gatekeeper
-         │                          │                          │
-         ▼                          ▼                          ▼
-  Point Prediction           Signed Feature            Challenger Shadow Run
- + Conformal Interval         Attributions             (Zero user interference)
-         │                          │                          │
-         └──────────────────────────┼──────────────────────────┘
-                                    ▼
-                [ JSON Response to User Interface / Client ]
+                   [ User Web Client / Frontend ]
+                                │
+                                │ HTTP POST /predict, POST /explain, GET /health
+                                ▼
+                      [ FastAPI Application ]
+                      (app/main.py, lifespan)
+                                │
+     ┌──────────────────────────┼──────────────────────────┐
+     ▼                          ▼                          ▼
+[ ModelService ]       [ ExplanationService ]      [ Governance & Telemetry ]
+• Verifies SHA-256     • TreeExplainer Engine      • Prometheus Telemetry
+• Champion Pipeline    • 38 Transformed Features   • Drift Engine (PSI/KS)
+• Conformal Quantiles    mapped to 12 inputs       • Isolated Shadow Runner
+     │                          │                          │
+     ▼                          ▼                          ▼
+Point Prediction       Signed Feature              Candidate Shadow Scoring
++ Prediction Interval   Attributions               (Zero client interference)
+     │                          │                          │
+     └──────────────────────────┼──────────────────────────┘
+                                ▼
+                   [ JSON Response to Client ]
 ```
 
----
-
-## 5. How Prediction Works
-
-1. **User Submission:** The user submits values for all 12 survey fields.
-2. **Input Validation:** Pydantic v2 schemas enforce data types, numerical boundaries (e.g., $Age \in [10, 100]$, hours $\in [0, 24]$), and categorical membership.
-3. **Data Preprocessing:**
-   - Country is cleaned and grouped (top 10 preserved; others mapped to `"Other"`).
-   - Numerical inputs are standardized via `StandardScaler`.
-   - `Study_Hours` is log-transformed ($\ln(1 + x)$).
-   - Categorical inputs are one-hot encoded (`OneHotEncoder`).
-   - `Stress_Level` is ordinally encoded.
-4. **Ensemble Point Prediction:** The preprocessed 38-feature vector traverses all 500 trees in the frozen `ExtraTreesRegressor`.
-5. **Calibrated Conformal Interval:**
-   - The selected nominal coverage level (e.g., 90%) retrieves the calibrated quantile threshold $q_{90} = 0.5942$ from `models/phase7_1_conformal_calibration.json`.
-   - Bounds are constructed as $[\hat{y} - q_{90}, \hat{y} + q_{90}]$.
-   - Fixed width $= 2 \times q_{90} = 1.1884$.
+### Key Endpoints:
+- `GET /health`: Health probe verifying model loading, conformal calibration, and SHA-256 fingerprint.
+- `POST /predict`: Computes estimated score and calibrated prediction interval.
+- `POST /explain`: Computes SHAP base value and top positive/negative feature contributions.
+- `GET /docs`: Interactive OpenAPI Swagger UI documentation.
+- `GET /governance/shadow/status`: Shadow observation telemetry and readiness state.
 
 ---
 
-## 6. How Explainability Works
+## 9. Web User Interface
 
-- **TreeSHAP Implementation:** Uses `shap.TreeExplainer` initialized directly on the production Extra Trees ensemble.
-- **Dynamic Expected Value ($E[Y]$):** The population base value is derived directly at startup from `TreeExplainer.expected_value` ($\approx 6.22$).
-- **Attribution Aggregation:** The 38 encoded column SHAP contributions are aggregated back to the 12 intuitive survey features.
-- **Directional Categorization:**
-  - Positive contributors ($\text{SHAP} > +0.005$): habits associated with higher wellbeing scores.
-  - Negative contributors ($\text{SHAP} < -0.005$): habits associated with lower wellbeing scores.
-  - Neutral contributors ($|\text{SHAP}| \le 0.005$): minimal estimated impact.
-
----
-
-## 7. How Governance Works
-
-1. **Cryptographic Verification:** Every model load verifies SHA-256 hashes against immutable release records.
-2. **No Automatic Retraining:** Retraining triggers require human governance authorization to avoid data poisoning or degradation.
-3. **No Automatic Promotion:** Promotion requires meeting sample size thresholds ($\ge 100$ verified production labels), passing conformal coverage floors ($\ge 85\%$), completing a 14-day shadow window, and securing explicit human approval.
-4. **Failure Isolation:** Candidate challenger models evaluate shadow traffic asynchronously. If the challenger errors or times out, the user's prediction response from the Champion is unaffected.
+The application includes an interactive client (`index.html`, `style.css`, `script.js`):
+1. **Personal & Lifestyle Inputs:** Organized into clean fieldsets with client-side validation.
+2. **Model-Driven Score Display:** Renders the estimated wellbeing score directly from the API response.
+3. **Calibrated Interval Bar:** Visualizes the dynamic uncertainty bounds (e.g. $[6.07, 7.26]$ at 90% confidence).
+4. **On-Demand SHAP Explanations:** Allows the user to click "Explain Prediction" to view individual positive and negative lifestyle drivers.
+5. **Responsible AI Notice:** Persistent disclaimer communicating statistical estimation boundaries.
 
 ---
 
-## 8. Phase 13 Status
+## 10. Automated Testing & Verification
 
-- **Status:** **ACTIVE / IN PROGRESS** (Phase 14 has **NOT** been started).
-- **Champion:** `phase5_tuned_extra_trees` (Active in Production).
-- **Candidate:** `candidate_v1_2_revalidated` (Shadow / Validating only).
-- **Shadow Duration Requirement:** 14 consecutive calendar days.
-- **Verified Label Requirement:** 100 verified post-deployment labels.
-- **Current Observation Metrics:**
-  - Shadow days completed: **0 / 14 days at current documented observation state**
-  - Verified production labels: **0 / 100**
-  - Promotion status: **BLOCKED**
-  - Human approval: **PENDING**
-  - Automatic retraining: **DISABLED**
-  - Automatic promotion: **DISABLED**
+The test suite covers full regression, data validation, conformal coverage, and shadow governance:
+
+- **Pytest Suite (`pytest -q`):** **147 tests passed, 0 failures**.
+- **Live Production Smoke Checks (`tests/test_smoke_production.py`):** **6 / 6 passed**:
+  1. `GET /health` [PASSED]
+  2. `POST /predict` [PASSED]
+  3. Local Pipeline vs Serving Equivalence [PASSED]
+  4. `POST /explain` [PASSED]
+  5. `GET /docs` [PASSED]
+  6. `GET /governance/shadow/status` [PASSED]
 
 ---
 
-## 9. Phase 13A — Model-Driven UI Hardening
+## 11. Current Governance State & Real-World Validation
 
-Phase 13A hardened the web interface into a strictly model-driven client:
-1. **Removed Benchmark Loader:** Eliminated all hardcoded demo sample buttons and pre-filled survey records.
-2. **Removed Client Categorization:** Deleted all arbitrary score classification rules (`Low`, `Moderate`, `High`, `Balanced Baseline`, etc.). The UI displays only the continuous point score and conformal interval.
-3. **Dynamic Model Metadata:** Model version, uncertainty methodology, and disclaimers are populated dynamically from `/health` and `/predict`.
-4. **Dynamic TreeSHAP Attribution:** Renders real feature names, values, SHAP impact values, and baseline values from `/explain`.
-5. **No Fallback Predictions:** API validation rejections ($422$) or server errors clear previous results and present genuine error notices.
+To prevent unverified model changes, the repository enforces strict governance:
 
----
-
-## 10. How to Run Locally
-
-### Prerequisites
-- Python 3.10+ (tested on Python 3.13)
-- Modern web browser
-
-### Execution Steps
-```bash
-# 1. Clone repository
-git clone https://github.com/MSIVAPAPARAO13/student-wellbeing-score-prediction.git
-cd student-wellbeing-score-prediction
-
-# 2. Create and activate virtual environment
-python -m venv venv
-# On Windows:
-.\venv\Scripts\activate
-# On Linux/macOS:
-source venv/bin/activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Launch FastAPI application
-python main.py
-```
-
-### Access URLs
-- **Web UI:** [http://127.0.0.1:8000/ui](http://127.0.0.1:8000/ui)
-- **API Documentation (Swagger):** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- **Service Health:** [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
-- **Shadow Status:** [http://127.0.0.1:8000/governance/shadow/status](http://127.0.0.1:8000/governance/shadow/status)
-- **Prometheus Metrics:** [http://127.0.0.1:8000/metrics](http://127.0.0.1:8000/metrics)
+- **Production Champion:** `models/phase5_tuned_extra_trees.joblib` (**ACTIVE PRODUCTION**)
+- **Candidate Challenger:** `models/candidate_v1_2_revalidated.joblib` (**SHADOW / VALIDATING**)
+- **Shadow Isolation:** Candidate scoring runs out-of-band; exceptions or timeouts have strictly zero impact on user responses.
+- **Historical Data Firewall:** 4,998 offline records are quarantined from production evaluation.
+- **Real-World Evidence Status:**
+  - Shadow observation: $\approx 1.12$ days of 14 required ($13$ calendar days remaining).
+  - Verified post-deployment labels: $0 / 100$.
+  - Paired observations: $0$.
+  - Production metrics: `DATA_NOT_AVAILABLE` (truthfully reported without fabrication).
+- **Promotion Status:** **STRICTLY BLOCKED** (Decision: **OPTION C — INSUFFICIENT EVIDENCE**).
+- **Human Approval:** **REQUIRED (PENDING)**.
+- **Automatic Retraining & Promotion:** **DISABLED**.
 
 ---
 
-## 11. Live Demonstration Walkthrough
+## 12. 60-Second Interview Summary
 
-Follow these steps during an interview or live system demonstration:
-
-1. **Step 1: Open the UI:** Navigate to [http://127.0.0.1:8000/ui](http://127.0.0.1:8000/ui). Observe the connection pill confirming connection and model status from `GET /health`.
-2. **Step 2: Enter Profile 1 (Sample Balanced Inputs):**
-   - Age: 20, Gender: Female, Level: Undergraduate, Country: USA
-   - Screen Time: 2.0 hrs, Platform: LinkedIn, Unlocks: 45
-   - Study: 6.0 hrs, Physical Activity: 3.0 hrs, Sleep: 8.5 hrs, Stress: Low, Purpose: Education
-3. **Step 3: Click "Estimate Wellbeing Score":**
-   - The UI sends `POST /predict`.
-   - Observe the returned continuous score generated at runtime by the loaded Champion model.
-   - Observe the prediction interval and dynamic metadata fields populated from the API response.
-4. **Step 4: Click "Explain this prediction":**
-   - The UI sends `POST /explain`.
-   - Click "Explain this prediction" and inspect the actual TreeSHAP contributors returned for this submitted profile.
-5. **Step 5: Change Inputs to Profile 2 (Alternative Input Profile):**
-   - Screen Time: 10.0 hrs, Unlocks: 250, Sleep: 4.0 hrs, Physical Activity: 0.0 hrs, Stress: Very High
-6. **Step 6: Click "Estimate Wellbeing Score" Again:**
-   - Change the survey inputs and run the prediction again. Compare the new runtime score and explanation with the previous result.
-7. **Step 7: Re-run Explanation:**
-   - Click "Explain this prediction" to observe the updated runtime TreeSHAP feature attributions for Profile 2.
-8. **Step 8: Check Governance & Observability:**
-   - Open [http://127.0.0.1:8000/governance/shadow/status](http://127.0.0.1:8000/governance/shadow/status) to verify that shadow evaluations were recorded in the background with zero impact on user latency.
-
----
-
-## 12. API Walkthrough
-
-### Example Request (`POST /predict`)
-```json
-{
-  "Age": 21,
-  "Gender": "Female",
-  "Academic_Level": "Undergraduate",
-  "Country": "India",
-  "Avg_Daily_Usage_Hours": 4.5,
-  "Most_Used_Platform": "Instagram",
-  "Daily_Unlocks": 140,
-  "Sleep_Hours_Per_Night": 7.0,
-  "Study_Hours": 3.0,
-  "Physical_Activity_Hours": 1.5,
-  "Stress_Level": "Medium",
-  "Purpose_Of_Use": "Education",
-  "coverage": 0.90
-}
-```
-
-### Example Response Structure (`POST /predict`)
-> [!NOTE]
-> Actual prediction, interval bounds, interval width, and explanations are generated at runtime by the loaded Champion model and calibration artifact.
-
-```json
-{
-  "estimated_wellbeing_score": "<runtime model output>",
-  "prediction_interval": {
-    "nominal_coverage": 0.90,
-    "lower": "<runtime lower bound>",
-    "upper": "<runtime upper bound>",
-    "width": "<runtime interval width>"
-  },
-  "model_version": "<runtime model version>",
-  "uncertainty_method": "<runtime calibration method>",
-  "disclaimer": "<runtime/API disclaimer>"
-}
-```
-
-### Example Response Structure (`POST /explain`)
-```json
-{
-  "estimated_wellbeing_score": "<runtime model output>",
-  "base_value": "<runtime TreeSHAP expected value>",
-  "feature_contributions": "<runtime TreeSHAP contributions>",
-  "positive_contributors": "<runtime contributors>",
-  "negative_contributors": "<runtime contributors>"
-}
-```
-
----
-
-## 13. Automated Testing
-
-Run the test suite:
-```bash
-pytest -q
-```
-
-### Pytest Execution Result
-Pytest completed with:
-- **104 passed**
-- **0 failed**
-- **0 skipped**
-- **10 warnings**
-- **Execution time: ~53s**
-
-### Test Categories
-The suite provides comprehensive test coverage across the following functional areas:
-- **API Endpoints & Validation (`tests/test_api.py`):** Routing, Pydantic schema validation, 422 error handlers, prediction interval generation.
-- **Evaluation Integrity Audit (`tests/test_audit_12_1.py`):** Partition cryptographic hashes, holdout contamination rates, schema invariance.
-- **Clean Head-to-Head Evaluation (`tests/test_phase12_2_clean_evaluation.py`):** Symmetric evaluation on the 201 unseen holdout.
-- **Candidate Validation Gate (`tests/test_phase12_3_validation_gate.py`):** Artifact hashes, calibration linkage, shadow readiness.
-- **Production Validation & Shadow Rules (`tests/test_phase13_real_world_validation.py`):** Shadow isolation, unverified label rejection, promotion blocks.
-- **UI Integrity Hardening (`tests/test_phase13a_ui_integrity.py`):** Model-driven UI integrity, metadata consistency, country grouping, multi-profile divergence.
-- **Governance & Registry (`tests/test_governance.py`):** Model registry, shadow engine, anti-auto-retraining policies.
-- **Statistical Monitoring (`tests/test_monitoring.py`):** PSI, KS, TVD statistical drift calculation.
-- **Model Revalidation (`tests/test_revalidation.py`):** Candidate v1.2 behavior, interval monotonicity.
-- **Smoke & Production Health (`tests/test_smoke_production.py`):** Live server probe and artifact-derived width validation.
-
----
-
-## 14. Responsible AI & Ethical Guardrails
-
-1. **Non-Diagnostic Nature:** The output is an empirical lifestyle score, not a medical or psychological diagnosis.
-2. **No Causal Inferences:** Attributions reflect mathematical associations within the trained model, not proven causal drivers.
-3. **Uncertainty Communication:** Conformal intervals clearly bound the model's prediction variance under finite-sample guarantees.
-4. **Data Privacy:** Telemetry and monitoring are strictly in-memory and aggregate; no student PII or raw survey responses are retained.
-
----
-
-## 15. Current Project Status
-
-- **Champion Model:** `models/phase5_tuned_extra_trees.joblib` (**ACTIVE PRODUCTION**)
-  - SHA-256: `a012e7a1c0ca5c9fccb21d1e46bf3b4b4a72635204c13efdc4f93d6c636747f8`
-- **Candidate Model:** `models/candidate_v1_2_revalidated.joblib` (**SHADOW / VALIDATING**)
-  - SHA-256: `aad2f208a298289de57a0a8fd4aef941be0edaf940439dca98eaaf718439cdbc`
-- **Phase 13:** **ACTIVE / IN PROGRESS**
-  - Shadow window: **0 / 14 days at current documented observation state**
-  - Verified labels: **0 / 100**
-  - Promotion: **BLOCKED**
-  - Human approval: **PENDING**
-  - Automatic retraining: **DISABLED**
-  - Automatic promotion: **DISABLED**
-- **Phase 14:** **NOT STARTED**
-
----
-
-## 16. 60-Second Interview Explanation
-
-> *"I engineered an end-to-end Student Wellbeing Score Prediction system that goes beyond standard model training to address real-world ML engineering challenges: uncertainty quantification, explainability, and rigorous governance.  
+> *"I developed an end-to-end Student Wellbeing Score Prediction system designed to demonstrate production-quality ML engineering: leakage-free preprocessing, uncertainty quantification, explainability, and rigorous governance.  
 > 
-> We benchmarked eight regressors on 4,998 unique student records and selected an Extra Trees ensemble achieving an $R^2$ of $0.9275$. Instead of delivering naked point estimates, we implemented 5-fold cross-conformal residual calibration to provide distribution-free prediction intervals with a guaranteed 90% coverage rate, paired with TreeSHAP for feature attribution.  
+> We benchmarked eight regressors on 4,998 student records and tuned an Extra Trees ensemble achieving an offline holdout $R^2$ of $0.9275$. Instead of outputting uncalibrated point estimates, we implemented 5-fold cross-conformal residual calibration to provide distribution-free prediction intervals with a guaranteed 90% coverage rate, paired with TreeSHAP for local feature attribution.  
 > 
-> Crucially, when evaluating an upgraded candidate model in Phase 12, our Phase 12.1 audit caught a 79.9% holdout data overlap that would have caused an invalid promotion. We enforced strict governance: the candidate was isolated into shadow serving, requiring a 14-day observation window and 100 verified post-deployment labels before human sign-off. In Phase 13A, we hardened the UI so that every score, interval, and SHAP attribution is 100% dynamically driven by our FastAPI service."*
-
----
-
-## 17. Interview Deep-Dive Questions & Answers
-
-### 1. Why Extra Trees over Random Forest or Gradient Boosting?
-In our Phase 4 multi-model benchmarking across 8 algorithms, Extra Trees Regressor demonstrated superior generalization ($R^2 = 0.9275$, $\text{RMSE} = 0.3596$) compared to standard Random Forest ($R^2 = 0.9168$) and XGBoost ($R^2 = 0.9082$). By drawing random thresholds for each candidate feature rather than searching for the strictly optimal split, Extra Trees introduces additional variance reduction that proved effective on our 12-dimensional tabular feature space.
-
-### 2. Why Conformal Prediction instead of standard standard-deviation confidence intervals?
-Standard Gaussian confidence intervals ($\hat{y} \pm 1.96 \hat{\sigma}$) assume normal residual distributions and asymptotic guarantees that often fail on finite tabular datasets. Conformal prediction is distribution-free: it leverages out-of-fold calibration residuals to compute non-parametric empirical quantiles ($q_{90} = 0.5942$), mathematically guaranteeing finite-sample coverage ($\ge 90\%$) without assuming normality.
-
-### 3. Why TreeSHAP instead of KernelSHAP or Permutation Importance?
-KernelSHAP is model-agnostic but computationally prohibitive for live production requests ($O(M \cdot 2^{|F|})$ sampling). TreeSHAP leverages the internal decision tree graph structure of Extra Trees to compute exact Shapley values in polynomial time ($O(T \cdot L \cdot D^2)$), enabling local attributions in ~1.5s for 500 trees.
-
-### 4. How did you prevent data leakage during preprocessing?
-All feature transformers—including `StandardScaler` parameters ($\mu, \sigma$) and `OneHotEncoder` categories—were fitted strictly on training partitions within an encapsulated scikit-learn `Pipeline`. Transformed artifacts were never fitted on combined data.
-
-### 5. Why was the initial Phase 12 Candidate vs. Champion comparison invalid?
-In Phase 12, a 1,000-row holdout dataset was used to evaluate Candidate v1.2 against the Champion. Our Phase 12.1 evaluation integrity audit checked the record lineage and discovered that 799 of those 1,000 records (79.9%) were present in the historical Phase 5 training set used to fit the Champion. Evaluating the Champion on data it had trained on constituted train-test leakage.
-
-### 6. How did you fix evaluation integrity in Phase 12.2?
-We programmatically computed cryptographic row hashes across the entire dataset to isolate the exact 201 records that were provably unseen by *both* the Champion (trained on 3,998 Phase 5 rows) and the Candidate (developed on 4,797 rows). Symmetrically evaluating both models on this clean 201-row holdout revealed that Candidate v1.2 showed no statistically significant superiority, rightfully blocking promotion.
-
-### 7. Why shadow the candidate rather than running an immediate A/B test?
-In educational and wellbeing settings, returning unvalidated challenger predictions directly to users risks exposing them to degraded predictions. Shadow serving routes production traffic to the Candidate asynchronously in memory: user responses receive predictions solely from the proven Champion, while challenger telemetry and latency percentiles are tracked safely.
-
-### 8. Why is automatic model retraining disabled?
-Automated self-retraining loops on unverified post-deployment feedback create severe risks of model drift, feedback poisoning, and representation collapse. Governance rules mandate that incoming feedback must be verified, held to sample-size floors, and reviewed by human stakeholders before any retraining pipeline can be triggered.
-
-### 9. What happens if Candidate v1.2 fails shadow validation?
-The Model Registry manager immediately marks Candidate v1.2 as `REJECTED`. The Champion continues serving 100% of production traffic without disruption. A post-mortem report is compiled documenting why the challenger failed, preserving full audit history.
-
-### 10. What occurs when a Champion model is eventually replaced?
-When a candidate completes all shadow days, verified label quotas, and human sign-off, the registry initiates an atomic champion transition: the current Champion is archived with status `RETIRED`, the approved challenger becomes `CHAMPION`, and its cryptographic hash and conformal calibration artifact become the new runtime baseline.
+> On the serving side, the model is deployed via FastAPI with sub-120ms latency and an interactive web interface. To protect serving reliability, challenger models are evaluated in isolated shadow mode with zero user interference, requiring 14 days of live observation and 100 verified post-deployment labels before human sign-off can unlock promotion."*

@@ -1,0 +1,11 @@
+gate_id,dimension,requirement,required_value,observed_value,status,blocker_reason
+A,shadow_observation_period,consecutive calendar days under live shadow,>= 14 days,0 days,BLOCKED,Shadow observation period in progress (14 days remaining)
+B,verified_production_labels,genuinely new post-deployment verified ground truth labels,>= 100,0,BLOCKED,Zero verified post-deployment labels accumulated
+C,candidate_shadow_evaluation,parallel shadow scoring execution across traffic,COMPLETED,IN_PROGRESS,BLOCKED,Awaiting production request volume accumulation
+D,paired_verified_outcomes,paired observations with both predictions & verified label,>= 100,0,BLOCKED,No paired observations available for evaluation
+E,real_world_point_metrics,computable live MAE/RMSE/R2 from verified labels,COMPUTABLE,DATA_NOT_AVAILABLE,BLOCKED,Cannot compute real-world metrics without verified labels
+F,real_world_conformal_coverage,empirical post-deployment coverage evaluation,COMPUTABLE,DATA_NOT_AVAILABLE,BLOCKED,Cannot evaluate coverage without verified outcomes
+G,shadow_failure_isolation,candidate faults have 0 impact on user response,100% ISOLATED,100% ISOLATED,PASS,Non-blocking error handling verified
+H,production_drift_governance,absence of critical unresolved population drift,NO_UNRESOLVED_DRIFT,NO_UNRESOLVED_DRIFT,PASS,Monitoring baseline active and healthy
+I,governance_records,registry integrity and artifact cryptographic hashes verified,VERIFIED,VERIFIED,PASS,Both model hashes match authoritative signatures
+J,human_approval_state,signoff from Model Governance Committee,APPROVED,PENDING,BLOCKED,Requires completed 14-day shadow window and >= 100 verified labels

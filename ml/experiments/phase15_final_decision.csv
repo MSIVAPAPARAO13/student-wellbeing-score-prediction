@@ -1,0 +1,25 @@
+metric,value,status,notes
+production_champion,phase5_tuned_extra_trees,ACTIVE_PRODUCTION,Authoritative production model serving 100% of live traffic
+candidate,candidate_v1_2_revalidated,SHADOW_VALIDATING,Challenger model evaluating in isolated shadow mode
+shadow_days,1.108 / 14,BLOCKED,14 days required; 13 calendar days remaining
+verified_labels,0 / 100,BLOCKED,Minimum 100 verified post-deployment labels required
+paired_rows,0,BLOCKED,Matched Champion and Candidate live observations
+champion_mae,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Requires >= 100 verified post-deployment labels
+candidate_mae,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Requires >= 100 verified post-deployment labels
+champion_rmse,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Requires >= 100 verified post-deployment labels
+candidate_rmse,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Requires >= 100 verified post-deployment labels
+champion_r2,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Requires >= 100 verified post-deployment labels
+candidate_r2,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Requires >= 100 verified post-deployment labels
+average_error,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Requires verified ground truth
+median_absolute_error,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Requires verified ground truth
+per_row_winner_count,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Requires paired live observations with ground truth
+conformal_coverage_80,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Requires verified ground truth
+conformal_coverage_90,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Requires verified ground truth
+conformal_coverage_95,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Requires verified ground truth
+p50_latency_ms,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,No live user request stream observed
+p95_latency_ms,77.58 (Benchmark) / DATA_NOT_AVAILABLE (Live),PASS_BENCHMARK,Benchmark satisfies authoritative SLA P95 < 150 ms
+error_timeout_rate,0.0%,PASS,Zero exceptions or timeouts leaked to users
+drift,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,Monitoring active; no live production traffic accumulated
+eligibility_gate,BLOCKED,INSUFFICIENT_EVIDENCE,Shadow days < 14 and verified labels < 100
+final_decision,INSUFFICIENT EVIDENCE,OPTION_C,Outcome: C. INSUFFICIENT EVIDENCE (Champion retained in active production)
+human_approval,REQUIRED / PENDING,REQUIRED,Promotion strictly blocked until explicit human approval

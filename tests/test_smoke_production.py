@@ -112,7 +112,17 @@ def run_smoke_tests(base_url: str):
     assert r_docs.status_code == 200
     print("   [PASSED] OpenAPI Swagger docs reachable.")
 
-    print("\n=== ALL PRODUCTION SMOKE TESTS COMPLETED SUCCESSFULLY ===")
+    # 6. Test Shadow Status Endpoint
+    print("\n6. Testing GET /governance/shadow/status ...")
+    r_shadow = session.get(f"{base_url}/governance/shadow/status", timeout=10)
+    assert r_shadow.status_code == 200, f"Shadow status failed: {r_shadow.status_code} - {r_shadow.text}"
+    shadow_data = r_shadow.json()
+    assert shadow_data["champion_version"] == "phase5_tuned_extra_trees"
+    assert shadow_data["candidate_version"] == "candidate_v1_2_revalidated"
+    assert shadow_data["promotion_status"] == "BLOCKED"
+    print(f"   [PASSED] Shadow status: {shadow_data['shadow_status']['shadow_status']} | Promotion: {shadow_data['promotion_status']}")
+
+    print("\n=== ALL 6 PRODUCTION SMOKE CHECKS COMPLETED SUCCESSFULLY (6/6 PASSED) ===")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run production smoke tests against target API")

@@ -1,0 +1,2 @@
+observation_id,timestamp,model_version,role,prediction,request_hash,latency_ms,success,shadow_execution_status,label_status
+DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE

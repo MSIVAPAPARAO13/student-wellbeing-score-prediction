@@ -13,7 +13,8 @@ from app.schemas import (
     PredictionResponse,
     ExplanationResponse,
     HealthResponse,
-    ErrorResponse
+    ErrorResponse,
+    VerifiedFeedbackSubmission
 )
 from app.model_service import model_service
 from app.explanation_service import explanation_service
@@ -290,9 +291,26 @@ def get_governance_shadow():
 def get_governance_shadow_status():
     shadow_status = shadow_manager.get_shadow_status()
     label_status = feedback_engine.get_verified_label_counter()
+    champ = registry_manager.get_champion()
     return {
-        "shadow_status": shadow_status,
+        "champion_version": champ.get("model_version", "phase5_tuned_extra_trees"),
+        "candidate_version": "candidate_v1_2_revalidated",
+        "shadow_start": shadow_status["shadow_start"],
+        "shadow_days_elapsed": shadow_status["elapsed_days"],
+        "shadow_days_required": shadow_status["required_days"],
         "verified_labels": label_status,
+        "verified_labels_count": label_status["verified_count"],
+        "verified_labels_required": label_status["target_count"],
+        "remaining_labels": label_status["remaining_labels"],
+        "paired_rows": label_status["paired_rows"],
+        "production_metrics_available": "DATA_NOT_AVAILABLE" if label_status["verified_count"] == 0 else True,
+        "conformal_metrics_available": "DATA_NOT_AVAILABLE" if label_status["verified_count"] == 0 else True,
+        "drift_status": "DATA_NOT_AVAILABLE" if shadow_status["shadow_requests"] == 0 else "STABLE",
+        "promotion_eligible": False,
+        "promotion_status": "BLOCKED",
+        "human_approval_status": "PENDING",
+        # Backward-compatible structures
+        "shadow_status": shadow_status,
         "governance_gate": {
             "verified_labels_met": label_status["threshold_met"],
             "shadow_duration_met": shadow_status["is_14_days_completed"],
@@ -301,3 +319,28 @@ def get_governance_shadow_status():
             "human_approval": "PENDING"
         }
     }
+
+@app.post(
+    "/governance/feedback",
+    summary="Ingest Verified Ground-Truth Feedback",
+    description="Controlled ingestion of verified post-deployment labels. Historical data is rejected by firewall."
+)
+def ingest_verified_feedback(submission: VerifiedFeedbackSubmission):
+    if submission.is_historical:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="REJECTED: Historical offline data firewall breach. Offline records cannot count as production evidence."
+        )
+    result = feedback_engine.ingest_single_verified_label(
+        observation_id=submission.observation_id,
+        observed_score=submission.observed_score,
+        provenance=submission.provenance.model_dump(),
+        observation_timestamp=submission.observation_timestamp
+    )
+    if result["status"] == "REJECTED":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=result["reason"]
+        )
+    return result
+

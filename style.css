@@ -41,6 +41,10 @@
 
 * { box-sizing: border-box; }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -911,16 +915,16 @@ input:focus, select:focus {
 .factor-name {
   color: var(--ink-soft);
   font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 130px;
+  flex: 1;
+  margin-right: 8px;
+  word-break: break-word;
 }
 
 .factor-val {
   font-family: var(--font-mono);
   font-weight: 700;
   font-size: 11.5px;
+  white-space: nowrap;
 }
 
 .pos-col .factor-val { color: var(--accent-pos); }

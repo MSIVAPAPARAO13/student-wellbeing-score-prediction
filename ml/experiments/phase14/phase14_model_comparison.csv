@@ -1,0 +1,14 @@
+Metric,Offline_Champion_Ref,Offline_Candidate_Ref,Production_Champion,Production_Candidate,Production_Difference,Status,Note
+MAE,0.263506,0.250220,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Requires >= 100 verified post-deployment labels
+RMSE,0.407234,0.333045,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Requires >= 100 verified post-deployment labels
+R2,0.909767,0.939649,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Requires >= 100 verified post-deployment labels
+Median Absolute Error,0.178400,0.188000,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Requires >= 100 verified post-deployment labels
+Max Absolute Error,2.080200,1.380000,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Requires >= 100 verified post-deployment labels
+Mean Error Difference,-0.002367,0.008550,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Requires >= 100 verified post-deployment labels
+Median Error Difference,N/A,0.007867,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Requires >= 100 verified post-deployment labels
+Win Count (Candidate vs Champ),115 (Champ),86 (Cand),DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Requires >= 100 verified post-deployment labels
+Win Percentage,57.21% (Champ),42.79% (Cand),DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Requires >= 100 verified post-deployment labels
+Tie Count,0,0,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Requires >= 100 verified post-deployment labels
+Bootstrap 95% CI for MAE Diff,"[-0.0336, 0.0071]","[-0.0336, 0.0071]",DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Offline CI crosses zero; production CI not computable
+Statistical Test p-value,"p=0.1584 (Wilcoxon)","p=0.1584 (Wilcoxon)",DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Offline test inconclusive; production test not computable
+Practical Improvement (>=0.05),"FALSE (diff=0.0133)","FALSE (diff=0.0133)",DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,DATA_NOT_AVAILABLE,BLOCKED,Threshold not met offline; production data not available

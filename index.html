@@ -278,9 +278,9 @@
               <div class="interval-marker-point" id="interval-point-marker" title="Point Estimate"></div>
             </div>
             <div class="interval-track-labels">
-              <span class="bound-label" id="bound-label-lower">LB: —</span>
-              <span class="bound-label point-estimate-label" id="bound-label-estimate">Est: —</span>
-              <span class="bound-label" id="bound-label-upper">UB: —</span>
+              <span class="bound-label" id="bound-label-lower">Lower: —</span>
+              <span class="bound-label point-estimate-label" id="bound-label-estimate">Estimate: —</span>
+              <span class="bound-label" id="bound-label-upper">Upper: —</span>
             </div>
           </div>
 
@@ -305,7 +305,7 @@
           </div>
 
           <p class="uncertainty-disclaimer" id="uncertainty-disclaimer-text">
-            Prediction intervals reflect mathematical conformal bounds, not clinical confidence scores.
+            Calibrated statistical uncertainty interval (90% nominal coverage) derived via conformal prediction residuals. Represents estimated prediction bounds, not guaranteed outcomes.
           </p>
         </div>
 
@@ -321,8 +321,8 @@
         <div class="explanation-card" id="explanation-card">
           <div class="explanation-header">
             <div>
-              <div class="explanation-title">Feature Attribution (TreeSHAP)</div>
-              <div class="explanation-subtitle">Inspect directional feature contributions for this specific prediction</div>
+              <div class="explanation-title">Factors Contributing to this Estimate</div>
+              <div class="explanation-subtitle">Observational feature attributions (TreeSHAP) showing survey inputs associated with this prediction</div>
             </div>
           </div>
 
@@ -336,17 +336,17 @@
             <div class="shap-summary-meta" id="shap-summary-meta" style="font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-soft); margin-bottom: 10px;"></div>
             <div class="attribution-columns">
               <div class="attribution-col pos-col">
-                <div class="col-head">Positive Contributors (+)</div>
+                <div class="col-head">Factors Increasing Estimate (+)</div>
                 <div class="factors-list" id="positive-factors-list"></div>
               </div>
               <div class="attribution-col neg-col">
-                <div class="col-head">Negative Contributors (−)</div>
+                <div class="col-head">Factors Decreasing Estimate (−)</div>
                 <div class="factors-list" id="negative-factors-list"></div>
               </div>
             </div>
 
             <p class="shap-disclaimer">
-              <strong>Notice:</strong> Feature contributions represent <strong>model associations</strong>, not causal relationships. They do not demonstrate medical etiology or clinical conditions.
+              <strong>Notice:</strong> Feature contributions represent <strong>observational statistical associations</strong> in the model, not causal or clinical relationships.
             </p>
           </div>
         </div>

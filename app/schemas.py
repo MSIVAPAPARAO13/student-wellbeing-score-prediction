@@ -190,3 +190,18 @@ class ErrorResponse(BaseModel):
     error: str
     detail: Any
     timestamp: str
+
+
+class FeedbackProvenance(BaseModel):
+    source: str = Field(..., description="Provenance source of verified ground-truth label")
+    auditor_id: Optional[str] = Field(None, description="Auditor or institutional identifier")
+    verification_method: Optional[str] = Field("manual_audit", description="Ground truth collection method")
+
+
+class VerifiedFeedbackSubmission(BaseModel):
+    observation_id: str = Field(..., description="Target production observation ID")
+    observed_score: float = Field(..., ge=1.0, le=10.0, description="Verified post-deployment score in [1.0, 10.0]")
+    provenance: FeedbackProvenance = Field(..., description="Auditable provenance details")
+    observation_timestamp: Optional[str] = Field(None, description="ISO timestamp of observation")
+    is_historical: Optional[bool] = Field(False, description="Historical data flag (strictly forbidden if true)")
+

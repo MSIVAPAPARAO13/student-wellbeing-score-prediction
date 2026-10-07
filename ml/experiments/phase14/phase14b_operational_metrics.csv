@@ -1,0 +1,25 @@
+metric_category,metric_name,observed_value,sla_or_target,status,notes
+Point Prediction,MAE,DATA_NOT_AVAILABLE,< 0.25,DATA_NOT_AVAILABLE,Requires verified post-deployment labels
+Point Prediction,RMSE,DATA_NOT_AVAILABLE,< 0.36,DATA_NOT_AVAILABLE,Requires verified post-deployment labels
+Point Prediction,R2,DATA_NOT_AVAILABLE,> 0.90,DATA_NOT_AVAILABLE,Requires verified post-deployment labels
+Point Prediction,Median Absolute Error,DATA_NOT_AVAILABLE,N/A,DATA_NOT_AVAILABLE,Requires verified post-deployment labels
+Point Prediction,Maximum Absolute Error,DATA_NOT_AVAILABLE,N/A,DATA_NOT_AVAILABLE,Requires verified post-deployment labels
+Point Prediction,Mean Error (Bias),DATA_NOT_AVAILABLE,N/A,DATA_NOT_AVAILABLE,Requires verified post-deployment labels
+Paired Comparison,Paired MAE Differences,DATA_NOT_AVAILABLE,N/A,DATA_NOT_AVAILABLE,Requires paired live observations
+Paired Comparison,Per-Observation Winner,DATA_NOT_AVAILABLE,N/A,DATA_NOT_AVAILABLE,Requires paired live observations
+Paired Comparison,Mean Paired Error Difference,DATA_NOT_AVAILABLE,N/A,DATA_NOT_AVAILABLE,Requires paired live observations
+Operational,Live P50 Latency (ms),DATA_NOT_AVAILABLE,< 100 ms,DATA_NOT_AVAILABLE,No live production traffic observed
+Operational,Live P95 Latency (ms),DATA_NOT_AVAILABLE,< 150 ms,DATA_NOT_AVAILABLE,Authoritative warm P95 SLA is < 150 ms
+Operational,Live P99 Latency (ms),DATA_NOT_AVAILABLE,< 200 ms,DATA_NOT_AVAILABLE,No live production traffic observed
+Operational,Candidate Benchmark P95 (ms),77.58,< 150 ms,PASS,Benchmark satisfies authoritative warm P95 SLA
+Operational,Timeout Rate,0.0%,0.0%,PASS,Candidate timeouts strictly isolated from user response
+Operational,Exception Rate,0.0%,0.0%,PASS,Candidate exceptions strictly isolated from user response
+Operational,Candidate Isolation Failures,0,0,PASS,Zero impact on Champion serving responses
+Uncertainty,80% Empirical Coverage,DATA_NOT_AVAILABLE,>= 0.80,DATA_NOT_AVAILABLE,Requires verified post-deployment labels
+Uncertainty,90% Empirical Coverage,DATA_NOT_AVAILABLE,>= 0.90,DATA_NOT_AVAILABLE,Requires verified post-deployment labels
+Uncertainty,95% Empirical Coverage,DATA_NOT_AVAILABLE,>= 0.95,DATA_NOT_AVAILABLE,Requires verified post-deployment labels
+Uncertainty,Mean Interval Width,DATA_NOT_AVAILABLE,<= 1.25,DATA_NOT_AVAILABLE,Requires verified post-deployment labels
+Uncertainty,Interval Failures,DATA_NOT_AVAILABLE,N/A,DATA_NOT_AVAILABLE,Requires verified post-deployment labels
+Drift,Population Stability Index (PSI),DATA_NOT_AVAILABLE,< 0.10,DATA_NOT_AVAILABLE,Requires genuine production traffic
+Drift,Kolmogorov-Smirnov (KS) Test,DATA_NOT_AVAILABLE,p >= 0.05,DATA_NOT_AVAILABLE,Requires genuine production traffic
+Drift,Total Variation Distance (TVD),DATA_NOT_AVAILABLE,< 0.10,DATA_NOT_AVAILABLE,Requires genuine production traffic
